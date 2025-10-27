@@ -106,10 +106,40 @@ class AIEventApp {
             </h3>
             <ul class="space-y-2 text-gray-700">
               <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>企業でAIを活用したい経営者・管理職の方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>他社のAI活用事例を知りたい方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>AI講師に直接相談したい方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>経営者同士のネットワークを広げたい方</li>
+              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>これから起業したい、起業準備中の方</li>
+              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>AI講師として活動したい方、教室を運営している方</li>
+              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>AI活用を学びたい学生の方</li>
+              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>自分の事例をプレゼンしたい方</li>
             </ul>
+          </div>
+
+          <div class="mt-8 bg-green-50 p-8 rounded-lg border-l-4 border-green-600">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+              <i class="fas fa-presentation-screen text-green-600 mr-2"></i>イベントの流れ
+            </h3>
+            <div class="space-y-3 text-gray-700">
+              <div class="flex items-start">
+                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">1</span>
+                <div>
+                  <strong>ミニ講座（約30分）</strong><br>
+                  <span class="text-sm">AI講師による実践的なテーマの講座</span>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</span>
+                <div>
+                  <strong>参加者プレゼンタイム（希望者）</strong><br>
+                  <span class="text-sm">あなたの事例や知見を共有できます</span>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</span>
+                <div>
+                  <strong>交流・質疑応答</strong><br>
+                  <span class="text-sm">参加者同士の対話と個別相談</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -312,9 +342,19 @@ class AIEventApp {
             </div>
           </div>
           
-          <h3 class="text-2xl font-bold text-gray-800 mb-3">${event.title}</h3>
+          <h3 class="text-2xl font-bold text-gray-800 mb-2">${event.title}</h3>
+          ${event.theme ? `<p class="text-lg text-blue-600 font-semibold mb-3"><i class="fas fa-lightbulb mr-2"></i>${event.theme}</p>` : ''}
           <p class="text-gray-600 mb-4 leading-relaxed">${event.description}</p>
           
+          ${event.mini_lecture_topic ? `
+          <div class="mb-4 bg-purple-50 p-3 rounded-lg">
+            <p class="text-sm text-gray-700">
+              <i class="fas fa-chalkboard-teacher text-purple-600 mr-2"></i>
+              <strong>ミニ講座:</strong> ${event.mini_lecture_topic} ${event.mini_lecture_duration ? `(${event.mini_lecture_duration}分)` : ''}
+            </p>
+          </div>
+          ` : ''}
+
           <div class="space-y-2 text-gray-700 mb-6">
             <div class="flex items-center">
               <i class="fas fa-calendar-day w-6 text-blue-600"></i>
@@ -396,9 +436,78 @@ class AIEventApp {
                 </span>
               </div>
 
-              <p class="text-gray-700 text-lg leading-relaxed mb-8">${event.description}</p>
+              ${event.theme ? `
+              <div class="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg border-l-4 border-purple-500">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                  <i class="fas fa-lightbulb text-purple-600 mr-2"></i>今回のテーマ
+                </h3>
+                <p class="text-lg text-gray-700">${event.theme}</p>
+              </div>
+              ` : ''}
 
-              <div class="space-y-4 bg-gray-50 p-6 rounded-lg">
+              <p class="text-gray-700 text-lg leading-relaxed mb-6">${event.description}</p>
+
+              ${event.target_audience ? `
+              <div class="mb-6 bg-green-50 p-4 rounded-lg">
+                <p class="text-gray-700">
+                  <i class="fas fa-user-check text-green-600 mr-2"></i>
+                  <strong>参加対象:</strong> ${event.target_audience}
+                </p>
+              </div>
+              ` : ''}
+
+              ${event.mini_lecture_topic ? `
+              <div class="mb-6 bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">
+                  <i class="fas fa-chalkboard-teacher text-yellow-600 mr-2"></i>ミニ講座
+                </h3>
+                <p class="text-gray-700"><strong>${event.mini_lecture_topic}</strong></p>
+                ${event.mini_lecture_duration ? `<p class="text-sm text-gray-600 mt-1">所要時間: 約${event.mini_lecture_duration}分</p>` : ''}
+              </div>
+              ` : ''}
+
+              ${event.program_details ? `
+              <div class="mb-6 bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">
+                  <i class="fas fa-clipboard-list text-blue-600 mr-2"></i>プログラム
+                </h3>
+                <div class="text-gray-700 whitespace-pre-line text-sm leading-relaxed">${event.program_details}</div>
+              </div>
+              ` : ''}
+
+              ${event.staff && event.staff.length > 0 ? `
+              <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                  <i class="fas fa-users text-blue-600 mr-2"></i>講師・スタッフ
+                </h3>
+                <div class="space-y-4">
+                  ${event.staff.map(staff => `
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <div class="flex items-start gap-3">
+                        <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
+                          <i class="fas ${staff.role === 'lecturer' ? 'fa-chalkboard-teacher' : staff.role === 'facilitator' ? 'fa-comments' : 'fa-user'}"></i>
+                        </div>
+                        <div class="flex-1">
+                          <div class="flex items-center gap-2 mb-1">
+                            <h4 class="text-lg font-bold text-gray-800">${staff.name}</h4>
+                            <span class="text-xs px-2 py-1 rounded-full ${
+                              staff.role === 'lecturer' ? 'bg-purple-100 text-purple-700' :
+                              staff.role === 'facilitator' ? 'bg-green-100 text-green-700' :
+                              'bg-gray-100 text-gray-700'
+                            }">
+                              ${staff.role === 'lecturer' ? '講師' : staff.role === 'facilitator' ? 'ファシリテーター' : 'スタッフ'}
+                            </span>
+                          </div>
+                          ${staff.bio ? `<p class="text-sm text-gray-600">${staff.bio}</p>` : ''}
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+              ` : ''}
+
+              <div class="space-y-4 bg-gray-50 p-6 rounded-lg mb-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">
                   <i class="fas fa-info-circle text-blue-600 mr-2"></i>開催情報
                 </h3>
@@ -523,14 +632,33 @@ class AIEventApp {
 
               <hr class="my-8">
 
-              <!-- 会社名 -->
+              <!-- 参加者タイプ -->
               <div class="mb-6">
                 <label class="block text-gray-700 font-semibold mb-2">
-                  会社名 <span class="text-red-600">*</span>
+                  参加者タイプ <span class="text-red-600">*</span>
+                </label>
+                <select id="participant_type" name="participant_type" required
+                  class="form-input w-full px-4 py-3 rounded-lg">
+                  <option value="">選択してください</option>
+                  <option value="business_owner">経営者・管理職</option>
+                  <option value="aspiring_entrepreneur">起業準備中・起業したい方</option>
+                  <option value="teacher">AI講師・教室運営者</option>
+                  <option value="student">学生</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
+
+              <!-- 会社名・所属 -->
+              <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">
+                  会社名・所属 <span class="text-red-600">*</span>
                 </label>
                 <input type="text" id="company_name" name="company_name" required
                   class="form-input w-full px-4 py-3 rounded-lg"
-                  placeholder="株式会社〇〇">
+                  placeholder="株式会社〇〇、個人、〇〇大学など">
+                <p class="text-sm text-gray-500 mt-1">
+                  個人の方は「個人」とご記入ください
+                </p>
               </div>
 
               <!-- お名前 -->
@@ -543,14 +671,14 @@ class AIEventApp {
                   placeholder="山田 太郎">
               </div>
 
-              <!-- 役職 -->
+              <!-- 役職・立場 -->
               <div class="mb-6">
                 <label class="block text-gray-700 font-semibold mb-2">
-                  役職
+                  役職・立場
                 </label>
                 <input type="text" id="position" name="position"
                   class="form-input w-full px-4 py-3 rounded-lg"
-                  placeholder="代表取締役、取締役など">
+                  placeholder="代表取締役、講師、学生など">
               </div>
 
               <!-- メールアドレス -->
@@ -651,6 +779,7 @@ class AIEventApp {
       const formData = {
         event_id: parseInt(eventId),
         invitation_code: document.getElementById('invitation_code').value.trim(),
+        participant_type: document.getElementById('participant_type').value,
         company_name: document.getElementById('company_name').value.trim(),
         applicant_name: document.getElementById('applicant_name').value.trim(),
         position: document.getElementById('position').value.trim() || null,

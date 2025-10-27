@@ -23,8 +23,29 @@ export interface Event {
   current_participants: number;
   status: EventStatus;
   image_url?: string;
+  theme?: string;
+  mini_lecture_topic?: string;
+  mini_lecture_duration?: number;
+  program_details?: string;
+  target_audience?: string;
   created_at: string;
   updated_at: string;
+}
+
+// 講師・スタッフ情報型
+export type StaffRole = 'lecturer' | 'staff' | 'presenter' | 'facilitator';
+
+export interface EventStaff {
+  id: number;
+  event_id: number;
+  name: string;
+  role: StaffRole;
+  bio?: string;
+  profile_image_url?: string;
+  presentation_topic?: string;
+  presentation_duration?: number;
+  display_order: number;
+  created_at: string;
 }
 
 // 招待コードデータ型
@@ -44,6 +65,9 @@ export interface InvitationCode {
 // 申込ステータス
 export type ApplicationStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
 
+// 参加者タイプ
+export type ParticipantType = 'business_owner' | 'aspiring_entrepreneur' | 'student' | 'teacher' | 'other';
+
 // 申込データ型
 export interface Application {
   id: number;
@@ -57,6 +81,7 @@ export interface Application {
   ai_usage_examples?: string;
   consultation_topics?: string;
   referrer_name?: string;
+  participant_type: ParticipantType;
   status: ApplicationStatus;
   applied_at: string;
   updated_at: string;

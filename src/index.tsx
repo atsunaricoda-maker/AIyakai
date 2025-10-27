@@ -50,7 +50,7 @@ app.get('/api/events', async (c) => {
   }
 })
 
-// 特定イベント取得API
+// 特定イベント取得API（講師情報も含む）
 app.get('/api/events/:id', async (c) => {
   try {
     const { DB } = c.env
@@ -66,10 +66,18 @@ app.get('/api/events/:id', async (c) => {
         error: 'イベントが見つかりません'
       }, 404)
     }
+
+    // 講師・スタッフ情報を取得
+    const { results: staff } = await DB.prepare(
+      'SELECT * FROM event_staff WHERE event_id = ? ORDER BY display_order ASC'
+    ).bind(eventId).all()
     
-    return c.json<ApiResponse<Event>>({
+    return c.json<ApiResponse>({
       success: true,
-      data: event
+      data: {
+        ...event,
+        staff: staff || []
+      }
     })
   } catch (error) {
     return c.json<ApiResponse>({
@@ -206,13 +214,14 @@ app.post('/api/applications', async (c) => {
     // 申込登録
     const result = await DB.prepare(`
       INSERT INTO applications (
-        event_id, invitation_code, company_name, applicant_name, 
+        event_id, invitation_code, participant_type, company_name, applicant_name, 
         position, email, phone, ai_usage_examples, consultation_topics, 
         referrer_name, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       data.event_id,
       data.invitation_code || null,
+      data.participant_type || 'business_owner',
       data.company_name,
       data.applicant_name,
       data.position || null,
