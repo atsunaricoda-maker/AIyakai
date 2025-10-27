@@ -1,1 +1,154 @@
-h1 { font-family: Arial, Helvetica, sans-serif; }
+/* AI夜会・AI茶会 カスタムスタイル */
+
+:root {
+  --color-primary: #1e3a5f;
+  --color-secondary: #8b4513;
+  --color-accent: #d4a373;
+  --color-night: #2c3e50;
+  --color-tea: #8b7355;
+}
+
+body {
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+}
+
+/* ヘッダー */
+.header-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-night) 100%);
+}
+
+/* イベントカード */
+.event-card {
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.event-card.night {
+  border-left-color: var(--color-night);
+}
+
+.event-card.tea {
+  border-left-color: var(--color-tea);
+}
+
+/* イベントタイプバッジ */
+.badge-night {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.badge-tea {
+  background: linear-gradient(135deg, #8b7355 0%, #a0826d 100%);
+}
+
+/* ボタン */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #2c5282 100%);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #a0522d 100%);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+/* フォーム */
+.form-input {
+  transition: all 0.2s ease;
+  border: 2px solid #e2e8f0;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+  outline: none;
+}
+
+/* ローディング */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* アラート */
+.alert {
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
+}
+
+.alert-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-left: 4px solid #3b82f6;
+}
+
+/* 和モダンなデザイン要素 */
+.section-title {
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .event-card {
+    margin-bottom: 1rem;
+  }
+}
