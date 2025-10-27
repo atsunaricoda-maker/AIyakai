@@ -2,8 +2,9 @@
 
 ## プロジェクト概要
 - **名称**: AI夜会・AI茶会
-- **目的**: 静岡県内で開催される経営者向けAI活用交流イベントの管理・申込サイト
-- **特徴**: 招待制・紹介制、AI講師によるプチコンサルティング、経営者ネットワーキング
+- **目的**: 静岡県内で開催されるAI活用交流イベントの管理・申込サイト
+- **特徴**: 招待制・紹介制、AI講師によるミニ講座（約30分）、参加者プレゼンテーション、交流とネットワーキング
+- **対象者**: 経営者、起業準備中の方、AI講師・教室運営者、学生など、AI活用に興味がある全ての方
 
 ## 公開URL
 - **開発環境**: https://3000-i7lyoyh7zahk8u5tbzmde-a402f90a.sandbox.novita.ai
@@ -18,17 +19,24 @@
    - **エリア別セクション表示**（東部・中部・西部）
    - イベントタイプ別（夜会/茶会）の色分け表示
    - エリアバッジ表示（東部/中部/西部）
+   - テーマ・ミニ講座情報の表示
    - 残席数の表示と「残席わずか」アラート
    - 2カラムグリッドレイアウト
 
 2. **イベント詳細ページ**
    - イベントの詳細情報表示
+   - **イベントテーマ**の明示
+   - **ミニ講座**の内容と時間
+   - **プログラム詳細**（タイムライン）
+   - **参加対象者**の表示
+   - **講師・スタッフ紹介**セクション
    - 開催日時、場所、定員情報
    - 申込ボタン
 
 3. **参加申込フォーム**
    - 招待コード検証機能
-   - 会社情報・申込者情報入力
+   - **参加者タイプ選択**（経営者/起業家/講師/学生/その他）
+   - 会社情報・所属・申込者情報入力
    - AI活用状況・相談テーマの記入欄
    - 紹介者情報の記入
 
@@ -44,9 +52,11 @@
    - 参加申込一覧・ステータス確認
 
 6. **データベース（D1）**
-   - イベント情報管理
+   - イベント情報管理（テーマ、ミニ講座、プログラム詳細含む）
+   - 講師・スタッフ情報管理
    - 招待コード管理
-   - 参加申込管理
+   - 参加申込管理（参加者タイプ含む）
+   - プレゼンター応募管理（将来の拡張用）
    - 管理者アカウント管理
 
 ### 📋 主要機能URIリスト
@@ -79,6 +89,21 @@
 - **capacity**: 定員
 - **current_participants**: 現在の参加者数
 - **status**: upcoming / ongoing / finished / cancelled
+- **theme**: イベントテーマ
+- **mini_lecture_topic**: ミニ講座のトピック
+- **mini_lecture_duration**: ミニ講座の時間（分）
+- **program_details**: プログラム詳細（タイムライン）
+- **target_audience**: 参加対象者
+
+### 講師・スタッフテーブル (event_staff)
+- **id**: スタッフID
+- **event_id**: イベントID
+- **name**: 名前
+- **role**: 役割（lecturer/staff/presenter/facilitator）
+- **bio**: 自己紹介・経歴
+- **profile_image_url**: プロフィール画像URL
+- **presentation_topic**: プレゼンテーマ
+- **display_order**: 表示順序
 
 ### 招待コードテーブル (invitation_codes)
 - **code**: 招待コード文字列
@@ -91,11 +116,14 @@
 ### 申込テーブル (applications)
 - **event_id**: イベントID
 - **invitation_code**: 使用した招待コード
-- **company_name**: 会社名
+- **participant_type**: 参加者タイプ（business_owner/aspiring_entrepreneur/teacher/student/other）
+- **company_name**: 会社名・所属
 - **applicant_name**: 申込者名
+- **position**: 役職・立場
 - **email / phone**: 連絡先
 - **ai_usage_examples**: AI活用状況
 - **consultation_topics**: 相談したいテーマ
+- **referrer_name**: 紹介者名
 - **status**: pending / approved / rejected / cancelled
 
 ## ストレージサービス
