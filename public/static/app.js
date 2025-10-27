@@ -61,82 +61,145 @@ class AIEventApp {
     
     app.innerHTML = `
       <!-- ヘッダー -->
-      <header class="header-gradient text-white py-16">
-        <div class="max-w-6xl mx-auto px-4">
+      <header class="header-gradient text-white py-20 relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
           <div class="text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">
-              <i class="fas fa-moon mr-3"></i>AI夜会<span class="mx-4">・</span>AI茶会<i class="fas fa-mug-hot ml-3"></i>
+            <!-- アニメーションアイコン -->
+            <div class="mb-6 flex justify-center gap-8">
+              <div class="floating-icon text-6xl opacity-80">🌙</div>
+              <div class="floating-icon text-6xl opacity-80" style="animation-delay: 0.5s;">☕</div>
+              <div class="floating-icon text-6xl opacity-80" style="animation-delay: 1s;">✨</div>
+            </div>
+            
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+              AI夜会<span class="mx-4 text-yellow-300">・</span>AI茶会
             </h1>
-            <p class="text-xl md:text-2xl mb-6 opacity-90">経営者のためのAI活用交流イベント</p>
-            <p class="text-lg opacity-80">静岡県内各地で開催 | 招待制・紹介制</p>
+            <p class="text-2xl md:text-3xl mb-6 font-semibold drop-shadow">
+              みんなでAIを語り合う交流の場
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 text-lg">
+              <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm">
+                <i class="fas fa-map-marker-alt mr-2"></i>静岡県内各地で開催
+              </span>
+              <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm">
+                <i class="fas fa-users mr-2"></i>経営者・起業家・講師・学生歓迎
+              </span>
+              <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm">
+                <i class="fas fa-key mr-2"></i>招待制・紹介制
+              </span>
+            </div>
           </div>
         </div>
+        
+        <!-- 装飾要素 -->
+        <div class="absolute top-10 left-10 text-6xl opacity-10 animate-spin" style="animation-duration: 20s;">⚙️</div>
+        <div class="absolute bottom-10 right-10 text-6xl opacity-10 animate-spin" style="animation-duration: 15s;">🤖</div>
       </header>
 
       <!-- コンセプト -->
-      <section class="py-16 bg-white">
+      <section class="py-16 bg-white relative">
         <div class="max-w-6xl mx-auto px-4">
-          <h2 class="text-3xl font-bold text-gray-800 mb-8 section-title">
-            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>AI夜会・AI茶会とは
+          <h2 class="text-4xl font-bold text-gray-800 mb-12 text-center section-title">
+            <i class="fas fa-lightbulb text-yellow-500 mr-3 floating-icon"></i>AI夜会・AI茶会とは
           </h2>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-lg">
+          <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8 rounded-2xl shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
               <div class="flex items-start mb-4">
-                <i class="fas fa-moon text-3xl text-blue-900 mr-4 mt-1"></i>
+                <div class="text-5xl mr-4 mt-1">🌙</div>
                 <div>
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">AI夜会</h3>
-                  <p class="text-gray-600">お酒を片手に、リラックスした雰囲気でAI活用について語り合います。実践事例の共有やプチコンサルティングも。</p>
+                  <h3 class="text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    AI夜会
+                    <span class="text-sm bg-indigo-500 text-white px-3 py-1 rounded-full">Night</span>
+                  </h3>
+                  <p class="text-gray-700 leading-relaxed">お酒を片手に、リラックスした雰囲気でAI活用について語り合います。実践事例の共有やプチコンサルティングも。</p>
                 </div>
               </div>
+              <div class="mt-4 flex gap-2 flex-wrap">
+                <span class="text-xs bg-white px-3 py-1 rounded-full text-indigo-600 font-semibold">🍺 お酒OK</span>
+                <span class="text-xs bg-white px-3 py-1 rounded-full text-indigo-600 font-semibold">💼 実践事例</span>
+                <span class="text-xs bg-white px-3 py-1 rounded-full text-indigo-600 font-semibold">💡 相談OK</span>
+              </div>
             </div>
-            <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-lg">
+            <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 p-8 rounded-2xl shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
               <div class="flex items-start mb-4">
-                <i class="fas fa-mug-hot text-3xl text-amber-800 mr-4 mt-1"></i>
+                <div class="text-5xl mr-4 mt-1">☕</div>
                 <div>
-                  <h3 class="text-2xl font-bold text-gray-800 mb-2">AI茶会</h3>
-                  <p class="text-gray-600">落ち着いた雰囲気でお茶を楽しみながら、じっくりとAIについて深く語り合います。和やかな対話の時間。</p>
+                  <h3 class="text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    AI茶会
+                    <span class="text-sm bg-orange-500 text-white px-3 py-1 rounded-full">Tea</span>
+                  </h3>
+                  <p class="text-gray-700 leading-relaxed">落ち着いた雰囲気でお茶を楽しみながら、じっくりとAIについて深く語り合います。和やかな対話の時間。</p>
                 </div>
+              </div>
+              <div class="mt-4 flex gap-2 flex-wrap">
+                <span class="text-xs bg-white px-3 py-1 rounded-full text-orange-600 font-semibold">🍵 お茶・お菓子</span>
+                <span class="text-xs bg-white px-3 py-1 rounded-full text-orange-600 font-semibold">🎋 和やか</span>
+                <span class="text-xs bg-white px-3 py-1 rounded-full text-orange-600 font-semibold">💬 対話重視</span>
               </div>
             </div>
           </div>
 
-          <div class="mt-12 bg-blue-50 p-8 rounded-lg border-l-4 border-blue-600">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">
-              <i class="fas fa-check-circle text-blue-600 mr-2"></i>このような方におすすめ
-            </h3>
-            <ul class="space-y-2 text-gray-700">
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>企業でAIを活用したい経営者・管理職の方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>これから起業したい、起業準備中の方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>AI講師として活動したい方、教室を運営している方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>AI活用を学びたい学生の方</li>
-              <li><i class="fas fa-chevron-right text-blue-600 mr-2"></i>自分の事例をプレゼンしたい方</li>
-            </ul>
-          </div>
+          <div class="grid md:grid-cols-2 gap-8 mt-12">
+            <!-- このような方におすすめ -->
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-8 rounded-2xl shadow-lg border-l-4 border-blue-500">
+              <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <span class="text-3xl mr-3">👥</span>
+                こんな方におすすめ
+              </h3>
+              <ul class="space-y-3 text-gray-700">
+                <li class="flex items-start bg-white p-3 rounded-lg shadow-sm">
+                  <span class="text-2xl mr-3">💼</span>
+                  <span>企業でAIを活用したい経営者・管理職の方</span>
+                </li>
+                <li class="flex items-start bg-white p-3 rounded-lg shadow-sm">
+                  <span class="text-2xl mr-3">🚀</span>
+                  <span>これから起業したい、起業準備中の方</span>
+                </li>
+                <li class="flex items-start bg-white p-3 rounded-lg shadow-sm">
+                  <span class="text-2xl mr-3">👨‍🏫</span>
+                  <span>AI講師として活動したい方、教室を運営している方</span>
+                </li>
+                <li class="flex items-start bg-white p-3 rounded-lg shadow-sm">
+                  <span class="text-2xl mr-3">🎓</span>
+                  <span>AI活用を学びたい学生の方</span>
+                </li>
+                <li class="flex items-start bg-white p-3 rounded-lg shadow-sm">
+                  <span class="text-2xl mr-3">📢</span>
+                  <span>自分の事例をプレゼンしたい方</span>
+                </li>
+              </ul>
+            </div>
 
-          <div class="mt-8 bg-green-50 p-8 rounded-lg border-l-4 border-green-600">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">
-              <i class="fas fa-presentation-screen text-green-600 mr-2"></i>イベントの流れ
-            </h3>
-            <div class="space-y-3 text-gray-700">
-              <div class="flex items-start">
-                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">1</span>
-                <div>
-                  <strong>ミニ講座（約30分）</strong><br>
-                  <span class="text-sm">AI講師による実践的なテーマの講座</span>
+            <!-- イベントの流れ -->
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl shadow-lg border-l-4 border-green-500">
+              <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <span class="text-3xl mr-3">📋</span>
+                イベントの流れ
+              </h3>
+              <div class="space-y-4 text-gray-700">
+                <div class="flex items-start bg-white p-4 rounded-lg shadow-sm">
+                  <span class="bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-bold shadow-lg text-lg">1</span>
+                  <div>
+                    <strong class="text-lg">ミニ講座</strong>
+                    <div class="text-sm mt-1">⏱️ 約30分</div>
+                    <span class="text-sm text-gray-600">AI講師による実践的なテーマの講座</span>
+                  </div>
                 </div>
-              </div>
-              <div class="flex items-start">
-                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</span>
-                <div>
-                  <strong>参加者プレゼンタイム（希望者）</strong><br>
-                  <span class="text-sm">あなたの事例や知見を共有できます</span>
+                <div class="flex items-start bg-white p-4 rounded-lg shadow-sm">
+                  <span class="bg-gradient-to-br from-blue-400 to-cyan-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-bold shadow-lg text-lg">2</span>
+                  <div>
+                    <strong class="text-lg">プレゼンタイム</strong>
+                    <div class="text-sm mt-1">🎤 希望者のみ</div>
+                    <span class="text-sm text-gray-600">あなたの事例や知見を共有できます</span>
+                  </div>
                 </div>
-              </div>
-              <div class="flex items-start">
-                <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</span>
-                <div>
-                  <strong>交流・質疑応答</strong><br>
-                  <span class="text-sm">参加者同士の対話と個別相談</span>
+                <div class="flex items-start bg-white p-4 rounded-lg shadow-sm">
+                  <span class="bg-gradient-to-br from-purple-400 to-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-bold shadow-lg text-lg">3</span>
+                  <div>
+                    <strong class="text-lg">交流・質疑応答</strong>
+                    <div class="text-sm mt-1">💬 自由に対話</div>
+                    <span class="text-sm text-gray-600">参加者同士の対話と個別相談</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -161,20 +224,43 @@ class AIEventApp {
       </section>
 
       <!-- 講師紹介 -->
-      <section class="py-16 bg-white">
+      <section class="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50">
         <div class="max-w-6xl mx-auto px-4">
-          <h2 class="text-3xl font-bold text-gray-800 mb-8 section-title">
-            <i class="fas fa-users text-blue-600 mr-2"></i>AI講師について
+          <h2 class="text-4xl font-bold text-gray-800 mb-12 text-center section-title">
+            <span class="text-4xl mr-3">👨‍🏫</span>AI講師について
           </h2>
-          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-lg">
-            <p class="text-gray-700 leading-relaxed mb-4">
-              私たちは企業向けAIコンサルティングや講座を提供している専門家チームです。
-              実践的なAI活用支援を通じて、多くの企業の業務改善やDX推進をサポートしています。
-            </p>
-            <p class="text-gray-700 leading-relaxed">
-              AI夜会・AI茶会では、参加者の皆様とフランクに対話しながら、
-              それぞれの企業に合ったAI活用方法をご提案します。
-            </p>
+          <div class="bg-white p-10 rounded-2xl shadow-2xl border-t-4 border-purple-500">
+            <div class="flex items-start gap-6 mb-6">
+              <div class="text-6xl">✨</div>
+              <div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">実践的なAI活用をサポート</h3>
+                <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                  私たちは企業向けAIコンサルティングや講座を提供している専門家チームです。
+                  実践的なAI活用支援を通じて、多くの企業の業務改善やDX推進をサポートしています。
+                </p>
+                <p class="text-gray-700 leading-relaxed text-lg">
+                  AI夜会・AI茶会では、参加者の皆様とフランクに対話しながら、
+                  それぞれの企業に合ったAI活用方法をご提案します。
+                </p>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 mt-8">
+              <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-xl text-center">
+                <div class="text-3xl mb-2">💼</div>
+                <div class="font-bold text-gray-800">企業コンサル</div>
+                <div class="text-sm text-gray-600 mt-1">AI導入支援</div>
+              </div>
+              <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl text-center">
+                <div class="text-3xl mb-2">📚</div>
+                <div class="font-bold text-gray-800">AI講座</div>
+                <div class="text-sm text-gray-600 mt-1">実践的な学習</div>
+              </div>
+              <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl text-center">
+                <div class="text-3xl mb-2">🤝</div>
+                <div class="font-bold text-gray-800">個別相談</div>
+                <div class="text-sm text-gray-600 mt-1">課題解決</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
