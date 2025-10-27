@@ -33,46 +33,7 @@ class AIEventApp {
     return '中部'; // デフォルトは中部
   }
 
-  // エリアでフィルタリング
-  filterByArea(area) {
-    this.currentArea = area;
-    
-    // タブのアクティブ状態を更新
-    document.querySelectorAll('.area-tab').forEach(tab => {
-      tab.classList.remove('bg-blue-600', 'text-white');
-      tab.classList.add('bg-white', 'text-gray-700');
-    });
-    document.getElementById(`tab-${area}`).classList.remove('bg-white', 'text-gray-700');
-    document.getElementById(`tab-${area}`).classList.add('bg-blue-600', 'text-white');
 
-    // イベントをフィルタリングして表示
-    this.displayFilteredEvents();
-  }
-
-  // フィルタリングされたイベントを表示
-  displayFilteredEvents() {
-    const eventsList = document.getElementById('events-list');
-    
-    let filteredEvents = this.allEvents;
-    if (this.currentArea !== 'all') {
-      filteredEvents = this.allEvents.filter(event => 
-        this.getAreaFromLocation(event.location) === this.currentArea
-      );
-    }
-
-    if (filteredEvents.length === 0) {
-      eventsList.innerHTML = `
-        <div class="text-center py-12 bg-white rounded-lg">
-          <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
-          <p class="text-gray-600 text-lg">${this.currentArea}エリアで募集中のイベントはありません</p>
-          <p class="text-gray-500 text-sm mt-2">他のエリアも確認してみてください</p>
-        </div>
-      `;
-      return;
-    }
-
-    eventsList.innerHTML = filteredEvents.map(event => this.createEventCard(event)).join('');
-  }
 
   init() {
     console.log('Current page:', this.currentPage);
@@ -160,29 +121,7 @@ class AIEventApp {
             <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>開催予定のイベント
           </h2>
           
-          <!-- エリアタブ -->
-          <div class="mb-8">
-            <div class="flex flex-wrap gap-2 justify-center">
-              <button onclick="app.filterByArea('all')" id="tab-all" 
-                class="area-tab px-6 py-3 rounded-lg font-semibold transition-all bg-blue-600 text-white">
-                <i class="fas fa-map-marked-alt mr-2"></i>すべて
-              </button>
-              <button onclick="app.filterByArea('東部')" id="tab-東部" 
-                class="area-tab px-6 py-3 rounded-lg font-semibold transition-all bg-white text-gray-700 hover:bg-gray-100">
-                <i class="fas fa-map-marker-alt mr-2"></i>東部（沼津・三島・熱海など）
-              </button>
-              <button onclick="app.filterByArea('中部')" id="tab-中部" 
-                class="area-tab px-6 py-3 rounded-lg font-semibold transition-all bg-white text-gray-700 hover:bg-gray-100">
-                <i class="fas fa-map-marker-alt mr-2"></i>中部（静岡・焼津など）
-              </button>
-              <button onclick="app.filterByArea('西部')" id="tab-西部" 
-                class="area-tab px-6 py-3 rounded-lg font-semibold transition-all bg-white text-gray-700 hover:bg-gray-100">
-                <i class="fas fa-map-marker-alt mr-2"></i>西部（浜松・磐田など）
-              </button>
-            </div>
-          </div>
-
-          <div id="events-list" class="space-y-6">
+          <div id="events-list">
             <div class="text-center py-12">
               <div class="loading mx-auto mb-4"></div>
               <p class="text-gray-600">イベント情報を読み込み中...</p>
@@ -257,8 +196,8 @@ class AIEventApp {
         return;
       }
 
-      // 初期表示（すべてのエリア）
-      this.displayFilteredEvents();
+      // エリア別に表示
+      this.displayEventsByArea();
     } catch (error) {
       console.error('イベント取得エラー:', error);
       document.getElementById('events-list').innerHTML = `
@@ -267,6 +206,72 @@ class AIEventApp {
           イベント情報の取得に失敗しました
         </div>
       `;
+    }
+  }
+
+  // エリア別にイベントを表示
+  displayEventsByArea() {
+    const eventsList = document.getElementById('events-list');
+    
+    // エリアごとにイベントを分類
+    const eventsByArea = {
+      '東部': [],
+      '中部': [],
+      '西部': []
+    };
+
+    this.allEvents.forEach(event => {
+      const area = this.getAreaFromLocation(event.location);
+      eventsByArea[area].push(event);
+    });
+
+    let html = '';
+
+    // 各エリアのセクションを作成
+    const areas = ['東部', '中部', '西部'];
+    const areaInfo = {
+      '東部': { icon: 'fa-map-marker-alt', color: 'orange', cities: '沼津・三島・熱海など' },
+      '中部': { icon: 'fa-map-marker-alt', color: 'green', cities: '静岡・焼津・藤枝など' },
+      '西部': { icon: 'fa-map-marker-alt', color: 'blue', cities: '浜松・磐田・掛川など' }
+    };
+
+    areas.forEach((area, index) => {
+      const events = eventsByArea[area];
+      const info = areaInfo[area];
+      
+      if (events.length > 0) {
+        html += `
+          <div class="mb-12 ${index > 0 ? 'mt-12' : ''}">
+            <!-- エリアヘッダー -->
+            <div class="flex items-center mb-6">
+              <div class="flex items-center bg-${info.color}-100 text-${info.color}-700 px-6 py-3 rounded-lg">
+                <i class="fas ${info.icon} text-2xl mr-3"></i>
+                <div>
+                  <h3 class="text-xl font-bold">${area}エリア</h3>
+                  <p class="text-sm opacity-80">${info.cities}</p>
+                </div>
+              </div>
+              <div class="flex-1 ml-4 h-1 bg-gradient-to-r from-${info.color}-200 to-transparent rounded"></div>
+            </div>
+            
+            <!-- イベントカード -->
+            <div class="grid md:grid-cols-2 gap-6">
+              ${events.map(event => this.createEventCard(event)).join('')}
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    if (html === '') {
+      eventsList.innerHTML = `
+        <div class="text-center py-12 bg-white rounded-lg">
+          <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+          <p class="text-gray-600 text-lg">現在、募集中のイベントはありません</p>
+        </div>
+      `;
+    } else {
+      eventsList.innerHTML = html;
     }
   }
 
