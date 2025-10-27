@@ -930,29 +930,47 @@ class AIEventApp {
         </header>
 
         <div class="max-w-6xl mx-auto px-4 py-12">
-          <div class="grid md:grid-cols-3 gap-6 mb-12">
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-              <i class="fas fa-calendar-alt text-4xl text-blue-600 mb-3"></i>
+          <div class="grid md:grid-cols-4 gap-6 mb-12">
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg shadow-md p-6 text-center border-t-4 border-blue-500 hover:shadow-lg transition">
+              <i class="fas fa-calendar-alt text-5xl text-blue-600 mb-3"></i>
               <h3 class="text-xl font-bold text-gray-800 mb-2">イベント管理</h3>
-              <p class="text-gray-600 mb-4">イベントの作成・編集</p>
-              <button onclick="app.showEventForm()" class="btn-primary text-white px-4 py-2 rounded-lg">
-                <i class="fas fa-plus mr-2"></i>新規作成
-              </button>
+              <p class="text-gray-600 mb-4 text-sm">イベントの作成・編集</p>
+              <div class="flex flex-col gap-2">
+                <button onclick="app.showEventForm()" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                  <i class="fas fa-plus mr-2"></i>新規作成
+                </button>
+                <button onclick="app.loadEventsList()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                  <i class="fas fa-list mr-2"></i>一覧表示
+                </button>
+              </div>
             </div>
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-              <i class="fas fa-key text-4xl text-green-600 mb-3"></i>
-              <h3 class="text-xl font-bold text-gray-800 mb-2">招待コード管理</h3>
-              <p class="text-gray-600 mb-4">コード生成・管理</p>
-              <button onclick="app.showCodeForm()" class="btn-primary text-white px-4 py-2 rounded-lg">
-                <i class="fas fa-plus mr-2"></i>新規作成
-              </button>
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg shadow-md p-6 text-center border-t-4 border-green-500 hover:shadow-lg transition">
+              <i class="fas fa-key text-5xl text-green-600 mb-3"></i>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">招待コード</h3>
+              <p class="text-gray-600 mb-4 text-sm">コード生成・管理</p>
+              <div class="flex flex-col gap-2">
+                <button onclick="app.showCodeForm()" class="btn-primary text-white px-4 py-2 rounded-lg text-sm">
+                  <i class="fas fa-plus mr-2"></i>新規作成
+                </button>
+                <button onclick="app.loadInvitationCodes()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                  <i class="fas fa-list mr-2"></i>一覧表示
+                </button>
+              </div>
             </div>
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-              <i class="fas fa-users text-4xl text-purple-600 mb-3"></i>
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg shadow-md p-6 text-center border-t-4 border-purple-500 hover:shadow-lg transition">
+              <i class="fas fa-users text-5xl text-purple-600 mb-3"></i>
               <h3 class="text-xl font-bold text-gray-800 mb-2">申込管理</h3>
-              <p class="text-gray-600 mb-4">参加申込の確認</p>
-              <button onclick="app.loadApplications()" class="btn-primary text-white px-4 py-2 rounded-lg">
+              <p class="text-gray-600 mb-4 text-sm">参加申込の確認</p>
+              <button onclick="app.loadApplications()" class="btn-primary text-white px-4 py-2 rounded-lg w-full">
                 <i class="fas fa-list mr-2"></i>一覧表示
+              </button>
+            </div>
+            <div class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg shadow-md p-6 text-center border-t-4 border-yellow-500 hover:shadow-lg transition">
+              <i class="fas fa-chalkboard-teacher text-5xl text-yellow-600 mb-3"></i>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">講師管理</h3>
+              <p class="text-gray-600 mb-4 text-sm">講師情報の管理</p>
+              <button onclick="alert('講師管理機能は今後実装予定です')" class="bg-gray-400 text-white px-4 py-2 rounded-lg w-full cursor-not-allowed">
+                <i class="fas fa-lock mr-2"></i>近日公開
               </button>
             </div>
           </div>
@@ -968,37 +986,84 @@ class AIEventApp {
   showEventForm() {
     const content = document.getElementById('admin-content');
     content.innerHTML = `
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">
-        <i class="fas fa-calendar-plus text-blue-600 mr-2"></i>新規イベント作成
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 flex items-center">
+        <span class="text-4xl mr-3">📅</span>
+        新規イベント作成
       </h2>
-      <form id="event-form" class="space-y-6">
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">イベント名</label>
-            <input type="text" name="title" required class="form-input w-full px-4 py-2 rounded-lg">
+      <form id="event-form" class="space-y-8">
+        <!-- 基本情報 -->
+        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-2xl mr-2">📝</span>基本情報
+          </h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">イベント名 *</label>
+              <input type="text" name="title" required class="form-input w-full px-4 py-3 rounded-lg" placeholder="AI夜会 Vol.1 浜松">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">イベントタイプ *</label>
+              <select name="event_type" required class="form-input w-full px-4 py-3 rounded-lg">
+                <option value="night">🌙 AI夜会</option>
+                <option value="tea">☕ AI茶会</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">イベントタイプ</label>
-            <select name="event_type" required class="form-input w-full px-4 py-2 rounded-lg">
-              <option value="night">AI夜会</option>
-              <option value="tea">AI茶会</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">説明</label>
-          <textarea name="description" required rows="4" class="form-input w-full px-4 py-2 rounded-lg"></textarea>
-        </div>
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">開催地</label>
-            <input type="text" name="location" required class="form-input w-full px-4 py-2 rounded-lg" placeholder="浜松市">
-          </div>
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">住所</label>
-            <input type="text" name="address" class="form-input w-full px-4 py-2 rounded-lg">
+          <div class="mt-4">
+            <label class="block text-gray-700 font-semibold mb-2">説明 *</label>
+            <textarea name="description" required rows="3" class="form-input w-full px-4 py-3 rounded-lg" placeholder="イベントの簡単な説明を入力してください"></textarea>
           </div>
         </div>
+
+        <!-- テーマ・プログラム -->
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-2xl mr-2">💡</span>テーマ・プログラム
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">イベントテーマ</label>
+              <input type="text" name="theme" class="form-input w-full px-4 py-3 rounded-lg" placeholder="ChatGPTで変わる業務効率化">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">ミニ講座トピック</label>
+              <input type="text" name="mini_lecture_topic" class="form-input w-full px-4 py-3 rounded-lg" placeholder="ChatGPTを活用した実務改善の具体例">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">ミニ講座時間（分）</label>
+              <input type="number" name="mini_lecture_duration" class="form-input w-full px-4 py-3 rounded-lg" value="30" min="15" max="60">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">プログラム詳細（改行可）</label>
+              <textarea name="program_details" rows="5" class="form-input w-full px-4 py-3 rounded-lg" placeholder="18:30 受付開始
+19:00 ミニ講座（30分）
+19:30 交流タイム
+20:30 質疑応答
+21:00 終了"></textarea>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">参加対象者</label>
+              <input type="text" name="target_audience" class="form-input w-full px-4 py-3 rounded-lg" placeholder="経営者、起業準備中の方、AIに興味がある方、どなたでも歓迎">
+            </div>
+          </div>
+        </div>
+
+        <!-- 開催情報 -->
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-2xl mr-2">📍</span>開催情報
+          </h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">開催地 *</label>
+              <input type="text" name="location" required class="form-input w-full px-4 py-3 rounded-lg" placeholder="浜松市">
+              <p class="text-xs text-gray-500 mt-1">市町村名を入力（エリア自動判定）</p>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">住所</label>
+              <input type="text" name="address" class="form-input w-full px-4 py-3 rounded-lg" placeholder="浜松市中区〇〇町1-2-3">
+            </div>
+          </div>
         <div class="grid md:grid-cols-3 gap-6">
           <div>
             <label class="block text-gray-700 font-semibold mb-2">開催日</label>
@@ -1012,28 +1077,62 @@ class AIEventApp {
             <label class="block text-gray-700 font-semibold mb-2">終了時刻</label>
             <input type="time" name="end_time" class="form-input w-full px-4 py-2 rounded-lg">
           </div>
+          <div class="mt-4">
+            <label class="block text-gray-700 font-semibold mb-2">定員 *</label>
+            <input type="number" name="capacity" value="20" required min="1" class="form-input w-full px-4 py-3 rounded-lg">
+          </div>
         </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">定員</label>
-          <input type="number" name="capacity" value="20" required class="form-input w-full px-4 py-2 rounded-lg">
+
+        <!-- 送信ボタン -->
+        <div class="flex gap-4">
+          <button type="submit" class="flex-1 btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+            <i class="fas fa-save mr-2"></i>イベントを作成
+          </button>
+          <button type="button" onclick="app.loadEventsList()" class="btn-secondary text-white px-6 py-4 rounded-lg font-semibold">
+            <i class="fas fa-list mr-2"></i>一覧表示
+          </button>
         </div>
-        <button type="submit" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold">
-          <i class="fas fa-save mr-2"></i>イベントを作成
-        </button>
       </form>
     `;
 
     document.getElementById('event-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loading mr-2"></div>作成中...';
+      
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
       
       try {
-        await axios.post('/api/admin/events', data);
-        alert('イベントを作成しました！');
+        const response = await axios.post('/api/admin/events', data);
+        
+        // 成功メッセージ
+        const successMsg = document.createElement('div');
+        successMsg.className = 'alert alert-success mb-6 animate-fade-in';
+        successMsg.innerHTML = `
+          <i class="fas fa-check-circle mr-2"></i>
+          イベント「${data.title}」を作成しました！
+        `;
+        content.insertBefore(successMsg, content.firstChild);
+        
         e.target.reset();
+        
+        // 3秒後にメッセージを消す
+        setTimeout(() => successMsg.remove(), 5000);
       } catch (error) {
-        alert('エラー: ' + (error.response?.data?.error || 'イベント作成に失敗しました'));
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'alert alert-error mb-6 animate-fade-in';
+        errorMsg.innerHTML = `
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          エラー: ${error.response?.data?.error || 'イベント作成に失敗しました'}
+        `;
+        content.insertBefore(errorMsg, content.firstChild);
+        
+        setTimeout(() => errorMsg.remove(), 5000);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>イベントを作成';
       }
     });
   }
@@ -1069,17 +1168,234 @@ class AIEventApp {
 
     document.getElementById('code-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loading mr-2"></div>作成中...';
+      
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
       
       try {
         await axios.post('/api/admin/invitation-codes', data);
-        alert('招待コードを作成しました！');
+        
+        const successMsg = document.createElement('div');
+        successMsg.className = 'alert alert-success mb-6 animate-fade-in';
+        successMsg.innerHTML = `
+          <i class="fas fa-check-circle mr-2"></i>
+          招待コード「${data.code}」を作成しました！
+        `;
+        content.insertBefore(successMsg, content.firstChild);
+        
         e.target.reset();
+        setTimeout(() => successMsg.remove(), 5000);
       } catch (error) {
-        alert('エラー: ' + (error.response?.data?.error || '招待コード作成に失敗しました'));
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'alert alert-error mb-6 animate-fade-in';
+        errorMsg.innerHTML = `
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          エラー: ${error.response?.data?.error || '招待コード作成に失敗しました'}
+        `;
+        content.insertBefore(errorMsg, content.firstChild);
+        setTimeout(() => errorMsg.remove(), 5000);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>招待コードを作成';
       }
     });
+  }
+
+  async loadEventsList() {
+    const content = document.getElementById('admin-content');
+    content.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto"></div><p class="text-gray-600 mt-4">イベントを読み込み中...</p></div>';
+
+    try {
+      const response = await axios.get('/api/events');
+      const events = response.data.data;
+
+      if (events.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-12">
+            <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-600 text-lg mb-4">イベントがまだありません</p>
+            <button onclick="app.showEventForm()" class="btn-primary text-white px-6 py-3 rounded-lg">
+              <i class="fas fa-plus mr-2"></i>新規イベントを作成
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = `
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+            <span class="text-4xl mr-3">📋</span>
+            イベント一覧
+          </h2>
+          <button onclick="app.showEventForm()" class="btn-primary text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-plus mr-2"></i>新規作成
+          </button>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+          ${events.map(event => `
+            <div class="bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-md p-6 border-l-4 ${
+              event.event_type === 'night' ? 'border-indigo-500' : 'border-orange-500'
+            }">
+              <div class="flex items-start justify-between mb-3">
+                <span class="${event.event_type === 'night' ? 'badge-night' : 'badge-tea'} text-white px-3 py-1 rounded-full text-sm">
+                  <i class="fas ${event.event_type === 'night' ? 'fa-moon' : 'fa-mug-hot'} mr-1"></i>
+                  ${event.event_type === 'night' ? 'AI夜会' : 'AI茶会'}
+                </span>
+                <span class="px-3 py-1 rounded-full text-sm ${
+                  event.status === 'upcoming' ? 'bg-green-100 text-green-700' :
+                  event.status === 'ongoing' ? 'bg-blue-100 text-blue-700' :
+                  'bg-gray-100 text-gray-700'
+                }">
+                  ${event.status === 'upcoming' ? '募集中' : event.status === 'ongoing' ? '開催中' : '終了'}
+                </span>
+              </div>
+              
+              <h3 class="text-xl font-bold text-gray-800 mb-2">${event.title}</h3>
+              ${event.theme ? `<p class="text-blue-600 font-semibold mb-2"><i class="fas fa-lightbulb mr-1"></i>${event.theme}</p>` : ''}
+              <p class="text-gray-600 text-sm mb-4">${event.description.substring(0, 80)}${event.description.length > 80 ? '...' : ''}</p>
+              
+              <div class="space-y-2 text-sm text-gray-700 mb-4">
+                <div class="flex items-center">
+                  <i class="fas fa-calendar-day w-5 text-blue-600"></i>
+                  <span>${new Date(event.event_date).toLocaleDateString('ja-JP')} ${event.start_time}</span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-map-marker-alt w-5 text-red-600"></i>
+                  <span>${event.location}</span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-users w-5 text-green-600"></i>
+                  <span>${event.current_participants}/${event.capacity}名</span>
+                </div>
+              </div>
+              
+              <div class="flex gap-2">
+                <a href="/events/${event.id}" target="_blank" class="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                  <i class="fas fa-eye mr-1"></i>詳細
+                </a>
+                <button onclick="app.editEvent(${event.id})" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 transition">
+                  <i class="fas fa-edit mr-1"></i>編集
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } catch (error) {
+      console.error('イベント一覧取得エラー:', error);
+      content.innerHTML = `
+        <div class="alert alert-error">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          イベント一覧の取得に失敗しました
+        </div>
+      `;
+    }
+  }
+
+  editEvent(eventId) {
+    // TODO: イベント編集機能（今後実装）
+    alert(`イベントID ${eventId} の編集機能は今後実装予定です`);
+  }
+
+  async loadInvitationCodes() {
+    const content = document.getElementById('admin-content');
+    content.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto"></div><p class="text-gray-600 mt-4">招待コードを読み込み中...</p></div>';
+
+    try {
+      const response = await axios.get('/api/admin/invitation-codes');
+      const codes = response.data.data;
+
+      if (codes.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-12">
+            <i class="fas fa-key text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-600 text-lg mb-4">招待コードがまだありません</p>
+            <button onclick="app.showCodeForm()" class="btn-primary text-white px-6 py-3 rounded-lg">
+              <i class="fas fa-plus mr-2"></i>新規招待コードを作成
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = `
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+            <span class="text-4xl mr-3">🔑</span>
+            招待コード一覧
+          </h2>
+          <button onclick="app.showCodeForm()" class="btn-primary text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-plus mr-2"></i>新規作成
+          </button>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${codes.map(code => {
+            const isExpired = code.expires_at && new Date(code.expires_at) < new Date();
+            const isMaxedOut = code.used_count >= code.max_uses;
+            const isActive = !isExpired && !isMaxedOut && code.is_active;
+            
+            return `
+              <div class="bg-white rounded-lg shadow-md p-5 border-l-4 ${
+                isActive ? 'border-green-500' : 'border-gray-400'
+              }">
+                <div class="flex items-start justify-between mb-3">
+                  <code class="text-xl font-bold text-gray-800 bg-gray-100 px-3 py-1 rounded">${code.code}</code>
+                  <span class="px-2 py-1 rounded text-xs ${
+                    isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                  }">
+                    ${isActive ? '✓ 有効' : '✗ 無効'}
+                  </span>
+                </div>
+                
+                <div class="space-y-2 text-sm text-gray-600 mb-3">
+                  <div class="flex items-center justify-between">
+                    <span><i class="fas fa-hashtag w-4 text-blue-600"></i> 使用回数</span>
+                    <strong class="${isMaxedOut ? 'text-red-600' : 'text-gray-800'}">${code.used_count}/${code.max_uses}</strong>
+                  </div>
+                  ${code.expires_at ? `
+                    <div class="flex items-center justify-between">
+                      <span><i class="fas fa-clock w-4 text-orange-600"></i> 有効期限</span>
+                      <strong class="${isExpired ? 'text-red-600' : 'text-gray-800'}">
+                        ${new Date(code.expires_at).toLocaleDateString('ja-JP')}
+                      </strong>
+                    </div>
+                  ` : ''}
+                  ${code.notes ? `
+                    <div class="mt-2 pt-2 border-t">
+                      <p class="text-xs text-gray-500"><i class="fas fa-sticky-note mr-1"></i>${code.notes}</p>
+                    </div>
+                  ` : ''}
+                </div>
+                
+                ${isActive ? `
+                  <div class="bg-green-50 p-2 rounded text-center">
+                    <p class="text-xs text-green-700">✓ この招待コードは利用可能です</p>
+                  </div>
+                ` : `
+                  <div class="bg-gray-50 p-2 rounded text-center">
+                    <p class="text-xs text-gray-600">
+                      ${isExpired ? '期限切れ' : isMaxedOut ? '使用回数上限' : '無効'}
+                    </p>
+                  </div>
+                `}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } catch (error) {
+      console.error('招待コード一覧取得エラー:', error);
+      content.innerHTML = `
+        <div class="alert alert-error">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          招待コード一覧の取得に失敗しました
+        </div>
+      `;
+    }
   }
 
   async loadApplications() {
