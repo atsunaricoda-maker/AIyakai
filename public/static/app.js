@@ -5,6 +5,7 @@ class AIEventApp {
     this.currentPage = this.getCurrentPage();
     this.allEvents = []; // 全イベントを保持
     this.currentArea = 'all'; // 現在選択中のエリア
+    this.siteSettings = {}; // サイト設定を保持
     this.init();
   }
 
@@ -35,8 +36,12 @@ class AIEventApp {
 
 
 
-  init() {
+  async init() {
     console.log('Current page:', this.currentPage);
+    
+    // サイト設定を読み込んでから各ページを表示
+    await this.loadSiteSettingsData();
+    
     switch (this.currentPage) {
       case 'home':
         this.renderHomePage();
@@ -51,6 +56,28 @@ class AIEventApp {
         this.renderAdminPage();
         break;
     }
+  }
+
+  async loadSiteSettingsData() {
+    try {
+      const response = await axios.get('/api/settings');
+      this.siteSettings = response.data.data;
+      console.log('Site settings loaded:', this.siteSettings);
+    } catch (error) {
+      console.error('サイト設定の読み込みに失敗:', error);
+      // デフォルト値を設定
+      this.siteSettings = {
+        site_title: 'AI夜会・AI茶会',
+        site_subtitle: 'みんなでAIを語り合う交流の場',
+        night_title: 'AI夜会',
+        tea_title: 'AI茶会'
+      };
+    }
+  }
+
+  // ヘルパー関数：設定値を取得（デフォルト値付き）
+  getSetting(key, defaultValue = '') {
+    return this.siteSettings[key] || defaultValue;
   }
 
   // ============================================
@@ -72,20 +99,20 @@ class AIEventApp {
             </div>
             
             <h1 class="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-              AI夜会<span class="mx-4 text-yellow-300">・</span>AI茶会
+              ${this.getSetting('site_title', 'AI夜会・AI茶会')}
             </h1>
             <p class="text-2xl md:text-3xl mb-6 font-semibold drop-shadow">
-              みんなでAIを語り合う交流の場
+              ${this.getSetting('site_subtitle', 'みんなでAIを語り合う交流の場')}
             </p>
             <div class="flex flex-wrap justify-center gap-4 text-lg">
               <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm">
-                <i class="fas fa-map-marker-alt mr-2"></i>静岡県内各地で開催
+                <i class="fas fa-map-marker-alt mr-2"></i>${this.getSetting('site_tagline_1', '静岡県内各地で開催')}
               </span>
               <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm">
-                <i class="fas fa-users mr-2"></i>経営者・起業家・講師・学生歓迎
+                <i class="fas fa-users mr-2"></i>${this.getSetting('site_tagline_2', '経営者・起業家・講師・学生歓迎')}
               </span>
               <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm">
-                <i class="fas fa-key mr-2"></i>招待制・紹介制
+                <i class="fas fa-key mr-2"></i>${this.getSetting('site_tagline_3', '招待制・紹介制')}
               </span>
             </div>
           </div>
@@ -108,10 +135,10 @@ class AIEventApp {
                 <div class="text-5xl mr-4 mt-1">🌙</div>
                 <div>
                   <h3 class="text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-                    AI夜会
+                    ${this.getSetting('night_title', 'AI夜会')}
                     <span class="text-sm bg-indigo-500 text-white px-3 py-1 rounded-full">Night</span>
                   </h3>
-                  <p class="text-gray-700 leading-relaxed">お酒を片手に、リラックスした雰囲気でAI活用について語り合います。実践事例の共有やプチコンサルティングも。</p>
+                  <p class="text-gray-700 leading-relaxed">${this.getSetting('night_description', 'お酒を片手に、リラックスした雰囲気でAI活用について語り合います。実践事例の共有やプチコンサルティングも。')}</p>
                 </div>
               </div>
               <div class="mt-4 flex gap-2 flex-wrap">
@@ -125,10 +152,10 @@ class AIEventApp {
                 <div class="text-5xl mr-4 mt-1">☕</div>
                 <div>
                   <h3 class="text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-                    AI茶会
+                    ${this.getSetting('tea_title', 'AI茶会')}
                     <span class="text-sm bg-orange-500 text-white px-3 py-1 rounded-full">Tea</span>
                   </h3>
-                  <p class="text-gray-700 leading-relaxed">落ち着いた雰囲気でお茶を楽しみながら、じっくりとAIについて深く語り合います。和やかな対話の時間。</p>
+                  <p class="text-gray-700 leading-relaxed">${this.getSetting('tea_description', '落ち着いた雰囲気でお茶を楽しみながら、じっくりとAIについて深く語り合います。和やかな対話の時間。')}</p>
                 </div>
               </div>
               <div class="mt-4 flex gap-2 flex-wrap">
@@ -227,20 +254,18 @@ class AIEventApp {
       <section class="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50">
         <div class="max-w-6xl mx-auto px-4">
           <h2 class="text-4xl font-bold text-gray-800 mb-12 text-center section-title">
-            <span class="text-4xl mr-3">👨‍🏫</span>AI講師について
+            <span class="text-4xl mr-3">👨‍🏫</span>${this.getSetting('instructor_section_title', 'AI講師について')}
           </h2>
           <div class="bg-white p-10 rounded-2xl shadow-2xl border-t-4 border-purple-500">
             <div class="flex items-start gap-6 mb-6">
               <div class="text-6xl">✨</div>
               <div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">実践的なAI活用をサポート</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">${this.getSetting('instructor_section_subtitle', '実践的なAI活用をサポート')}</h3>
                 <p class="text-gray-700 leading-relaxed text-lg mb-4">
-                  私たちは企業向けAIコンサルティングや講座を提供している専門家チームです。
-                  実践的なAI活用支援を通じて、多くの企業の業務改善やDX推進をサポートしています。
+                  ${this.getSetting('instructor_description_1', '私たちは企業向けAIコンサルティングや講座を提供している専門家チームです。実践的なAI活用支援を通じて、多くの企業の業務改善やDX推進をサポートしています。')}
                 </p>
                 <p class="text-gray-700 leading-relaxed text-lg">
-                  AI夜会・AI茶会では、参加者の皆様とフランクに対話しながら、
-                  それぞれの企業に合ったAI活用方法をご提案します。
+                  ${this.getSetting('instructor_description_2', 'AI夜会・AI茶会では、参加者の皆様とフランクに対話しながら、それぞれの企業に合ったAI活用方法をご提案します。')}
                 </p>
               </div>
             </div>
@@ -272,10 +297,9 @@ class AIEventApp {
             <i class="fas fa-envelope text-blue-600 mr-2"></i>お問い合わせ
           </h2>
           <p class="text-gray-700 mb-8">
-            イベントに関するご質問や、企業コンサル・講座のご相談は<br>
-            お気軽にお問い合わせください。
+            ${this.getSetting('contact_description', 'イベントに関するご質問や、企業コンサル・講座のご相談はお気軽にお問い合わせください。')}
           </p>
-          <a href="mailto:info@ai-event.local" class="inline-block btn-primary text-white px-8 py-3 rounded-lg font-semibold">
+          <a href="mailto:${this.getSetting('contact_email', 'info@ai-event.local')}" class="inline-block btn-primary text-white px-8 py-3 rounded-lg font-semibold">
             <i class="fas fa-paper-plane mr-2"></i>お問い合わせ
           </a>
         </div>
@@ -284,8 +308,8 @@ class AIEventApp {
       <!-- フッター -->
       <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-6xl mx-auto px-4 text-center">
-          <p class="text-gray-400">&copy; 2025 AI夜会・AI茶会. All rights reserved.</p>
-          <p class="text-gray-500 text-sm mt-2">静岡県内でAI活用の輪を広げます</p>
+          <p class="text-gray-400">${this.getSetting('footer_copyright', '© 2025 AI夜会・AI茶会. All rights reserved.')}</p>
+          <p class="text-gray-500 text-sm mt-2">${this.getSetting('footer_tagline', '静岡県内でAI活用の輪を広げます')}</p>
         </div>
       </footer>
     `;
@@ -930,7 +954,7 @@ class AIEventApp {
         </header>
 
         <div class="max-w-6xl mx-auto px-4 py-12">
-          <div class="grid md:grid-cols-4 gap-6 mb-12">
+          <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
             <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg shadow-md p-6 text-center border-t-4 border-blue-500 hover:shadow-lg transition">
               <i class="fas fa-calendar-alt text-5xl text-blue-600 mb-3"></i>
               <h3 class="text-xl font-bold text-gray-800 mb-2">イベント管理</h3>
@@ -963,6 +987,14 @@ class AIEventApp {
               <p class="text-gray-600 mb-4 text-sm">参加申込の確認</p>
               <button onclick="app.loadApplications()" class="btn-primary text-white px-4 py-2 rounded-lg w-full">
                 <i class="fas fa-list mr-2"></i>一覧表示
+              </button>
+            </div>
+            <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-md p-6 text-center border-t-4 border-orange-500 hover:shadow-lg transition">
+              <i class="fas fa-cog text-5xl text-orange-600 mb-3"></i>
+              <h3 class="text-xl font-bold text-gray-800 mb-2">サイト設定</h3>
+              <p class="text-gray-600 mb-4 text-sm">文言・表示内容の編集</p>
+              <button onclick="app.loadSiteSettings()" class="btn-primary text-white px-4 py-2 rounded-lg w-full">
+                <i class="fas fa-edit mr-2"></i>設定編集
               </button>
             </div>
             <div class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg shadow-md p-6 text-center border-t-4 border-yellow-500 hover:shadow-lg transition">
@@ -1299,6 +1331,206 @@ class AIEventApp {
   editEvent(eventId) {
     // TODO: イベント編集機能（今後実装）
     alert(`イベントID ${eventId} の編集機能は今後実装予定です`);
+  }
+
+  async loadSiteSettings() {
+    const content = document.getElementById('admin-content');
+    content.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto"></div><p class="text-gray-600 mt-4">サイト設定を読み込み中...</p></div>';
+
+    try {
+      const response = await axios.get('/api/admin/settings');
+      const groupedSettings = response.data.data;
+
+      const categoryNames = {
+        'header': 'ヘッダー設定',
+        'concept': 'コンセプト説明',
+        'instructor': '講師紹介',
+        'contact': 'お問い合わせ',
+        'footer': 'フッター'
+      };
+
+      const categoryIcons = {
+        'header': '🎯',
+        'concept': '💡',
+        'instructor': '👨‍🏫',
+        'contact': '📧',
+        'footer': '📄'
+      };
+
+      const categoryColors = {
+        'header': 'from-blue-50 to-cyan-50 border-blue-500',
+        'concept': 'from-purple-50 to-pink-50 border-purple-500',
+        'instructor': 'from-green-50 to-emerald-50 border-green-500',
+        'contact': 'from-yellow-50 to-amber-50 border-yellow-500',
+        'footer': 'from-gray-50 to-slate-50 border-gray-500'
+      };
+
+      let formHTML = `
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+            <span class="text-4xl mr-3">⚙️</span>
+            サイト設定編集
+          </h2>
+          <p class="text-gray-600 mt-2">メインページの文言や表示内容を編集できます</p>
+        </div>
+        <form id="settings-form" class="space-y-8">
+      `;
+
+      // カテゴリごとにセクションを作成
+      for (const [category, settings] of Object.entries(groupedSettings)) {
+        formHTML += `
+          <div class="bg-gradient-to-r ${categoryColors[category]} p-6 rounded-xl border-l-4">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+              <span class="text-2xl mr-2">${categoryIcons[category]}</span>
+              ${categoryNames[category]}
+            </h3>
+            <div class="space-y-4">
+        `;
+
+        settings.forEach(setting => {
+          const fieldId = setting.setting_key;
+          const label = setting.display_name;
+          const description = setting.description;
+          const value = setting.setting_value || '';
+          const type = setting.setting_type;
+
+          formHTML += `
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">
+                ${label}
+                ${description ? `<span class="text-xs text-gray-500 font-normal ml-2">${description}</span>` : ''}
+              </label>
+          `;
+
+          if (type === 'textarea') {
+            formHTML += `
+              <textarea 
+                id="${fieldId}" 
+                name="${fieldId}" 
+                rows="3" 
+                class="form-input w-full px-4 py-3 rounded-lg"
+                placeholder="${label}"
+              >${value}</textarea>
+            `;
+          } else if (type === 'number') {
+            formHTML += `
+              <input 
+                type="number" 
+                id="${fieldId}" 
+                name="${fieldId}" 
+                value="${value}" 
+                class="form-input w-full px-4 py-3 rounded-lg"
+                placeholder="${label}"
+              />
+            `;
+          } else if (type === 'boolean') {
+            formHTML += `
+              <label class="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  id="${fieldId}" 
+                  name="${fieldId}" 
+                  ${value === '1' || value === 'true' ? 'checked' : ''}
+                  class="mr-2"
+                />
+                <span class="text-gray-700">有効にする</span>
+              </label>
+            `;
+          } else {
+            formHTML += `
+              <input 
+                type="text" 
+                id="${fieldId}" 
+                name="${fieldId}" 
+                value="${value}" 
+                class="form-input w-full px-4 py-3 rounded-lg"
+                placeholder="${label}"
+              />
+            `;
+          }
+
+          formHTML += `
+            </div>
+          `;
+        });
+
+        formHTML += `
+            </div>
+          </div>
+        `;
+      }
+
+      formHTML += `
+          <div class="flex gap-4 sticky bottom-4 bg-white p-4 rounded-lg shadow-lg border-2 border-blue-500">
+            <button type="submit" class="flex-1 btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg">
+              <i class="fas fa-save mr-2"></i>すべての設定を保存
+            </button>
+            <button type="button" onclick="if(confirm('変更を破棄してリロードしますか？'))location.reload()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-4 rounded-lg font-semibold transition">
+              <i class="fas fa-undo mr-2"></i>リセット
+            </button>
+          </div>
+        </form>
+      `;
+
+      content.innerHTML = formHTML;
+
+      // フォーム送信処理
+      document.getElementById('settings-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await this.handleSettingsSubmit(e.target);
+      });
+
+    } catch (error) {
+      console.error('サイト設定取得エラー:', error);
+      content.innerHTML = `
+        <div class="alert alert-error">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          サイト設定の取得に失敗しました
+        </div>
+      `;
+    }
+  }
+
+  async handleSettingsSubmit(form) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const content = document.getElementById('admin-content');
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<div class="loading mr-2"></div>保存中...';
+
+    try {
+      const formData = new FormData(form);
+      const updates = {};
+      
+      for (const [key, value] of formData.entries()) {
+        updates[key] = value;
+      }
+
+      await axios.put('/api/admin/settings', updates);
+
+      const successMsg = document.createElement('div');
+      successMsg.className = 'alert alert-success mb-6 animate-fade-in fixed top-4 right-4 z-50 shadow-2xl';
+      successMsg.innerHTML = `
+        <i class="fas fa-check-circle mr-2"></i>
+        サイト設定を保存しました！変更はメインページに反映されます。
+      `;
+      document.body.appendChild(successMsg);
+      
+      setTimeout(() => successMsg.remove(), 5000);
+    } catch (error) {
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'alert alert-error mb-6 animate-fade-in fixed top-4 right-4 z-50 shadow-2xl';
+      errorMsg.innerHTML = `
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        エラー: ${error.response?.data?.error || 'サイト設定の保存に失敗しました'}
+      `;
+      document.body.appendChild(errorMsg);
+      
+      setTimeout(() => errorMsg.remove(), 5000);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>すべての設定を保存';
+    }
   }
 
   async loadInvitationCodes() {

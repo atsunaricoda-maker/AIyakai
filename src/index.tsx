@@ -369,6 +369,124 @@ app.post('/api/admin/invitation-codes', async (c) => {
   }
 })
 
+// 招待コード一覧取得API（管理用）
+app.get('/api/admin/invitation-codes', async (c) => {
+  try {
+    const { DB } = c.env
+    
+    const { results } = await DB.prepare(`
+      SELECT ic.*, e.title as event_title
+      FROM invitation_codes ic
+      LEFT JOIN events e ON ic.event_id = e.id
+      ORDER BY ic.created_at DESC
+    `).all()
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: results
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// サイト設定取得API
+app.get('/api/settings', async (c) => {
+  try {
+    const { DB } = c.env
+    const { category } = c.req.query()
+    
+    let query = 'SELECT * FROM site_settings WHERE 1=1'
+    const params: any[] = []
+    
+    if (category) {
+      query += ' AND category = ?'
+      params.push(category)
+    }
+    
+    query += ' ORDER BY category, display_order ASC'
+    
+    const { results } = await DB.prepare(query).bind(...params).all()
+    
+    // キーバリュー形式に変換
+    const settings: Record<string, any> = {}
+    results.forEach((setting: any) => {
+      settings[setting.setting_key] = setting.setting_value
+    })
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: settings
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// サイト設定一覧取得API（管理用）
+app.get('/api/admin/settings', async (c) => {
+  try {
+    const { DB } = c.env
+    
+    const { results } = await DB.prepare(`
+      SELECT * FROM site_settings 
+      ORDER BY category, display_order ASC
+    `).all()
+    
+    // カテゴリごとにグループ化
+    const groupedSettings: Record<string, any[]> = {}
+    results.forEach((setting: any) => {
+      if (!groupedSettings[setting.category]) {
+        groupedSettings[setting.category] = []
+      }
+      groupedSettings[setting.category].push(setting)
+    })
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: groupedSettings
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// サイト設定更新API（管理用）
+app.put('/api/admin/settings', async (c) => {
+  try {
+    const { DB } = c.env
+    const updates = await c.req.json<Record<string, string>>()
+    
+    // トランザクションの代わりに複数のUPDATEを実行
+    for (const [key, value] of Object.entries(updates)) {
+      await DB.prepare(`
+        UPDATE site_settings 
+        SET setting_value = ?, updated_at = CURRENT_TIMESTAMP 
+        WHERE setting_key = ?
+      `).bind(value, key).run()
+    }
+    
+    return c.json<ApiResponse>({
+      success: true,
+      message: 'サイト設定を更新しました'
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
 // ======================
 // HTML Pages
 // ======================
