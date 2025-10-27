@@ -487,6 +487,111 @@ app.put('/api/admin/settings', async (c) => {
   }
 })
 
+// テンプレート一覧取得API（管理用）
+app.get('/api/admin/templates', async (c) => {
+  try {
+    const { DB } = c.env
+    
+    const { results } = await DB.prepare(`
+      SELECT * FROM settings_templates 
+      WHERE is_active = 1
+      ORDER BY category, id ASC
+    `).all()
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: results
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// テンプレート適用API（管理用）
+app.post('/api/admin/templates/:templateId/apply', async (c) => {
+  try {
+    const { DB } = c.env
+    const templateId = c.req.param('templateId')
+    
+    // テンプレートの設定値を取得
+    const { results: templateSettings } = await DB.prepare(`
+      SELECT setting_key, setting_value 
+      FROM template_settings 
+      WHERE template_id = ?
+    `).bind(templateId).all()
+    
+    if (!templateSettings || templateSettings.length === 0) {
+      return c.json<ApiResponse>({
+        success: false,
+        error: 'テンプレートが見つかりません'
+      }, 404)
+    }
+    
+    // 各設定値を現在の設定に適用
+    for (const setting of templateSettings as any[]) {
+      await DB.prepare(`
+        UPDATE site_settings 
+        SET setting_value = ?, updated_at = CURRENT_TIMESTAMP 
+        WHERE setting_key = ?
+      `).bind(setting.setting_value, setting.setting_key).run()
+    }
+    
+    return c.json<ApiResponse>({
+      success: true,
+      message: 'テンプレートを適用しました'
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// カスタムテンプレート保存API（管理用）
+app.post('/api/admin/templates/custom', async (c) => {
+  try {
+    const { DB } = c.env
+    const { template_name, display_name, description, icon } = await c.req.json()
+    
+    // 現在の設定値を取得
+    const { results: currentSettings } = await DB.prepare(`
+      SELECT setting_key, setting_value 
+      FROM site_settings
+    `).all()
+    
+    // テンプレートを作成
+    const templateResult = await DB.prepare(`
+      INSERT INTO settings_templates (template_name, display_name, description, category, icon)
+      VALUES (?, ?, ?, 'custom', ?)
+    `).bind(template_name, display_name, description, icon || '💾').run()
+    
+    const templateId = templateResult.meta.last_row_id
+    
+    // 現在の設定値をテンプレートとして保存
+    for (const setting of currentSettings as any[]) {
+      await DB.prepare(`
+        INSERT INTO template_settings (template_id, setting_key, setting_value)
+        VALUES (?, ?, ?)
+      `).bind(templateId, setting.setting_key, setting.setting_value).run()
+    }
+    
+    return c.json<ApiResponse>({
+      success: true,
+      message: 'カスタムテンプレートを保存しました',
+      data: { id: templateId }
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
 // ======================
 // HTML Pages
 // ======================

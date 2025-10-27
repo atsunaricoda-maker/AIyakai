@@ -1338,8 +1338,14 @@ class AIEventApp {
     content.innerHTML = '<div class="text-center py-8"><div class="loading mx-auto"></div><p class="text-gray-600 mt-4">サイト設定を読み込み中...</p></div>';
 
     try {
-      const response = await axios.get('/api/admin/settings');
-      const groupedSettings = response.data.data;
+      // テンプレートと設定の両方を取得
+      const [settingsResponse, templatesResponse] = await Promise.all([
+        axios.get('/api/admin/settings'),
+        axios.get('/api/admin/templates')
+      ]);
+      
+      const groupedSettings = settingsResponse.data.data;
+      const templates = templatesResponse.data.data;
 
       const categoryNames = {
         'header': 'ヘッダー設定',
@@ -1365,6 +1371,22 @@ class AIEventApp {
         'footer': 'from-gray-50 to-slate-50 border-gray-500'
       };
 
+      // カテゴリごとにテンプレートをグループ化
+      const templatesByCategory = {};
+      templates.forEach(template => {
+        if (!templatesByCategory[template.category]) {
+          templatesByCategory[template.category] = [];
+        }
+        templatesByCategory[template.category].push(template);
+      });
+
+      const categoryLabels = {
+        'official': '公式',
+        'tone': '文体スタイル',
+        'industry': '業界特化',
+        'custom': 'カスタム'
+      };
+
       let formHTML = `
         <div class="mb-6">
           <h2 class="text-3xl font-bold text-gray-800 flex items-center">
@@ -1373,6 +1395,42 @@ class AIEventApp {
           </h2>
           <p class="text-gray-600 mt-2">メインページの文言や表示内容を編集できます</p>
         </div>
+
+        <!-- テンプレート選択セクション -->
+        <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-indigo-500 mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+              <span class="text-2xl mr-2">🎨</span>
+              テンプレートから選択
+            </h3>
+            <button type="button" onclick="app.showSaveTemplateDialog()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition">
+              <i class="fas fa-save mr-2"></i>現在の設定を保存
+            </button>
+          </div>
+          <p class="text-gray-600 mb-4 text-sm">プリセットテンプレートを選んで、サイトの雰囲気を一括変更できます</p>
+          
+          ${Object.entries(templatesByCategory).map(([category, categoryTemplates]) => `
+            <div class="mb-6">
+              <h4 class="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">${categoryLabels[category]}</h4>
+              <div class="grid md:grid-cols-3 gap-3">
+                ${categoryTemplates.map(template => `
+                  <button type="button" 
+                    onclick="app.applyTemplate(${template.id}, '${template.display_name}')" 
+                    class="template-card bg-white hover:bg-gradient-to-br hover:from-white hover:to-indigo-50 border-2 border-gray-200 hover:border-indigo-400 p-4 rounded-lg text-left transition-all transform hover:scale-105 hover:shadow-lg">
+                    <div class="flex items-center mb-2">
+                      <span class="text-3xl mr-3">${template.icon}</span>
+                      <div class="flex-1">
+                        <h5 class="font-bold text-gray-800">${template.display_name}</h5>
+                      </div>
+                    </div>
+                    <p class="text-xs text-gray-600">${template.description}</p>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
         <form id="settings-form" class="space-y-8">
       `;
 
@@ -1530,6 +1588,138 @@ class AIEventApp {
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>すべての設定を保存';
+    }
+  }
+
+  async applyTemplate(templateId, templateName) {
+    if (!confirm(`「${templateName}」テンプレートを適用しますか？\n現在の設定内容は上書きされます。`)) {
+      return;
+    }
+
+    try {
+      await axios.post(`/api/admin/templates/${templateId}/apply`);
+
+      const successMsg = document.createElement('div');
+      successMsg.className = 'alert alert-success mb-6 animate-fade-in fixed top-4 right-4 z-50 shadow-2xl';
+      successMsg.innerHTML = `
+        <i class="fas fa-check-circle mr-2"></i>
+        「${templateName}」テンプレートを適用しました！ページをリロードして確認してください。
+      `;
+      document.body.appendChild(successMsg);
+      
+      setTimeout(() => {
+        successMsg.remove();
+        this.loadSiteSettings(); // フォームを再読み込み
+      }, 2000);
+    } catch (error) {
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'alert alert-error mb-6 animate-fade-in fixed top-4 right-4 z-50 shadow-2xl';
+      errorMsg.innerHTML = `
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        エラー: ${error.response?.data?.error || 'テンプレートの適用に失敗しました'}
+      `;
+      document.body.appendChild(errorMsg);
+      
+      setTimeout(() => errorMsg.remove(), 5000);
+    }
+  }
+
+  showSaveTemplateDialog() {
+    const dialog = document.createElement('div');
+    dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in';
+    dialog.innerHTML = `
+      <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">
+          <i class="fas fa-save text-purple-600 mr-2"></i>
+          カスタムテンプレートを保存
+        </h3>
+        <p class="text-gray-600 mb-6">現在の設定内容を新しいテンプレートとして保存します</p>
+        
+        <form id="save-template-form" class="space-y-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">テンプレート名 *</label>
+            <input type="text" name="template_name" required 
+              class="form-input w-full px-4 py-2 rounded-lg" 
+              placeholder="my-custom-style">
+            <p class="text-xs text-gray-500 mt-1">英数字とハイフンのみ（例: my-style-2025）</p>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">表示名 *</label>
+            <input type="text" name="display_name" required 
+              class="form-input w-full px-4 py-2 rounded-lg" 
+              placeholder="マイカスタムスタイル">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">説明</label>
+            <textarea name="description" rows="2" 
+              class="form-input w-full px-4 py-2 rounded-lg" 
+              placeholder="このテンプレートの説明を入力"></textarea>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">アイコン（絵文字）</label>
+            <input type="text" name="icon" maxlength="2"
+              class="form-input w-full px-4 py-2 rounded-lg" 
+              placeholder="💾">
+          </div>
+          
+          <div class="flex gap-3 pt-4">
+            <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+              <i class="fas fa-save mr-2"></i>保存
+            </button>
+            <button type="button" onclick="this.closest('.fixed').remove()" 
+              class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold transition">
+              キャンセル
+            </button>
+          </div>
+        </form>
+      </div>
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    dialog.querySelector('#save-template-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await this.handleSaveTemplate(e.target, dialog);
+    });
+  }
+
+  async handleSaveTemplate(form, dialog) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<div class="loading mr-2"></div>保存中...';
+
+    try {
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      
+      await axios.post('/api/admin/templates/custom', data);
+
+      const successMsg = document.createElement('div');
+      successMsg.className = 'alert alert-success mb-6 animate-fade-in fixed top-4 right-4 z-50 shadow-2xl';
+      successMsg.innerHTML = `
+        <i class="fas fa-check-circle mr-2"></i>
+        カスタムテンプレート「${data.display_name}」を保存しました！
+      `;
+      document.body.appendChild(successMsg);
+      
+      setTimeout(() => {
+        successMsg.remove();
+        dialog.remove();
+        this.loadSiteSettings(); // フォームを再読み込み
+      }, 2000);
+    } catch (error) {
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'alert alert-error mb-6 animate-fade-in fixed top-4 right-4 z-50 shadow-2xl';
+      errorMsg.innerHTML = `
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        エラー: ${error.response?.data?.error || 'テンプレートの保存に失敗しました'}
+      `;
+      document.body.appendChild(errorMsg);
+      
+      setTimeout(() => errorMsg.remove(), 5000);
+      
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>保存';
     }
   }
 
