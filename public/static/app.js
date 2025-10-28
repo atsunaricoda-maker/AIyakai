@@ -14,6 +14,9 @@ class AIEventApp {
     if (path === '/') return 'home';
     if (path.startsWith('/events/')) return 'event-detail';
     if (path.startsWith('/apply/')) return 'apply';
+    if (path.startsWith('/payment/')) return 'payment';
+    if (path === '/payment-success') return 'payment-success';
+    if (path === '/payment-cancel') return 'payment-cancel';
     if (path === '/admin') return 'admin';
     return 'home';
   }
@@ -51,6 +54,15 @@ class AIEventApp {
         break;
       case 'apply':
         this.renderApplyPage();
+        break;
+      case 'payment':
+        this.renderPaymentPage();
+        break;
+      case 'payment-success':
+        this.renderPaymentSuccessPage();
+        break;
+      case 'payment-cancel':
+        this.renderPaymentCancelPage();
         break;
       case 'admin':
         this.renderAdminPage();
@@ -903,19 +915,37 @@ class AIEventApp {
       const response = await axios.post('/api/applications', formData);
 
       if (response.data.success) {
-        alertContainer.innerHTML = `
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle mr-2"></i>
-            ${response.data.message}
-          </div>
-        `;
-        document.getElementById('apply-form').reset();
-        window.scrollTo(0, 0);
+        const application = response.data.data;
         
-        // 3秒後にトップページへ
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 3000);
+        // 有料イベントで支払いが必要な場合
+        if (application.event?.payment_required && application.payment_status === 'pending') {
+          alertContainer.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle mr-2"></i>
+              申込を受け付けました！支払いページへ移動します...
+            </div>
+          `;
+          
+          // 支払いページへリダイレクト
+          setTimeout(() => {
+            window.location.href = `/payment/${application.id}`;
+          }, 2000);
+        } else {
+          // 無料イベントの場合
+          alertContainer.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle mr-2"></i>
+              ${response.data.message}
+            </div>
+          `;
+          document.getElementById('apply-form').reset();
+          window.scrollTo(0, 0);
+          
+          // 3秒後にトップページへ
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
+        }
       }
     } catch (error) {
       console.error('申込エラー:', error);
@@ -931,6 +961,143 @@ class AIEventApp {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>申し込む';
     }
+  }
+
+  // ============================================
+  // 支払いページ
+  // ============================================
+  async renderPaymentPage() {
+    const app = document.getElementById('app');
+    const path = window.location.pathname;
+    const applicationId = path.split('/')[2];
+
+    try {
+      const response = await axios.get(`/api/applications/${applicationId}`);
+      const application = response.data.data;
+
+      app.innerHTML = `
+        <div class="min-h-screen bg-gray-50">
+          <header class="header-gradient text-white py-12">
+            <div class="max-w-4xl mx-auto px-4">
+              <h1 class="text-3xl font-bold mb-2">
+                <i class="fas fa-credit-card mr-2"></i>お支払い
+              </h1>
+              <p class="text-gray-100">イベント参加費のお支払いページです</p>
+            </div>
+          </header>
+
+          <div class="max-w-4xl mx-auto px-4 py-12">
+            <div class="bg-white rounded-lg shadow-md p-8">
+              <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">申込内容</h2>
+                <div class="space-y-2 text-gray-700">
+                  <p><strong>イベント名:</strong> ${application.event.title}</p>
+                  <p><strong>お名前:</strong> ${application.applicant_name}</p>
+                  <p><strong>メールアドレス:</strong> ${application.email}</p>
+                  <p class="text-3xl font-bold text-blue-600 mt-4">
+                    参加費: ¥${application.payment_amount.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              <div class="border-t pt-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                  <i class="fas fa-shield-alt text-green-600 mr-2"></i>安全な決済
+                </h3>
+                <p class="text-gray-600 mb-6">
+                  Stripeの安全な決済システムを使用しています。クレジットカード情報は当サイトには保存されません。
+                </p>
+
+                <button id="checkout-btn" class="w-full btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg">
+                  <i class="fas fa-lock mr-2"></i>Stripeで支払う
+                </button>
+              </div>
+
+              <div class="mt-6 text-center">
+                <a href="/" class="text-blue-600 hover:underline">
+                  <i class="fas fa-arrow-left mr-1"></i>トップページへ戻る
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 支払いボタンのイベントリスナー
+      document.getElementById('checkout-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('checkout-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading mr-2"></div>処理中...';
+
+        try {
+          const response = await axios.post('/api/payments/create-checkout-session', {
+            application_id: parseInt(applicationId)
+          });
+
+          if (response.data.success && response.data.data.url) {
+            window.location.href = response.data.data.url;
+          }
+        } catch (error) {
+          console.error('支払いエラー:', error);
+          alert('支払い処理でエラーが発生しました: ' + (error.response?.data?.error || 'エラー'));
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-lock mr-2"></i>Stripeで支払う';
+        }
+      });
+
+    } catch (error) {
+      console.error('申込情報の取得エラー:', error);
+      app.innerHTML = `
+        <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div class="text-center">
+            <i class="fas fa-exclamation-circle text-6xl text-red-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">エラー</h2>
+            <p class="text-gray-600 mb-6">申込情報が見つかりませんでした</p>
+            <a href="/" class="btn-primary text-white px-6 py-3 rounded-lg">
+              トップページへ戻る
+            </a>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  async renderPaymentSuccessPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div class="text-center max-w-md mx-auto px-4">
+          <div class="mb-6 floating-icon" style="font-size: 120px;">🎉</div>
+          <h1 class="text-4xl font-bold text-gray-800 mb-4">お支払い完了！</h1>
+          <p class="text-gray-600 mb-8">
+            ご参加ありがとうございます！<br>
+            登録されたメールアドレスに確認メールを送信しました。
+          </p>
+          <a href="/" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg inline-block">
+            <i class="fas fa-home mr-2"></i>トップページへ戻る
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  async renderPaymentCancelPage() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div class="text-center max-w-md mx-auto px-4">
+          <div class="mb-6" style="font-size: 120px;">❌</div>
+          <h1 class="text-4xl font-bold text-gray-800 mb-4">お支払いキャンセル</h1>
+          <p class="text-gray-600 mb-8">
+            お支払いがキャンセルされました。<br>
+            再度お支払いを行う場合は、申込履歴から進めてください。
+          </p>
+          <a href="/" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg inline-block">
+            <i class="fas fa-home mr-2"></i>トップページへ戻る
+          </a>
+        </div>
+      </div>
+    `;
   }
 
   // ============================================
@@ -1112,6 +1279,21 @@ class AIEventApp {
           <div class="mt-4">
             <label class="block text-gray-700 font-semibold mb-2">定員 *</label>
             <input type="number" name="capacity" value="20" required min="1" class="form-input w-full px-4 py-3 rounded-lg">
+          </div>
+        </div>
+        </div>
+
+        <!-- 参加費設定 -->
+        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-2xl mr-2">💰</span>参加費設定
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">参加費（円）</label>
+              <input type="number" name="price" value="0" min="0" class="form-input w-full px-4 py-3 rounded-lg" placeholder="0">
+              <p class="text-xs text-gray-500 mt-1">0円の場合は無料イベントになります</p>
+            </div>
           </div>
         </div>
 

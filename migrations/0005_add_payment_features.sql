@@ -9,7 +9,7 @@ ALTER TABLE applications ADD COLUMN payment_amount INTEGER DEFAULT 0; -- 支払�
 ALTER TABLE applications ADD COLUMN stripe_checkout_session_id TEXT; -- Stripe Checkout Session ID
 ALTER TABLE applications ADD COLUMN stripe_payment_intent_id TEXT; -- Stripe Payment Intent ID
 ALTER TABLE applications ADD COLUMN paid_at DATETIME; -- 支払い完了日時
-ALTER TABLE applications ADD COLUMN ticket_code TEXT UNIQUE; -- チケットコード（QRコード用）
+ALTER TABLE applications ADD COLUMN ticket_code TEXT; -- チケットコード（QRコード用）
 
 -- 支払い履歴テーブル
 CREATE TABLE IF NOT EXISTS payment_transactions (

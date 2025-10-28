@@ -211,13 +211,17 @@ app.post('/api/applications', async (c) => {
       ).bind(data.invitation_code).run()
     }
     
+    // 支払い情報を設定
+    const paymentAmount = event.payment_required ? event.price : 0
+    const paymentStatus = event.payment_required ? 'pending' : 'paid'
+    
     // 申込登録
     const result = await DB.prepare(`
       INSERT INTO applications (
         event_id, invitation_code, participant_type, company_name, applicant_name, 
         position, email, phone, ai_usage_examples, consultation_topics, 
-        referrer_name, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        referrer_name, status, payment_status, payment_amount
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       data.event_id,
       data.invitation_code || null,
@@ -230,7 +234,9 @@ app.post('/api/applications', async (c) => {
       data.ai_usage_examples || null,
       data.consultation_topics || null,
       data.referrer_name || null,
-      'pending'
+      'pending',
+      paymentStatus,
+      paymentAmount
     ).run()
     
     // 参加者数更新
@@ -241,7 +247,57 @@ app.post('/api/applications', async (c) => {
     return c.json<ApiResponse>({
       success: true,
       message: '申込が完了しました。確認メールをご確認ください。',
-      data: { id: result.meta.last_row_id }
+      data: { 
+        id: result.meta.last_row_id,
+        event,
+        payment_status: paymentStatus,
+        payment_amount: paymentAmount
+      }
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// 個別申込取得API
+app.get('/api/applications/:id', async (c) => {
+  try {
+    const { DB } = c.env
+    const id = c.req.param('id')
+    
+    const application = await DB.prepare(`
+      SELECT a.*, e.title, e.event_date, e.start_time, e.price, e.is_free, e.payment_required
+      FROM applications a 
+      LEFT JOIN events e ON a.event_id = e.id 
+      WHERE a.id = ?
+    `).bind(id).first()
+    
+    if (!application) {
+      return c.json<ApiResponse>({
+        success: false,
+        error: '申込が見つかりません'
+      }, 404)
+    }
+    
+    // イベント情報を別オブジェクトとして整形
+    const formattedApplication = {
+      ...application,
+      event: {
+        title: application.title,
+        event_date: application.event_date,
+        start_time: application.start_time,
+        price: application.price,
+        is_free: application.is_free,
+        payment_required: application.payment_required
+      }
+    }
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: formattedApplication
     })
   } catch (error) {
     return c.json<ApiResponse>({
@@ -654,8 +710,8 @@ app.post('/api/payments/create-checkout-session', async (c) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${c.req.url.split('/api')[0]}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${c.req.url.split('/api')[0]}/payment/cancel`,
+      success_url: `${c.req.url.split('/api')[0]}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${c.req.url.split('/api')[0]}/payment-cancel`,
       client_reference_id: application_id.toString(),
       customer_email: application.email,
       metadata: {
@@ -845,15 +901,22 @@ app.get('/admin', (c) => {
   )
 })
 
+// 支払いページ
+app.get('/payment/:id', (c) => {
+  return c.render(
+    <div id="app"></div>
+  )
+})
+
 // 支払い成功ページ
-app.get('/payment/success', (c) => {
+app.get('/payment-success', (c) => {
   return c.render(
     <div id="app"></div>
   )
 })
 
 // 支払いキャンセルページ
-app.get('/payment/cancel', (c) => {
+app.get('/payment-cancel', (c) => {
   return c.render(
     <div id="app"></div>
   )
