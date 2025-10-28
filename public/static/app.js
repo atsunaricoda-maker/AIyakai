@@ -490,6 +490,17 @@ class AIEventApp {
               <i class="fas fa-users w-6 text-green-600"></i>
               <span>定員${event.capacity}名（残り${remainingSeats}席）</span>
             </div>
+            ${event.payment_required ? `
+            <div class="flex items-center">
+              <i class="fas fa-yen-sign w-6 text-yellow-600"></i>
+              <span class="font-bold text-lg text-yellow-700">参加費 ¥${event.price.toLocaleString()}</span>
+            </div>
+            ` : `
+            <div class="flex items-center">
+              <i class="fas fa-gift w-6 text-green-600"></i>
+              <span class="font-bold text-green-700">無料</span>
+            </div>
+            `}
           </div>
           
           <div class="flex gap-3">
@@ -652,6 +663,13 @@ class AIEventApp {
                   <div>
                     <strong>定員：</strong>
                     ${event.capacity}名（残り${remainingSeats}席）
+                  </div>
+                </div>
+                <div class="flex items-center text-gray-700">
+                  <i class="fas fa-yen-sign w-8 ${event.payment_required ? 'text-yellow-600' : 'text-green-600'}"></i>
+                  <div>
+                    <strong>参加費：</strong>
+                    ${event.payment_required ? `<span class="text-2xl font-bold text-yellow-700">¥${event.price.toLocaleString()}</span>` : '<span class="text-xl font-bold text-green-700">無料</span>'}
                   </div>
                 </div>
               </div>
@@ -916,6 +934,9 @@ class AIEventApp {
 
       if (response.data.success) {
         const application = response.data.data;
+        console.log('Application response:', application);
+        console.log('payment_required:', application.event?.payment_required);
+        console.log('payment_status:', application.payment_status);
         
         // 有料イベントで支払いが必要な場合
         if (application.event?.payment_required && application.payment_status === 'pending') {

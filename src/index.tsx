@@ -249,7 +249,13 @@ app.post('/api/applications', async (c) => {
       message: '申込が完了しました。確認メールをご確認ください。',
       data: { 
         id: result.meta.last_row_id,
-        event,
+        event: {
+          id: event.id,
+          title: event.title,
+          price: event.price,
+          is_free: event.is_free,
+          payment_required: event.payment_required
+        },
         payment_status: paymentStatus,
         payment_amount: paymentAmount
       }
