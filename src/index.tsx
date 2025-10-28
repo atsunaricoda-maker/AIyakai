@@ -297,11 +297,16 @@ app.post('/api/admin/events', async (c) => {
     const { DB } = c.env
     const data = await c.req.json<Partial<Event>>()
     
+    const price = data.price || 0
+    const isFree = price === 0 ? 1 : 0
+    const paymentRequired = price > 0 ? 1 : 0
+    
     const result = await DB.prepare(`
       INSERT INTO events (
         title, description, event_type, location, prefecture, address,
-        event_date, start_time, end_time, capacity, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        event_date, start_time, end_time, capacity, status,
+        price, is_free, payment_required
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       data.title,
       data.description,
@@ -313,7 +318,10 @@ app.post('/api/admin/events', async (c) => {
       data.start_time,
       data.end_time || null,
       data.capacity || 20,
-      data.status || 'upcoming'
+      data.status || 'upcoming',
+      price,
+      isFree,
+      paymentRequired
     ).run()
     
     return c.json<ApiResponse>({
@@ -593,6 +601,219 @@ app.post('/api/admin/templates/custom', async (c) => {
 })
 
 // ======================
+// Stripe Payment APIs
+// ======================
+
+// Stripe Checkout Sessionを作成
+app.post('/api/payments/create-checkout-session', async (c) => {
+  try {
+    const { DB, STRIPE_SECRET_KEY } = c.env
+    const { application_id } = await c.req.json<{ application_id: number }>()
+    
+    if (!STRIPE_SECRET_KEY) {
+      return c.json<ApiResponse>({
+        success: false,
+        error: 'Stripe APIキーが設定されていません'
+      }, 500)
+    }
+    
+    // 申込情報を取得
+    const application = await DB.prepare(`
+      SELECT a.*, e.title as event_title, e.price, e.event_date, e.start_time
+      FROM applications a
+      JOIN events e ON a.event_id = e.id
+      WHERE a.id = ?
+    `).bind(application_id).first() as any
+    
+    if (!application) {
+      return c.json<ApiResponse>({
+        success: false,
+        error: '申込情報が見つかりません'
+      }, 404)
+    }
+    
+    if (application.payment_status === 'paid') {
+      return c.json<ApiResponse>({
+        success: false,
+        error: 'すでに支払い済みです'
+      }, 400)
+    }
+    
+    // Stripe Checkout Sessionを作成
+    const checkoutData = {
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'jpy',
+          product_data: {
+            name: application.event_title,
+            description: `開催日: ${application.event_date} ${application.start_time}`,
+          },
+          unit_amount: application.price,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${c.req.url.split('/api')[0]}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${c.req.url.split('/api')[0]}/payment/cancel`,
+      client_reference_id: application_id.toString(),
+      customer_email: application.email,
+      metadata: {
+        application_id: application_id.toString(),
+        event_id: application.event_id.toString(),
+        applicant_name: application.applicant_name,
+      }
+    }
+    
+    // Stripe APIを呼び出す
+    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(
+        Object.entries(checkoutData).flatMap(([key, value]) => {
+          if (key === 'line_items') {
+            return Object.entries(value[0]).flatMap(([k, v]) => {
+              if (k === 'price_data') {
+                return [
+                  [`line_items[0][price_data][currency]`, v.currency],
+                  [`line_items[0][price_data][unit_amount]`, v.unit_amount.toString()],
+                  [`line_items[0][price_data][product_data][name]`, v.product_data.name],
+                  [`line_items[0][price_data][product_data][description]`, v.product_data.description],
+                ]
+              }
+              return [[`line_items[0][${k}]`, v.toString()]]
+            })
+          } else if (key === 'payment_method_types') {
+            return value.map((v: string, i: number) => [`payment_method_types[${i}]`, v])
+          } else if (key === 'metadata') {
+            return Object.entries(value).map(([k, v]) => [`metadata[${k}]`, v.toString()])
+          }
+          return [[key, value.toString()]]
+        })
+      )
+    })
+    
+    if (!stripeResponse.ok) {
+      const error = await stripeResponse.json()
+      throw new Error(error.error?.message || 'Stripe API error')
+    }
+    
+    const session = await stripeResponse.json()
+    
+    // Checkout Session IDを保存
+    await DB.prepare(`
+      UPDATE applications 
+      SET stripe_checkout_session_id = ?
+      WHERE id = ?
+    `).bind(session.id, application_id).run()
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: {
+        sessionId: session.id,
+        url: session.url
+      }
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// Stripe Webhook処理
+app.post('/api/payments/webhook', async (c) => {
+  try {
+    const { DB, STRIPE_WEBHOOK_SECRET } = c.env
+    const body = await c.req.text()
+    const signature = c.req.header('stripe-signature')
+    
+    if (!signature || !STRIPE_WEBHOOK_SECRET) {
+      return c.json<ApiResponse>({
+        success: false,
+        error: 'Webhook signature missing'
+      }, 400)
+    }
+    
+    // 注意: 本番環境ではStripe SDKを使って署名を検証すべきです
+    // ここでは簡易実装として、イベントタイプのみ処理します
+    const event = JSON.parse(body)
+    
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object
+      const applicationId = parseInt(session.client_reference_id)
+      
+      // 支払い成功を記録
+      await DB.prepare(`
+        UPDATE applications 
+        SET payment_status = 'paid',
+            payment_amount = ?,
+            stripe_payment_intent_id = ?,
+            paid_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `).bind(
+        session.amount_total,
+        session.payment_intent,
+        applicationId
+      ).run()
+      
+      // 支払い履歴を記録
+      await DB.prepare(`
+        INSERT INTO payment_transactions (application_id, transaction_type, amount, stripe_session_id, stripe_payment_intent_id, status)
+        VALUES (?, 'payment', ?, ?, ?, 'completed')
+      `).bind(
+        applicationId,
+        session.amount_total,
+        session.id,
+        session.payment_intent
+      ).run()
+    }
+    
+    return c.json<ApiResponse>({ success: true })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// 支払い状況確認API
+app.get('/api/payments/status/:applicationId', async (c) => {
+  try {
+    const { DB } = c.env
+    const applicationId = c.req.param('applicationId')
+    
+    const application = await DB.prepare(`
+      SELECT payment_status, payment_amount, paid_at, ticket_code
+      FROM applications
+      WHERE id = ?
+    `).bind(applicationId).first()
+    
+    if (!application) {
+      return c.json<ApiResponse>({
+        success: false,
+        error: '申込情報が見つかりません'
+      }, 404)
+    }
+    
+    return c.json<ApiResponse>({
+      success: true,
+      data: application
+    })
+  } catch (error) {
+    return c.json<ApiResponse>({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500)
+  }
+})
+
+// ======================
 // HTML Pages
 // ======================
 
@@ -619,6 +840,20 @@ app.get('/apply/:id', (c) => {
 
 // 管理画面
 app.get('/admin', (c) => {
+  return c.render(
+    <div id="app"></div>
+  )
+})
+
+// 支払い成功ページ
+app.get('/payment/success', (c) => {
+  return c.render(
+    <div id="app"></div>
+  )
+})
+
+// 支払いキャンセルページ
+app.get('/payment/cancel', (c) => {
   return c.render(
     <div id="app"></div>
   )

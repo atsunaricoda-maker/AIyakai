@@ -1,0 +1,8 @@
+# Stripe API Keys (開発環境用)
+# Get your keys from: https://dashboard.stripe.com/test/apikeys
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+
+# 本番環境では wrangler secret put コマンドで設定します:
+# wrangler secret put STRIPE_SECRET_KEY --project-name webapp
+# wrangler secret put STRIPE_WEBHOOK_SECRET --project-name webapp

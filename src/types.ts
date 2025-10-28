@@ -1,6 +1,8 @@
 // Cloudflare Bindings型定義
 export type Bindings = {
   DB: D1Database;
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
 }
 
 // イベントタイプ
@@ -22,6 +24,9 @@ export interface Event {
   capacity: number;
   current_participants: number;
   status: EventStatus;
+  price: number;
+  is_free: number;
+  payment_required: number;
   image_url?: string;
   theme?: string;
   mini_lecture_topic?: string;
@@ -65,6 +70,9 @@ export interface InvitationCode {
 // 申込ステータス
 export type ApplicationStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
 
+// 支払いステータス
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
+
 // 参加者タイプ
 export type ParticipantType = 'business_owner' | 'aspiring_entrepreneur' | 'student' | 'teacher' | 'other';
 
@@ -83,6 +91,12 @@ export interface Application {
   referrer_name?: string;
   participant_type: ParticipantType;
   status: ApplicationStatus;
+  payment_status: PaymentStatus;
+  payment_amount: number;
+  stripe_checkout_session_id?: string;
+  stripe_payment_intent_id?: string;
+  paid_at?: string;
+  ticket_code?: string;
   applied_at: string;
   updated_at: string;
 }
