@@ -780,6 +780,7 @@ app.post('/api/payments/create-checkout-session', async (c) => {
       }
     })
   } catch (error) {
+    console.error('Stripe Checkout Session Error:', error)
     return c.json<ApiResponse>({
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
