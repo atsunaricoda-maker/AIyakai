@@ -14,9 +14,6 @@ class AIEventApp {
     if (path === '/') return 'home';
     if (path.startsWith('/events/')) return 'event-detail';
     if (path.startsWith('/apply/')) return 'apply';
-    if (path.startsWith('/payment/')) return 'payment';
-    if (path === '/payment-success') return 'payment-success';
-    if (path === '/payment-cancel') return 'payment-cancel';
     if (path === '/admin') return 'admin';
     return 'home';
   }
@@ -54,15 +51,6 @@ class AIEventApp {
         break;
       case 'apply':
         this.renderApplyPage();
-        break;
-      case 'payment':
-        this.renderPaymentPage();
-        break;
-      case 'payment-success':
-        this.renderPaymentSuccessPage();
-        break;
-      case 'payment-cancel':
-        this.renderPaymentCancelPage();
         break;
       case 'admin':
         this.renderAdminPage();
@@ -490,17 +478,6 @@ class AIEventApp {
               <i class="fas fa-users w-6 text-green-600"></i>
               <span>定員${event.capacity}名（残り${remainingSeats}席）</span>
             </div>
-            ${event.payment_required ? `
-            <div class="flex items-center">
-              <i class="fas fa-yen-sign w-6 text-yellow-600"></i>
-              <span class="font-bold text-lg text-yellow-700">参加費 ¥${event.price.toLocaleString()}</span>
-            </div>
-            ` : `
-            <div class="flex items-center">
-              <i class="fas fa-gift w-6 text-green-600"></i>
-              <span class="font-bold text-green-700">無料</span>
-            </div>
-            `}
           </div>
           
           <div class="flex gap-3">
@@ -663,13 +640,6 @@ class AIEventApp {
                   <div>
                     <strong>定員：</strong>
                     ${event.capacity}名（残り${remainingSeats}席）
-                  </div>
-                </div>
-                <div class="flex items-center text-gray-700">
-                  <i class="fas fa-yen-sign w-8 ${event.payment_required ? 'text-yellow-600' : 'text-green-600'}"></i>
-                  <div>
-                    <strong>参加費：</strong>
-                    ${event.payment_required ? `<span class="text-2xl font-bold text-yellow-700">¥${event.price.toLocaleString()}</span>` : '<span class="text-xl font-bold text-green-700">無料</span>'}
                   </div>
                 </div>
               </div>
@@ -933,40 +903,19 @@ class AIEventApp {
       const response = await axios.post('/api/applications', formData);
 
       if (response.data.success) {
-        const application = response.data.data;
-        console.log('Application response:', application);
-        console.log('payment_required:', application.event?.payment_required);
-        console.log('payment_status:', application.payment_status);
+        alertContainer.innerHTML = `
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle mr-2"></i>
+            ${response.data.message}
+          </div>
+        `;
+        document.getElementById('apply-form').reset();
+        window.scrollTo(0, 0);
         
-        // 有料イベントで支払いが必要な場合
-        if (application.event?.payment_required && application.payment_status === 'pending') {
-          alertContainer.innerHTML = `
-            <div class="alert alert-success">
-              <i class="fas fa-check-circle mr-2"></i>
-              申込を受け付けました！支払いページへ移動します...
-            </div>
-          `;
-          
-          // 支払いページへリダイレクト
-          setTimeout(() => {
-            window.location.href = `/payment/${application.id}`;
-          }, 2000);
-        } else {
-          // 無料イベントの場合
-          alertContainer.innerHTML = `
-            <div class="alert alert-success">
-              <i class="fas fa-check-circle mr-2"></i>
-              ${response.data.message}
-            </div>
-          `;
-          document.getElementById('apply-form').reset();
-          window.scrollTo(0, 0);
-          
-          // 3秒後にトップページへ
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 3000);
-        }
+        // 3秒後にトップページへ
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 3000);
       }
     } catch (error) {
       console.error('申込エラー:', error);
@@ -1300,21 +1249,6 @@ class AIEventApp {
           <div class="mt-4">
             <label class="block text-gray-700 font-semibold mb-2">定員 *</label>
             <input type="number" name="capacity" value="20" required min="1" class="form-input w-full px-4 py-3 rounded-lg">
-          </div>
-        </div>
-        </div>
-
-        <!-- 参加費設定 -->
-        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl">
-          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-            <span class="text-2xl mr-2">💰</span>参加費設定
-          </h3>
-          <div class="space-y-4">
-            <div>
-              <label class="block text-gray-700 font-semibold mb-2">参加費（円）</label>
-              <input type="number" name="price" value="0" min="0" class="form-input w-full px-4 py-3 rounded-lg" placeholder="0">
-              <p class="text-xs text-gray-500 mt-1">0円の場合は無料イベントになります</p>
-            </div>
           </div>
         </div>
 
