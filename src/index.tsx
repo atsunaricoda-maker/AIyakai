@@ -258,13 +258,12 @@ app.post('/api/applications', async (c) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'AI夜会・AI茶会 <onboarding@resend.dev>',
-            to: data.email,
-            subject: `【申込受付】${event.title} のお申込を受け付けました`,
+            from: 'onboarding@resend.dev',
+            to: 'a.kouda@future-clock.jp',
+            subject: `【申込通知】${event.title} に新規申込がありました`,
             html: `
-              <h2>お申込ありがとうございます</h2>
-              <p>${data.applicant_name} 様</p>
-              <p>以下のイベントへのお申込を受け付けました。</p>
+              <h2>新規申込通知</h2>
+              <p>以下のイベントに新しい申込がありました。</p>
               
               <h3>イベント詳細</h3>
               <ul>
@@ -274,12 +273,20 @@ app.post('/api/applications', async (c) => {
                 ${event.payment_required && event.price > 0 ? `<li><strong>参加費:</strong> ¥${event.price.toLocaleString()}（当日現地回収）</li>` : '<li><strong>参加費:</strong> 無料</li>'}
               </ul>
               
-              <p>当日お会いできることを楽しみにしています！</p>
+              <h3>申込者情報</h3>
+              <ul>
+                <li><strong>氏名:</strong> ${data.applicant_name}</li>
+                <li><strong>メールアドレス:</strong> ${data.email}</li>
+                <li><strong>電話番号:</strong> ${data.phone || '未入力'}</li>
+                <li><strong>会社名:</strong> ${data.company_name || '未入力'}</li>
+                <li><strong>役職:</strong> ${data.position || '未入力'}</li>
+              </ul>
               
               <hr>
               <p style="font-size: 12px; color: #666;">
-                このメールは自動送信されています。<br>
-                ご不明な点がございましたら、お気軽にお問い合わせください。
+                このメールは申込があった際に自動送信されています。<br>
+                ※注意: Resendのテストモードでは申込者本人にメールは送信されません。<br>
+                本番運用するには独自ドメインの設定が必要です。
               </p>
             `
           })
