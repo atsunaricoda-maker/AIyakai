@@ -110,6 +110,9 @@ class AIEventApp {
   async renderHomePage() {
     const app = document.getElementById('app');
     
+    // デバッグ: 保存済み申込イベントを確認
+    console.log('Applied events on load:', this.getAppliedEvents());
+    
     app.innerHTML = `
       <!-- ヘッダー -->
       <header class="header-gradient text-white py-20 relative overflow-hidden">
@@ -461,6 +464,7 @@ class AIEventApp {
 
     // 申込済みかチェック
     const isApplied = this.isEventApplied(event.id);
+    console.log(`Event ${event.id} (${event.title}): isApplied =`, isApplied);
 
     return `
       <div class="event-card ${eventTypeClass} bg-white rounded-lg shadow-md overflow-hidden ${isApplied ? 'ring-4 ring-green-400' : ''}">
@@ -950,7 +954,9 @@ class AIEventApp {
 
       if (response.data.success) {
         // 申込済みイベントとして保存
+        console.log('Saving applied event:', eventId);
         this.saveAppliedEvent(eventId);
+        console.log('Applied events after save:', this.getAppliedEvents());
         
         alertContainer.innerHTML = `
           <div class="alert alert-success">
