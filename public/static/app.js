@@ -34,6 +34,30 @@ class AIEventApp {
     return '中部'; // デフォルトは中部
   }
 
+  // ============================================
+  // ローカルストレージ管理（申込済みイベント）
+  // ============================================
+  
+  // 申込済みイベントを保存
+  saveAppliedEvent(eventId) {
+    const appliedEvents = this.getAppliedEvents();
+    if (!appliedEvents.includes(eventId)) {
+      appliedEvents.push(eventId);
+      localStorage.setItem('appliedEvents', JSON.stringify(appliedEvents));
+    }
+  }
+
+  // 申込済みイベント一覧を取得
+  getAppliedEvents() {
+    const stored = localStorage.getItem('appliedEvents');
+    return stored ? JSON.parse(stored) : [];
+  }
+
+  // イベントが申込済みかチェック
+  isEventApplied(eventId) {
+    return this.getAppliedEvents().includes(eventId);
+  }
+
 
 
   async init() {
@@ -435,17 +459,21 @@ class AIEventApp {
       '西部': 'bg-blue-100 text-blue-700'
     };
 
+    // 申込済みかチェック
+    const isApplied = this.isEventApplied(event.id);
+
     return `
-      <div class="event-card ${eventTypeClass} bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="event-card ${eventTypeClass} bg-white rounded-lg shadow-md overflow-hidden ${isApplied ? 'ring-4 ring-green-400' : ''}">
         <div class="p-6">
           <div class="flex items-start justify-between mb-4">
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
               <span class="${badgeClass} text-white px-3 py-1 rounded-full text-sm font-semibold">
                 <i class="fas ${eventTypeIcon} mr-1"></i>${eventTypeName}
               </span>
               <span class="${areaColors[area]} px-3 py-1 rounded-full text-sm font-semibold">
                 <i class="fas fa-map-marker-alt mr-1"></i>${area}
               </span>
+              ${isApplied ? '<span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse"><i class="fas fa-check-circle mr-1"></i>参加予定</span>' : ''}
             </div>
             <div class="text-right">
               ${isAlmostFull ? '<span class="text-red-600 text-sm font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>残席わずか</span>' : ''}
@@ -921,10 +949,14 @@ class AIEventApp {
       const response = await axios.post('/api/applications', formData);
 
       if (response.data.success) {
+        // 申込済みイベントとして保存
+        this.saveAppliedEvent(eventId);
+        
         alertContainer.innerHTML = `
           <div class="alert alert-success">
             <i class="fas fa-check-circle mr-2"></i>
             ${response.data.message}
+            <p class="mt-2 text-sm">トップページのイベント一覧に「参加予定」バッジが表示されます。</p>
           </div>
         `;
         document.getElementById('apply-form').reset();
