@@ -414,14 +414,13 @@ app.post('/api/admin/invitation-codes', async (c) => {
     
     const result = await DB.prepare(`
       INSERT INTO invitation_codes (
-        code, event_id, max_uses, expires_at, created_by, notes, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        code, event_id, max_uses, expires_at, notes, is_active
+      ) VALUES (?, ?, ?, ?, ?, ?)
     `).bind(
       data.code,
       data.event_id || null,
       data.max_uses || 1,
       data.expires_at || null,
-      data.created_by || 'admin',
       data.notes || null,
       1
     ).run()
