@@ -1177,6 +1177,26 @@ class AIEventApp {
         <span class="text-4xl mr-3">📅</span>
         新規イベント作成
       </h2>
+
+      <!-- テンプレート選択 -->
+      <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl mb-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <span class="text-2xl mr-2">📋</span>テンプレートから作成
+        </h3>
+        <p class="text-gray-600 mb-4 text-sm">よく使うイベント形式を選択して、自動入力できます</p>
+        <div class="grid md:grid-cols-3 gap-4">
+          <button type="button" onclick="app.applyEventTemplate('night_basic')" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+            <i class="fas fa-moon mr-2"></i>AI夜会（基本）
+          </button>
+          <button type="button" onclick="app.applyEventTemplate('tea_basic')" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+            <i class="fas fa-mug-hot mr-2"></i>AI茶会（基本）
+          </button>
+          <button type="button" onclick="app.applyEventTemplate('workshop')" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+            <i class="fas fa-chalkboard-teacher mr-2"></i>ワークショップ
+          </button>
+        </div>
+      </div>
+
       <form id="event-form" class="space-y-8">
         <!-- 基本情報 -->
         <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl">
@@ -1337,6 +1357,108 @@ class AIEventApp {
         submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>イベントを作成';
       }
     });
+  }
+
+  applyEventTemplate(templateType) {
+    const templates = {
+      night_basic: {
+        title: 'AI夜会 Vol.X',
+        event_type: 'night',
+        description: '浜松で開催するAI活用交流会。お酒を片手にAIについて語り合います。',
+        theme: 'ChatGPTで変わる業務効率化',
+        mini_lecture_topic: 'ChatGPTを活用した実務改善の具体例',
+        mini_lecture_duration: '30',
+        program_details: `18:30 受付開始
+19:00 オープニング・自己紹介
+19:15 ミニ講座（30分）
+19:45 交流タイム
+20:30 質疑応答
+21:00 終了`,
+        target_audience: '経営者、起業準備中の方、AIに興味がある方',
+        location: '浜松市',
+        address: '浜松市中区板屋町111-2',
+        start_time: '18:30',
+        end_time: '21:00',
+        capacity: '20',
+        price: '3000'
+      },
+      tea_basic: {
+        title: 'AI茶会 Vol.X',
+        event_type: 'tea',
+        description: '昼間に開催するカジュアルなAI勉強会。お茶を飲みながら気軽に学べます。',
+        theme: 'AI初心者のための入門講座',
+        mini_lecture_topic: 'ChatGPTの基本的な使い方',
+        mini_lecture_duration: '30',
+        program_details: `13:30 受付開始
+14:00 オープニング
+14:15 ミニ講座（30分）
+14:45 休憩
+15:00 ハンズオン体験
+15:45 質疑応答
+16:00 終了`,
+        target_audience: 'AI初心者、学生、教育関係者、どなたでも歓迎',
+        location: '静岡市',
+        address: '静岡市葵区〇〇町1-2-3',
+        start_time: '14:00',
+        end_time: '16:00',
+        capacity: '15',
+        price: '1000'
+      },
+      workshop: {
+        title: 'AIワークショップ Vol.X',
+        event_type: 'tea',
+        description: '実践的なAI活用ワークショップ。実際に手を動かしながら学びます。',
+        theme: 'ChatGPT活用実践ワークショップ',
+        mini_lecture_topic: 'プロンプトエンジニアリングの基礎',
+        mini_lecture_duration: '45',
+        program_details: `10:00 受付開始
+10:15 イントロダクション
+10:30 講義（45分）
+11:15 休憩
+11:30 ハンズオン実習
+12:30 ランチ休憩
+13:30 グループワーク
+15:00 発表・フィードバック
+16:00 終了`,
+        target_audience: '実務でAIを活用したい方、中級者向け',
+        location: '沼津市',
+        address: '沼津市大手町1-1-1',
+        start_time: '10:00',
+        end_time: '16:00',
+        capacity: '12',
+        price: '5000'
+      }
+    };
+
+    const template = templates[templateType];
+    if (!template) return;
+
+    // フォームに値を設定
+    const form = document.getElementById('event-form');
+    form.querySelector('[name="title"]').value = template.title;
+    form.querySelector('[name="event_type"]').value = template.event_type;
+    form.querySelector('[name="description"]').value = template.description;
+    form.querySelector('[name="theme"]').value = template.theme;
+    form.querySelector('[name="mini_lecture_topic"]').value = template.mini_lecture_topic;
+    form.querySelector('[name="mini_lecture_duration"]').value = template.mini_lecture_duration;
+    form.querySelector('[name="program_details"]').value = template.program_details;
+    form.querySelector('[name="target_audience"]').value = template.target_audience;
+    form.querySelector('[name="location"]').value = template.location;
+    form.querySelector('[name="address"]').value = template.address;
+    form.querySelector('[name="start_time"]').value = template.start_time;
+    form.querySelector('[name="end_time"]').value = template.end_time;
+    form.querySelector('[name="capacity"]').value = template.capacity;
+    form.querySelector('[name="price"]').value = template.price;
+
+    // 成功メッセージ
+    const msg = document.createElement('div');
+    msg.className = 'alert alert-success mb-6 animate-fade-in';
+    msg.innerHTML = `<i class="fas fa-check-circle mr-2"></i>テンプレート「${template.title}」を適用しました！日付と必要に応じて内容を調整してください。`;
+    form.parentElement.insertBefore(msg, form);
+    setTimeout(() => msg.remove(), 5000);
+    
+    // フォームの先頭にスクロール
+    form.scrollIntoView({ behavior: 'smooth' });
   }
 
   showCodeForm() {
