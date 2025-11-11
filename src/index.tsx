@@ -246,12 +246,16 @@ app.post('/api/applications', async (c) => {
     
     // メール送信（確認メール）
     const { RESEND_API_KEY } = c.env
+    console.log('RESEND_API_KEY exists:', !!RESEND_API_KEY)
+    
     if (RESEND_API_KEY) {
       try {
         const eventDate = new Date(event.event_date)
         const dateStr = `${eventDate.getFullYear()}年${eventDate.getMonth() + 1}月${eventDate.getDate()}日`
         
-        await fetch('https://api.resend.com/emails', {
+        console.log('Sending email to a.kouda@future-clock.jp')
+        
+        const emailResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${RESEND_API_KEY}`,
@@ -291,10 +295,19 @@ app.post('/api/applications', async (c) => {
             `
           })
         })
+        
+        const emailResult = await emailResponse.json()
+        console.log('Email response:', emailResponse.status, emailResult)
+        
+        if (!emailResponse.ok) {
+          console.error('Email sending failed:', emailResult)
+        }
       } catch (emailError) {
-        console.error('Email sending failed:', emailError)
+        console.error('Email sending error:', emailError)
         // メール送信失敗してもエラーにしない
       }
+    } else {
+      console.error('RESEND_API_KEY is not set')
     }
     
     return c.json<ApiResponse>({
