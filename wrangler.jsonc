@@ -11,7 +11,7 @@
     {
       "binding": "DB",
       "database_name": "webapp-production",
-      "database_id": "local-development"
+      "database_id": "74a520fa-839b-4cc1-8b23-4c54673513e9"
     }
   ]
   // "vars": {
