@@ -375,7 +375,7 @@ app.post('/api/applications', async (c) => {
     
     return c.json<ApiResponse>({
       success: true,
-      message: '申込が完了しました。確認メールをご確認ください。',
+      message: '申込が完了しました。ご参加をお待ちしております。',
       data: { 
         id: result.meta.last_row_id,
         event: {
