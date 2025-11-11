@@ -15,7 +15,7 @@ export const renderer = jsxRenderer(({ children }) => {
       <body class="bg-gray-50">
         {children}
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-        <script src="/static/app.v2.js"></script>
+        <script src="/static/app.js?v=20251111"></script>
       </body>
     </html>
   )

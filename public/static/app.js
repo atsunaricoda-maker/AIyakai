@@ -1,4 +1,5 @@
 // AI夜会・AI茶会 フロントエンドアプリケーション
+console.log('=== APP.JS LOADED v20251111 ===');
 
 class AIEventApp {
   constructor() {
