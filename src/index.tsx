@@ -244,6 +244,52 @@ app.post('/api/applications', async (c) => {
       'UPDATE events SET current_participants = current_participants + 1 WHERE id = ?'
     ).bind(data.event_id).run()
     
+    // メール送信（確認メール）
+    const { RESEND_API_KEY } = c.env
+    if (RESEND_API_KEY) {
+      try {
+        const eventDate = new Date(event.event_date)
+        const dateStr = `${eventDate.getFullYear()}年${eventDate.getMonth() + 1}月${eventDate.getDate()}日`
+        
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: 'AI夜会・AI茶会 <onboarding@resend.dev>',
+            to: data.email,
+            subject: `【申込受付】${event.title} のお申込を受け付けました`,
+            html: `
+              <h2>お申込ありがとうございます</h2>
+              <p>${data.applicant_name} 様</p>
+              <p>以下のイベントへのお申込を受け付けました。</p>
+              
+              <h3>イベント詳細</h3>
+              <ul>
+                <li><strong>イベント名:</strong> ${event.title}</li>
+                <li><strong>開催日:</strong> ${dateStr} ${event.start_time}${event.end_time ? ' 〜 ' + event.end_time : ''}</li>
+                <li><strong>会場:</strong> ${event.location}${event.address ? ' (' + event.address + ')' : ''}</li>
+                ${event.payment_required && event.price > 0 ? `<li><strong>参加費:</strong> ¥${event.price.toLocaleString()}（当日現地回収）</li>` : '<li><strong>参加費:</strong> 無料</li>'}
+              </ul>
+              
+              <p>当日お会いできることを楽しみにしています！</p>
+              
+              <hr>
+              <p style="font-size: 12px; color: #666;">
+                このメールは自動送信されています。<br>
+                ご不明な点がございましたら、お気軽にお問い合わせください。
+              </p>
+            `
+          })
+        })
+      } catch (emailError) {
+        console.error('Email sending failed:', emailError)
+        // メール送信失敗してもエラーにしない
+      }
+    }
+    
     return c.json<ApiResponse>({
       success: true,
       message: '申込が完了しました。確認メールをご確認ください。',
