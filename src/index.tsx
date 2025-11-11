@@ -244,7 +244,7 @@ app.post('/api/applications', async (c) => {
       'UPDATE events SET current_participants = current_participants + 1 WHERE id = ?'
     ).bind(data.event_id).run()
     
-    // メール送信（確認メール）
+    // メール送信（管理者通知 & 申込者確認メール）
     const { RESEND_API_KEY } = c.env
     console.log('RESEND_API_KEY exists:', !!RESEND_API_KEY)
     
@@ -253,9 +253,10 @@ app.post('/api/applications', async (c) => {
         const eventDate = new Date(event.event_date)
         const dateStr = `${eventDate.getFullYear()}年${eventDate.getMonth() + 1}月${eventDate.getDate()}日`
         
-        console.log('Sending email to a.kouda@future-clock.jp')
+        // 管理者への通知メール
+        console.log('Sending admin notification to a.kouda@future-clock.jp')
         
-        const emailResponse = await fetch('https://api.resend.com/emails', {
+        const adminEmailResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${RESEND_API_KEY}`,
@@ -284,23 +285,85 @@ app.post('/api/applications', async (c) => {
                 <li><strong>電話番号:</strong> ${data.phone || '未入力'}</li>
                 <li><strong>会社名:</strong> ${data.company_name || '未入力'}</li>
                 <li><strong>役職:</strong> ${data.position || '未入力'}</li>
+                <li><strong>参加者タイプ:</strong> ${data.participant_type || '未入力'}</li>
+                ${data.ai_usage_examples ? `<li><strong>AI活用事例:</strong> ${data.ai_usage_examples}</li>` : ''}
+                ${data.consultation_topics ? `<li><strong>相談内容:</strong> ${data.consultation_topics}</li>` : ''}
+                ${data.referrer_name ? `<li><strong>紹介者:</strong> ${data.referrer_name}</li>` : ''}
               </ul>
               
               <hr>
               <p style="font-size: 12px; color: #666;">
-                このメールは申込があった際に自動送信されています。<br>
-                ※注意: Resendのテストモードでは申込者本人にメールは送信されません。<br>
+                このメールは申込があった際に自動送信されています。
+              </p>
+            `
+          })
+        })
+        
+        const adminEmailResult = await adminEmailResponse.json()
+        console.log('Admin email response:', adminEmailResponse.status, adminEmailResult)
+        
+        if (!adminEmailResponse.ok) {
+          console.error('Admin email sending failed:', adminEmailResult)
+        }
+        
+        // 申込者への確認メール
+        // 注意: Resendのテストモードでは、申込者のメールアドレスではなく
+        // 検証済みのa.kouda@future-clock.jpに送信されます
+        // 本番運用するには独自ドメインの設定が必要です
+        console.log('Sending confirmation email (test mode: will go to a.kouda@future-clock.jp)')
+        
+        const applicantEmailResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: 'onboarding@resend.dev',
+            to: 'a.kouda@future-clock.jp', // 本番では data.email に変更
+            subject: `【申込確認】${event.title} のお申込を受け付けました`,
+            html: `
+              <h2>お申込ありがとうございます</h2>
+              <p>${data.applicant_name} 様</p>
+              <p>以下のイベントへのお申込を受け付けました。</p>
+              
+              <h3>イベント詳細</h3>
+              <ul>
+                <li><strong>イベント名:</strong> ${event.title}</li>
+                <li><strong>開催日:</strong> ${dateStr} ${event.start_time}${event.end_time ? ' 〜 ' + event.end_time : ''}</li>
+                <li><strong>会場:</strong> ${event.location}${event.address ? ' (' + event.address + ')' : ''}</li>
+                ${event.payment_required && event.price > 0 ? `<li><strong>参加費:</strong> ¥${event.price.toLocaleString()}（当日会場にてお支払いください）</li>` : '<li><strong>参加費:</strong> 無料</li>'}
+              </ul>
+              
+              <h3>申込内容</h3>
+              <ul>
+                <li><strong>お名前:</strong> ${data.applicant_name}</li>
+                <li><strong>メールアドレス:</strong> ${data.email}</li>
+                <li><strong>電話番号:</strong> ${data.phone || '未入力'}</li>
+                ${data.company_name ? `<li><strong>会社名:</strong> ${data.company_name}</li>` : ''}
+                ${data.position ? `<li><strong>役職:</strong> ${data.position}</li>` : ''}
+              </ul>
+              
+              <p>当日お会いできることを楽しみにしています！</p>
+              
+              <hr>
+              <p style="font-size: 12px; color: #666;">
+                このメールは自動送信されています。<br>
+                ご不明な点がございましたら、お気軽にお問い合わせください。<br>
+                <br>
+                <strong>※テストモード注意:</strong> 現在テストモードのため、このメールは申込者(${data.email})ではなく、<br>
+                管理者(a.kouda@future-clock.jp)に送信されています。<br>
                 本番運用するには独自ドメインの設定が必要です。
               </p>
             `
           })
         })
         
-        const emailResult = await emailResponse.json()
-        console.log('Email response:', emailResponse.status, emailResult)
+        const applicantEmailResult = await applicantEmailResponse.json()
+        console.log('Applicant email response:', applicantEmailResponse.status, applicantEmailResult)
         
-        if (!emailResponse.ok) {
-          console.error('Email sending failed:', emailResult)
+        if (!applicantEmailResponse.ok) {
+          console.error('Applicant email sending failed:', applicantEmailResult)
         }
       } catch (emailError) {
         console.error('Email sending error:', emailError)
