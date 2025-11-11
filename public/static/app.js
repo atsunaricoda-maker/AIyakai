@@ -478,6 +478,17 @@ class AIEventApp {
               <i class="fas fa-users w-6 text-green-600"></i>
               <span>定員${event.capacity}名（残り${remainingSeats}席）</span>
             </div>
+            ${event.payment_required && event.price > 0 ? `
+            <div class="flex items-center">
+              <i class="fas fa-yen-sign w-6 text-yellow-600"></i>
+              <span class="font-bold text-lg text-yellow-700">参加費 ¥${event.price.toLocaleString()}（当日現地回収）</span>
+            </div>
+            ` : `
+            <div class="flex items-center">
+              <i class="fas fa-gift w-6 text-green-600"></i>
+              <span class="font-bold text-green-700">無料</span>
+            </div>
+            `}
           </div>
           
           <div class="flex gap-3">
@@ -640,6 +651,13 @@ class AIEventApp {
                   <div>
                     <strong>定員：</strong>
                     ${event.capacity}名（残り${remainingSeats}席）
+                  </div>
+                </div>
+                <div class="flex items-center text-gray-700">
+                  <i class="fas fa-yen-sign w-8 ${event.payment_required && event.price > 0 ? 'text-yellow-600' : 'text-green-600'}"></i>
+                  <div>
+                    <strong>参加費：</strong>
+                    ${event.payment_required && event.price > 0 ? `<span class="text-2xl font-bold text-yellow-700">¥${event.price.toLocaleString()}</span><span class="text-sm text-gray-600 ml-2">（当日現地回収）</span>` : '<span class="text-xl font-bold text-green-700">無料</span>'}
                   </div>
                 </div>
               </div>
@@ -1249,6 +1267,21 @@ class AIEventApp {
           <div class="mt-4">
             <label class="block text-gray-700 font-semibold mb-2">定員 *</label>
             <input type="number" name="capacity" value="20" required min="1" class="form-input w-full px-4 py-3 rounded-lg">
+          </div>
+        </div>
+        </div>
+
+        <!-- 参加費設定 -->
+        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-2xl mr-2">💰</span>参加費設定
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">参加費（円）</label>
+              <input type="number" name="price" value="0" min="0" class="form-input w-full px-4 py-3 rounded-lg" placeholder="0">
+              <p class="text-xs text-gray-500 mt-1">0円の場合は無料イベントになります（当日現地回収）</p>
+            </div>
           </div>
         </div>
 
