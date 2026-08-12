@@ -329,6 +329,21 @@ export async function purgeExpiredSessions(env: Env): Promise<void> {
   await env.DB.prepare('DELETE FROM sessions WHERE expires_at <= ?').bind(new Date().toISOString()).run();
 }
 
+/**
+ * 日付つきのIPカウンタ（`ip:YYYY-MM-DD:...`）は日々増えるので、古い行を掃除する。
+ * Cookie単位の `fp:` は通算カウントなので消さない。
+ */
+export async function purgeOldIpCounters(env: Env, keepDays = 7): Promise<void> {
+  const cutoff = new Date(Date.now() - keepDays * 86_400_000).toISOString().slice(0, 10);
+  await env.DB.prepare(
+    `DELETE FROM free_trials
+     WHERE fingerprint LIKE 'ip:%'
+       AND substr(fingerprint, 4, 10) < ?`,
+  )
+    .bind(cutoff)
+    .run();
+}
+
 // ------------------------------------------------------- webhook 冪等性
 
 /** 未処理なら true を返して記録する。処理済みなら false。 */

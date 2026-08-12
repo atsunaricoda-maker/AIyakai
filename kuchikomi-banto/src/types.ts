@@ -8,6 +8,8 @@ export interface Env {
   /** low | medium | high | xhigh | max。未設定なら medium。 */
   ANTHROPIC_EFFORT?: string;
   FREE_TRIAL_LIMIT: string;
+  /** 同一IPからの1日あたりの無料お試し上限。未設定なら60。 */
+  FREE_TRIAL_IP_LIMIT?: string;
   SUPPORT_EMAIL: string;
 
   // secrets (wrangler secret put)

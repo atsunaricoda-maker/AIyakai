@@ -28,6 +28,9 @@
     "APP_BASE_URL": "https://kuchikomi-banto.example.com",
     "ANTHROPIC_MODEL": "claude-opus-5",
     "FREE_TRIAL_LIMIT": "3",
+    // 同一IPからの1日あたり上限。会場Wi-Fiや携帯のCGNATでは多数の利用者が
+    // 同じIPを共有するため、イベントで大人数に触ってもらう日は引き上げてよい。
+    "FREE_TRIAL_IP_LIMIT": "60",
     "SUPPORT_EMAIL": "support@example.com"
   },
 

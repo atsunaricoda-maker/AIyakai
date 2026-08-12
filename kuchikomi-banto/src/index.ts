@@ -49,8 +49,21 @@ const app = new Hono<AppEnv>();
 const SESSION_COOKIE = 'kb_session';
 const FINGERPRINT_COOKIE = 'kb_fp';
 const MAX_REVIEW_CHARS = 2000;
-/** 同一IPからの無料お試し上限（Cookie削除による回避を抑える） */
-const FREE_TRIAL_IP_LIMIT = 10;
+/**
+ * 同一IPからの無料お試し上限（Cookie削除による回避を抑えるための保険）。
+ *
+ * 会場のWi-Fi・オフィス・携帯キャリアのCGNATでは、無関係な多数の利用者が
+ * 同じグローバルIPを共有する。ここを通算カウントにすると、イベント会場で
+ * 数人試した時点で残り全員が弾かれ、その場で触ってもらう導線が死ぬ。
+ * そのため **1日ごとにリセット** し、既定値も共有回線を想定した値にしている。
+ * 本来の入口制限はCookie単位の3件のほう。
+ */
+const DEFAULT_FREE_TRIAL_IP_LIMIT = 60;
+
+function freeTrialIpLimit(env: Env): number {
+  const parsed = Number(env.FREE_TRIAL_IP_LIMIT);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : DEFAULT_FREE_TRIAL_IP_LIMIT;
+}
 
 // --------------------------------------------------------------- ユーティリティ
 
@@ -316,19 +329,33 @@ app.post('/api/generate', async (c) => {
   }
 
   const ip = c.req.header('CF-Connecting-IP') ?? 'unknown';
-  const ipKey = `ip:${await sha256Hex(ip)}`;
+  // 日付を鍵に含めることで、共有回線を恒久的にブロックしない
+  const today = new Date().toISOString().slice(0, 10);
+  const ipKey = `ip:${today}:${await sha256Hex(ip)}`;
+  const ipLimit = freeTrialIpLimit(c.env);
 
   const [cookieCount, ipCount] = await Promise.all([
     getFreeTrialCount(c.env, `fp:${fp}`),
     getFreeTrialCount(c.env, ipKey),
   ]);
 
-  if (cookieCount >= freeLimit || ipCount >= FREE_TRIAL_IP_LIMIT) {
+  if (cookieCount >= freeLimit) {
     return c.json(
       jsonError(`無料でお試しいただける${freeLimit}件を使い切りました。続けてご利用いただくにはお申し込みください。`, {
         needSignup: true,
         remaining: 0,
       }),
+      429,
+    );
+  }
+
+  if (ipCount >= ipLimit) {
+    // 自分の枠は残っているのに弾かれるケース。原因が伝わらないと問い合わせになるため文言を分ける。
+    return c.json(
+      jsonError(
+        '同じ回線からのお試しが本日の上限に達しました。時間をおいてお試しいただくか、お申し込みいただくとすぐにご利用いただけます。',
+        { needSignup: true, remaining: 0, sharedNetwork: true },
+      ),
       429,
     );
   }
