@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow">
+<title>利用規約 | クチコミ番頭</title>
+<meta name="description" content="クチコミ番頭の利用規約です。サービス内容、料金と解約、禁止事項、生成物の取扱い、免責事項について定めています。">
+<style>
+/* ===== Design tokens (light) ===== */
+:root{
+  --bg:#f7f4ee;              /* 生成り */
+  --surface:#fffdf9;
+  --surface-2:#f1ece2;
+  --text:#22201c;            /* 墨 */
+  --text-muted:#5a544a;
+  --border:#e0d8c9;
+  --border-strong:#cdc2ad;
+  --accent:#1d4a72;          /* 藍 */
+  --accent-weak:#e7eef5;
+  --shu:#a83d28;             /* 朱 */
+  --shu-weak:#fbeee9;
+  --notice-bg:#fdf3e6;
+  --notice-border:#e0b070;
+  --notice-text:#6d4410;
+  --focus:#1d4a72;
+  --shadow:0 1px 2px rgba(34,32,28,.05), 0 8px 24px rgba(34,32,28,.05);
+  --radius:10px;
+  --maxw:720px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17181a;
+    --surface:#1f2124;
+    --surface-2:#282b2f;
+    --text:#eceae5;
+    --text-muted:#a8a49c;
+    --border:#33363a;
+    --border-strong:#4a4e54;
+    --accent:#8ab4dd;
+    --accent-weak:#1e2a35;
+    --shu:#e2907c;
+    --shu-weak:#312320;
+    --notice-bg:#2e2517;
+    --notice-border:#8a6a33;
+    --notice-text:#f0d9ae;
+    --focus:#8ab4dd;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17181a;
+  --surface:#1f2124;
+  --surface-2:#282b2f;
+  --text:#eceae5;
+  --text-muted:#a8a49c;
+  --border:#33363a;
+  --border-strong:#4a4e54;
+  --accent:#8ab4dd;
+  --accent-weak:#1e2a35;
+  --shu:#e2907c;
+  --shu-weak:#312320;
+  --notice-bg:#2e2517;
+  --notice-border:#8a6a33;
+  --notice-text:#f0d9ae;
+  --focus:#8ab4dd;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+}
+
+/* ===== Base ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  font-size:16px;
+  line-height:1.85;
+  font-feature-settings:"palt" 1;
+  text-rendering:optimizeLegibility;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-break:strict;
+}
+a{color:var(--accent);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+
+/* ===== Header ===== */
+.site-header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.header-inner{
+  max-width:var(--maxw);margin:0 auto;padding:.75rem 1.25rem;
+  display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;
+}
+.brand{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:.02em}
+.brand:hover{color:var(--accent)}
+.brand svg{flex:none;display:block}
+.brand .brand-name{font-size:1.02rem}
+.back-link{
+  font-size:.86rem;color:var(--text-muted);text-decoration:none;
+  border:1px solid var(--border-strong);border-radius:999px;padding:.28rem .8rem;
+  white-space:nowrap;background:var(--bg);
+}
+.back-link:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ===== Layout ===== */
+main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.25rem 3rem}
+.page-title{font-size:1.6rem;line-height:1.5;margin:.4rem 0 .3rem;letter-spacing:.01em}
+.page-lead{color:var(--text-muted);font-size:.95rem;margin:0 0 1.5rem}
+.meta{font-size:.85rem;color:var(--text-muted);margin:0 0 1.75rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.meta span{display:inline-block;margin-right:1.2rem}
+
+/* ===== Admin notice ===== */
+.admin-notice{
+  background:var(--notice-bg);border:1px solid var(--notice-border);border-left:5px solid var(--notice-border);
+  color:var(--notice-text);border-radius:var(--radius);padding:1.1rem 1.15rem;margin:0 0 2rem;
+  font-size:.9rem;line-height:1.8;
+}
+.admin-notice h2{margin:0 0 .5rem;font-size:.95rem;letter-spacing:.02em;display:flex;align-items:center;gap:.45rem;color:inherit;border:0;padding:0}
+.admin-notice ul{margin:.5rem 0 0;padding-left:1.25rem}
+.admin-notice li{margin-bottom:.35rem}
+.admin-notice code{background:rgba(128,100,40,.16);padding:.08em .35em;border-radius:4px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+
+/* ===== Headings ===== */
+h2.sec{font-size:1.08rem;margin:2.4rem 0 .9rem;padding-bottom:.45rem;border-bottom:2px solid var(--border-strong);letter-spacing:.02em}
+h3.sub{font-size:.98rem;margin:1.6rem 0 .5rem;color:var(--text)}
+p{margin:0 0 1rem}
+
+/* ===== Article numbering ===== */
+ol.clause{counter-reset:item;list-style:none;padding-left:0;margin:0 0 1rem}
+ol.clause > li{counter-increment:item;position:relative;padding-left:2.2em;margin-bottom:.55rem}
+ol.clause > li::before{content:"(" counter(item) ")";position:absolute;left:0;top:0;color:var(--text-muted);font-variant-numeric:tabular-nums;font-size:.92em}
+ol.kanji{counter-reset:k;list-style:none;padding-left:0;margin:.4rem 0 1rem}
+ol.kanji > li{counter-increment:k;position:relative;padding-left:2.6em;margin-bottom:.45rem}
+ol.kanji > li::before{content:counter(k) "号";position:absolute;left:0;top:0;color:var(--text-muted);font-size:.82em;white-space:nowrap}
+ul.plain{padding-left:1.25rem;margin:0 0 1rem}
+ul.plain li{margin-bottom:.4rem}
+
+/* ===== Tables ===== */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 1.25rem}
+table.dl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;font-size:.94rem}
+table.dl th,table.dl td{text-align:left;vertical-align:top;padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+table.dl tr:last-child th,table.dl tr:last-child td{border-bottom:0}
+table.dl th{width:34%;min-width:11em;font-weight:600;background:var(--surface-2);color:var(--text);border-right:1px solid var(--border)}
+table.dl td p{margin:0 0 .5rem}
+table.dl td p:last-child{margin-bottom:0}
+@media (max-width:560px){
+  table.dl,table.dl tbody,table.dl tr,table.dl th,table.dl td{display:block;width:100%}
+  table.dl th{border-right:0;border-bottom:1px solid var(--border);padding:.55rem 1rem;font-size:.86rem;color:var(--text-muted)}
+  table.dl td{padding-top:.7rem}
+}
+
+/* ===== Placeholder chip ===== */
+.ph{
+  display:inline-block;background:var(--shu-weak);color:var(--shu);
+  border:1px dashed var(--shu);border-radius:5px;padding:.05em .45em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;font-weight:600;white-space:nowrap;
+}
+
+/* ===== Note ===== */
+.note{background:var(--accent-weak);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:.9rem 1rem;font-size:.9rem;margin:1.25rem 0;color:var(--text)}
+.note strong{color:var(--accent)}
+
+/* ===== TOC ===== */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.15rem;margin:0 0 2rem;font-size:.9rem;box-shadow:var(--shadow)}
+.toc h2{font-size:.9rem;margin:0 0 .6rem;color:var(--text-muted);letter-spacing:.06em;border:0;padding:0}
+.toc ol{margin:0;padding-left:1.5em;columns:2;column-gap:1.5rem}
+.toc li{margin-bottom:.25rem;break-inside:avoid}
+.toc a{color:var(--text);text-decoration:none}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+@media (max-width:560px){.toc ol{columns:1}}
+
+/* ===== Footer ===== */
+.site-footer{border-top:1px solid var(--border);background:var(--surface);margin-top:2rem}
+.footer-inner{max-width:var(--maxw);margin:0 auto;padding:1.75rem 1.25rem 2.25rem;font-size:.86rem;color:var(--text-muted)}
+.footer-nav{display:flex;flex-wrap:wrap;gap:.6rem 1.25rem;margin:0 0 1rem;padding:0;list-style:none}
+.footer-nav a{color:var(--text-muted);text-decoration:none}
+.footer-nav a:hover,.footer-nav a[aria-current="page"]{color:var(--accent);text-decoration:underline}
+.footer-nav a[aria-current="page"]{font-weight:600}
+.copyright{margin:0;font-size:.82rem}
+@media print{
+  .site-header,.back-link,.site-footer{position:static}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="3.5" width="19" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M8 17.5 7 21l4.2-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M7 8.5h10M7 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">クチコミ番頭</span>
+    </a>
+    <a class="back-link" href="/">← トップページへ戻る</a>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">利用規約</h1>
+  <p class="page-lead">本規約は、<span class="ph">{{事業者名}}</span>（以下「当社」といいます）が提供するクチコミ返信文作成支援サービス「クチコミ番頭」（以下「本サービス」といいます）のご利用条件を定めるものです。ご利用の前に必ずお読みください。</p>
+  <p class="meta"><span>制定日：<span class="ph">{{制定日}}</span></span><span>最終改定日：<span class="ph">{{最終改定日}}</span></span></p>
+
+  <section class="admin-notice" role="note" aria-labelledby="admin-notice-title">
+    <h2 id="admin-notice-title">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3 1.7 21h20.6L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M12 9.5v5M12 17.6v.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      管理者向けの注意（公開前に必ず対応し、このボックスは削除してください）
+    </h2>
+    <ul>
+      <li>本ページには <code>{{事業者名}}</code> <code>{{管轄裁判所}}</code> のような<strong>プレースホルダ</strong>が残っています。公開前に必ず実際の情報へ置き換えてください。未記載や虚偽の記載は法令違反となり得ます。</li>
+      <li>料金・プラン・上限件数・解約条件の記載を、<strong>実装および Stripe の設定、<a href="/legal/tokushoho">特定商取引法に基づく表記</a>と完全に一致</strong>させてください。</li>
+      <li>免責・責任制限の条項は、利用者が<strong>消費者契約法上の「消費者」に該当する場合、全部または一部が無効となる可能性</strong>があります。想定利用者層（個人事業主を含む）を踏まえ、専門家と文言を確認してください。</li>
+      <li>本ページは一般的な雛形です。<strong>公開前に弁護士等の専門家の確認を受けることを推奨します。</strong>本ページの記載は法的助言ではありません。</li>
+      <li>置き換え対象：<code>{{事業者名}}</code> <code>{{代表者名}}</code> <code>{{所在地}}</code> <code>{{メールアドレス}}</code> <code>{{管轄裁判所}}</code> <code>{{制定日}}</code> <code>{{最終改定日}}</code></li>
+    </ul>
+  </section>
+
+  <nav class="toc" aria-label="目次">
+    <h2>目次</h2>
+    <ol>
+      <li><a href="#a1">適用</a></li>
+      <li><a href="#a2">定義</a></li>
+      <li><a href="#a3">本サービスの内容</a></li>
+      <li><a href="#a4">登録</a></li>
+      <li><a href="#a5">アカウントの管理</a></li>
+      <li><a href="#a6">料金および支払方法</a></li>
+      <li><a href="#a7">無料お試しおよび無料トライアル</a></li>
+      <li><a href="#a8">解約および返金</a></li>
+      <li><a href="#a9">禁止事項</a></li>
+      <li><a href="#a10">生成物の取扱い</a></li>
+      <li><a href="#a11">AIによる生成に関する免責</a></li>
+      <li><a href="#a12">第三者サービスの利用</a></li>
+      <li><a href="#a13">本サービスの変更・中断・終了</a></li>
+      <li><a href="#a14">利用制限および登録抹消</a></li>
+      <li><a href="#a15">保証の否認</a></li>
+      <li><a href="#a16">責任の制限</a></li>
+      <li><a href="#a17">知的財産権</a></li>
+      <li><a href="#a18">秘密保持</a></li>
+      <li><a href="#a19">個人情報の取扱い</a></li>
+      <li><a href="#a20">反社会的勢力の排除</a></li>
+      <li><a href="#a21">権利義務の譲渡禁止</a></li>
+      <li><a href="#a22">分離可能性</a></li>
+      <li><a href="#a23">本規約の変更</a></li>
+      <li><a href="#a24">準拠法および管轄裁判所</a></li>
+      <li><a href="#a25">協議事項・お問い合わせ</a></li>
+    </ol>
+  </nav>
+
+  <h2 class="sec" id="a1">第1条（適用）</h2>
+  <ol class="clause">
+    <li>本規約は、本サービスの利用に関する当社と利用者との間の一切の関係に適用されます。</li>
+    <li>当社が本サービス上で掲載する利用上のご案内、ヘルプ、ガイドライン等（以下「個別規定」といいます）は、本規約の一部を構成します。</li>
+    <li>本規約と個別規定の内容が異なる場合には、個別規定の定めが優先して適用されます。</li>
+    <li>利用者は、本サービスを利用した時点で、本規約に同意したものとみなされます。</li>
+  </ol>
+
+  <h2 class="sec" id="a2">第2条（定義）</h2>
+  <ol class="clause">
+    <li>「利用者」とは、本規約に同意して本サービスを利用する個人または法人をいいます。</li>
+    <li>「登録利用者」とは、第4条に基づきアカウント登録を完了した利用者をいいます。</li>
+    <li>「有料プラン」とは、ライトプランおよびスタンダードプランその他当社が定める有償のプランをいいます。</li>
+    <li>「入力情報」とは、利用者が本サービスに入力または登録した情報（クチコミ本文、星評価、店舗プロフィール等）をいいます。</li>
+    <li>「生成物」とは、入力情報に基づき本サービスが出力した返信文案その他の文章をいいます。</li>
+  </ol>
+
+  <h2 class="sec" id="a3">第3条（本サービスの内容）</h2>
+  <ol class="clause">
+    <li>本サービスは、利用者が入力したクチコミ本文および星評価、ならびに登録された店舗プロフィールをもとに、返信文の案を複数提示するサービスです。</li>
+    <li>本サービスは、返信文の案を作成する支援ツールであり、<strong>Googleビジネスプロフィールへの投稿を代行するものではありません。</strong>生成物の投稿は、利用者ご自身が行うものとします。</li>
+    <li>本サービスは、Google LLC その他の第三者と提携・提供元関係にあるものではなく、当社は同社の公式サービスではありません。</li>
+    <li>本サービスには、誹謗中傷や事実無根と疑われるクチコミを検知して注意を促す機能が含まれますが、これは判断の参考となる情報を提供するにとどまり、削除申請の可否や結果を保証するものではありません。</li>
+    <li>当社は、本サービスの利用により、検索順位、地図検索での表示順位、集客、売上その他の成果が向上することを保証しません。</li>
+  </ol>
+
+  <h2 class="sec" id="a4">第4条（登録）</h2>
+  <ol class="clause">
+    <li>本サービスの有料プランの利用を希望する者は、本規約に同意のうえ、当社所定の方法により登録を申請するものとします。</li>
+    <li>当社は、申請者が次のいずれかに該当すると判断した場合、登録を承認しないことがあり、その理由について開示する義務を負いません。
+      <ol class="kanji">
+        <li>登録事項に虚偽、誤記または記載漏れがあった場合</li>
+        <li>過去に本規約違反等により、利用停止または登録抹消の措置を受けたことがある場合</li>
+        <li>反社会的勢力等（第20条に定義します）に該当し、または関与していると当社が判断した場合</li>
+        <li>その他、当社が登録を適当でないと判断した場合</li>
+      </ol>
+    </li>
+    <li>登録は、当社が承認の通知を行った時点で完了し、利用者と当社との間に本規約に基づく利用契約が成立します。</li>
+    <li>利用者は、登録事項に変更が生じた場合、遅滞なく当社所定の方法により変更手続を行うものとします。</li>
+  </ol>
+
+  <h2 class="sec" id="a5">第5条（アカウントの管理）</h2>
+  <ol class="clause">
+    <li>登録利用者は、自己の責任において、メールアドレスおよびパスワードを適切に管理するものとします。</li>
+    <li>登録利用者は、いかなる場合も、アカウントを第三者に譲渡し、貸与し、または共有することはできません。ただし、同一の事業者に所属する従業者による利用は、この限りではありません。</li>
+    <li>アカウントの管理不十分、使用上の過誤、第三者の使用等による損害の責任は、登録利用者が負うものとし、当社は一切の責任を負いません。ただし、当社の故意または重過失による場合を除きます。</li>
+    <li>アカウントが第三者に不正に利用されていることが判明した場合、登録利用者は直ちに当社に通知し、当社の指示に従うものとします。</li>
+  </ol>
+
+  <h2 class="sec" id="a6">第6条（料金および支払方法）</h2>
+  <ol class="clause">
+    <li>有料プランの利用料金は、本サービス上に表示する金額（消費税込み）のとおりとします。</li>
+    <li>利用者は、当社が指定するクレジットカード決済（決済代行事業者：Stripe）により、利用料金を支払うものとします。</li>
+    <li>有料プランは月額の自動更新とし、無料トライアル終了日の翌日を初回課金日として、以後毎月同日に自動的に課金されます。該当日が存在しない月は、その月の末日を課金日とします。</li>
+    <li>各プランには、月間の生成件数および登録可能な店舗数の上限があります。上限を超えた場合、次の更新日まで生成機能をご利用いただけません。</li>
+    <li>決済に失敗した場合、当社は所定の回数・間隔で再試行を行い、なお決済ができないときは、本サービスの提供を停止し、または利用契約を解除することができます。</li>
+    <li>当社は、利用料金を改定することがあります。改定を行う場合は、改定日の30日前までに本サービス上または電子メールにより通知します。通知後、改定日以降も利用を継続した場合、改定後の料金に同意したものとみなします。</li>
+    <li>利用者が支払を遅滞した場合、年14.6%の割合による遅延損害金を申し受けることがあります。</li>
+  </ol>
+
+  <h2 class="sec" id="a7">第7条（無料お試しおよび無料トライアル）</h2>
+  <ol class="clause">
+    <li>当社は、登録不要でご利用いただける無料お試し（生成3件まで）を提供します。無料お試しには、本規約のうち性質上適用され得る条項が適用されます。</li>
+    <li>有料プランには、初回申込時に限り14日間の無料トライアル期間を設けます。トライアル期間中に解約した場合、利用料金は発生しません。</li>
+    <li>無料トライアルは、原則として1つの事業者につき1回限りとします。当社は、複数のアカウントを作成してトライアルを繰り返すなど、不正な利用と判断した場合、トライアルの提供を停止することができます。</li>
+    <li>無料お試しおよび無料トライアルの期間中は、機能の一部が制限される場合があります。</li>
+  </ol>
+
+  <h2 class="sec" id="a8">第8条（解約および返金）</h2>
+  <ol class="clause">
+    <li>登録利用者は、いつでも管理画面から解約の手続を行うことができます。</li>
+    <li>解約の手続を行った場合でも、<strong>すでに支払済みの期間の末日までは有料プランを利用でき</strong>、期間の満了をもって利用契約は終了します。</li>
+    <li><strong>本サービスは、その性質上、日割りによる返金は行いません。</strong>月の途中で解約した場合も、当該期間の利用料金は返金されません。</li>
+    <li>前項にかかわらず、当社の責めに帰すべき事由により長時間にわたり本サービスを提供できなかった場合など、当社が特に必要と認めた場合には、個別に返金その他の対応を行うことがあります。</li>
+    <li>利用契約の終了後、当社はプライバシーポリシーに定める保存期間の経過をもって、登録情報および入力情報を削除します。必要なデータは、解約前に利用者ご自身で保存してください。</li>
+  </ol>
+
+  <h2 class="sec" id="a9">第9条（禁止事項）</h2>
+  <p>利用者は、本サービスの利用にあたり、次の行為を行ってはなりません。</p>
+  <ol class="kanji">
+    <li>法令または公序良俗に違反する行為</li>
+    <li>犯罪行為に関連する行為</li>
+    <li><strong>自らまたは第三者に依頼して、事実に基づかないクチコミを投稿し、または投稿させる行為（いわゆる自作自演・サクラ行為）</strong></li>
+    <li><strong>金銭、割引、景品その他の利益を提供して、好意的なクチコミの投稿を誘引する行為</strong>、または競合他社に対する不当なクチコミの投稿を誘引する行為</li>
+    <li><strong>店舗の関係者であることを秘し、または第三者になりすまして返信もしくは投稿を行う行為</strong></li>
+    <li>虚偽の事実を含む返信、または誤認を生じさせる表示を行う行為（景品表示法に違反する表示を含みます）</li>
+    <li>他者の名誉、信用、プライバシー、肖像権、知的財産権その他の権利または利益を侵害する行為</li>
+    <li>クチコミの投稿者に対する脅迫、威圧、または不当な要求を行う行為</li>
+    <li>Googleビジネスプロフィールその他の第三者サービスの規約またはポリシーに違反する行為</li>
+    <li>本サービスに対する不正アクセス、リバースエンジニアリング、逆コンパイル、逆アセンブルその他の解析行為</li>
+    <li><strong>自動化された手段による本サービスへのアクセス、スクレイピング、クローリング、その他当社が想定しない方法で大量のリクエストを送信する行為</strong></li>
+    <li>本サービスのサーバーまたはネットワークに過度の負荷をかける行為、および本サービスの運営を妨害する行為</li>
+    <li>本サービスを再販売し、または第三者に対する役務提供の手段として当社の承諾なく利用する行為</li>
+    <li>本サービスを、当社と競合するサービスの開発、または生成モデルの学習の目的で利用する行為</li>
+    <li>不正な目的をもって本サービスを利用する行為、および当社または第三者の不利益となる行為</li>
+    <li>その他、当社が不適切と合理的に判断する行為</li>
+  </ol>
+  <div class="note">
+    <p><strong>ご確認ください：</strong>クチコミの自作自演や投稿の誘引は、Googleのポリシーに違反するだけでなく、景品表示法（いわゆるステルスマーケティング規制）に抵触するおそれがあります。本サービスは、実際に寄せられたクチコミに対して誠実に返信するためにご利用ください。</p>
+  </div>
+
+  <h2 class="sec" id="a10">第10条（生成物の取扱い）</h2>
+  <ol class="clause">
+    <li><strong>本サービスが出力した生成物に関する著作権その他の権利は、利用者に帰属します。</strong>当社は、生成物について、利用者に対し何らの権利も主張しません。</li>
+    <li>利用者は、生成物を、修正のうえ、または修正することなく、自由に利用することができます。</li>
+    <li>生成物は、入力情報に基づき自動的に作成された「案」です。<strong>利用者は、生成物を公開または投稿する前に、必ずその内容を自ら確認し、事実関係、表現の適否、および自社の方針との整合性を検証する責任を負います。</strong></li>
+    <li>本サービスは、複数の利用者に対して同一または類似の生成物を出力することがあります。生成物の独自性および第三者の権利を侵害しないことについて、当社は保証しません。</li>
+    <li>入力情報に関する権利は利用者または正当な権利者に帰属します。利用者は、入力情報を本サービスに入力する権限を有していることを表明し、保証するものとします。</li>
+    <li>当社は、本サービスの提供および改善に必要な範囲で入力情報および生成物を利用しますが、利用者の入力内容を当社の生成モデルの学習に利用することはありません。詳細は<a href="/legal/privacy">プライバシーポリシー</a>に定めるとおりです。</li>
+  </ol>
+
+  <h2 class="sec" id="a11">第11条（AIによる生成に関する免責）</h2>
+  <ol class="clause">
+    <li>本サービスの生成物は、人工知能（AI）により自動的に作成されるものであり、<strong>その正確性、完全性、適法性、特定の目的への適合性を当社は保証しません。</strong></li>
+    <li>生成物には、事実と異なる内容、文脈にそぐわない表現、または不適切な表現が含まれる可能性があります。<strong>事実確認および最終的な内容の判断は、すべて利用者の責任において行うものとします。</strong></li>
+    <li>本サービスは、法律、税務、医療その他の専門的な助言を提供するものではありません。生成物を専門的な判断の根拠として用いないでください。</li>
+    <li>利用者が生成物を投稿・公開したことにより、第三者との間で紛争が生じた場合、利用者は自己の責任と費用によりこれを解決するものとし、当社は責任を負いません。</li>
+    <li>誹謗中傷等の検知機能に関する当社の助言は参考情報にとどまり、当社は削除申請の結果について責任を負いません。</li>
+  </ol>
+
+  <h2 class="sec" id="a12">第12条（第三者サービスの利用）</h2>
+  <ol class="clause">
+    <li>利用者は、生成物をGoogleビジネスプロフィールその他の第三者サービスに投稿する場合、<strong>当該サービスの利用規約およびポリシーを自ら確認し、これを遵守する責任を負います。</strong></li>
+    <li>当社は、第三者サービスの内容、仕様の変更、停止、および当該サービスにおける利用者への措置（投稿の削除、アカウントの停止等）について、一切の責任を負いません。</li>
+    <li>本サービスは、Googleビジネスプロフィールとの連携やAPI認証を必要としません。当社が利用者に代わって第三者サービスへログインし、または投稿を行うことはありません。</li>
+  </ol>
+
+  <h2 class="sec" id="a13">第13条（本サービスの変更・中断・終了）</h2>
+  <ol class="clause">
+    <li>当社は、利用者への事前の通知なく、本サービスの内容を変更し、または機能を追加・廃止することができます。</li>
+    <li>当社は、次のいずれかに該当する場合、事前の通知なく本サービスの全部または一部の提供を中断することができます。
+      <ol class="kanji">
+        <li>設備の保守点検または更新を定期的または緊急に行う場合</li>
+        <li>火災、停電、天災地変等の不可抗力により提供が困難となった場合</li>
+        <li>通信回線、クラウド基盤、外部API等の障害により提供が困難となった場合</li>
+        <li>その他、当社が中断を必要と判断した場合</li>
+      </ol>
+    </li>
+    <li>当社は、本サービスの提供を終了する場合、原則として90日前までに本サービス上または電子メールにより通知します。この場合、利用者が前払いした利用料金のうち、提供されなかった期間に対応する金額を日割りで返金します。</li>
+    <li>本条に基づく変更、中断または終了により利用者に生じた損害について、当社は前項に定める返金を除き責任を負いません。</li>
+  </ol>
+
+  <h2 class="sec" id="a14">第14条（利用制限および登録抹消）</h2>
+  <ol class="clause">
+    <li>当社は、利用者が次のいずれかに該当する場合、事前の通知なく、本サービスの利用を制限し、または登録を抹消することができます。
+      <ol class="kanji">
+        <li>本規約のいずれかの条項に違反した場合</li>
+        <li>登録事項に虚偽の事実があることが判明した場合</li>
+        <li>料金の支払を怠った場合</li>
+        <li>当社からの連絡に対し、相当の期間を経ても応答がない場合</li>
+        <li>最終の利用から1年以上が経過し、当社からの連絡に応答がない場合</li>
+        <li>その他、当社が本サービスの利用を適当でないと判断した場合</li>
+      </ol>
+    </li>
+    <li>前項の措置により利用者に生じた損害について、当社は責任を負いません。</li>
+    <li>第1項の措置がとられた場合であっても、当社は利用料金を返金しません。</li>
+  </ol>
+
+  <h2 class="sec" id="a15">第15条（保証の否認）</h2>
+  <ol class="clause">
+    <li>当社は、本サービスについて、事実上または法律上の瑕疵（安全性、信頼性、正確性、完全性、有効性、特定の目的への適合性、セキュリティ上の欠陥、エラーやバグ、権利侵害等を含みます）がないことを明示的にも黙示的にも保証しません。</li>
+    <li>当社は、本サービスが利用者の特定の目的に適合すること、期待する機能・価値・正確性・有用性を有すること、および中断・エラーなく利用できることを保証しません。</li>
+  </ol>
+
+  <h2 class="sec" id="a16">第16条（責任の制限）</h2>
+  <ol class="clause">
+    <li>当社は、本サービスに関して利用者に生じた損害について、当社に故意または重大な過失がある場合を除き、責任を負いません。</li>
+    <li>当社が利用者に対して損害賠償責任を負う場合であっても、その範囲は<strong>現実に生じた通常かつ直接の損害に限られ</strong>、逸失利益、事業機会の喪失、データの喪失、および特別損害（当社が損害発生の可能性を予見し、または予見し得た場合を含みます）については、責任を負いません。</li>
+    <li>前項の場合において、<strong>当社が負う損害賠償額の上限は、損害が発生した時点から遡って過去1か月間に利用者が当社に支払った利用料金の額</strong>とします。</li>
+    <li>前2項の定めは、当社に故意または重大な過失がある場合には適用されません。</li>
+    <li>利用者が消費者契約法上の消費者に該当する場合、本条のうち当社の責任を不当に免除または制限する部分は適用されず、法令の定めに従います。</li>
+    <li>利用者と第三者との間で生じた紛争については、利用者の責任と費用において解決するものとし、当社は関与しません。利用者の行為により当社が第三者から請求を受けた場合、利用者は当社に生じた損害（合理的な弁護士費用を含みます）を賠償するものとします。</li>
+  </ol>
+
+  <h2 class="sec" id="a17">第17条（知的財産権）</h2>
+  <ol class="clause">
+    <li>本サービスを構成するソフトウェア、デザイン、文章、ロゴその他一切のコンテンツに関する知的財産権は、当社または正当な権利者に帰属します。</li>
+    <li>本規約に基づく本サービスの利用許諾は、前項の権利の譲渡または使用許諾を意味するものではありません。</li>
+    <li>生成物の取扱いについては、第10条の定めによります。</li>
+  </ol>
+
+  <h2 class="sec" id="a18">第18条（秘密保持）</h2>
+  <p>当社および利用者は、本サービスに関連して相手方から開示を受けた技術上または営業上の秘密情報を、相手方の事前の書面による承諾なく第三者に開示または漏えいしてはならず、本サービスの利用または提供の目的以外に使用してはならないものとします。ただし、法令に基づく開示を求められた場合はこの限りではありません。</p>
+
+  <h2 class="sec" id="a19">第19条（個人情報の取扱い）</h2>
+  <p>当社は、本サービスの利用によって取得する個人情報を、別途定める<a href="/legal/privacy">プライバシーポリシー</a>に従って適切に取り扱います。利用者は、同ポリシーの内容に同意のうえ、本サービスを利用するものとします。</p>
+
+  <h2 class="sec" id="a20">第20条（反社会的勢力の排除）</h2>
+  <ol class="clause">
+    <li>当社および利用者は、自己または自己の役員、実質的に経営を支配する者が、暴力団、暴力団員、暴力団員でなくなった時から5年を経過しない者、暴力団準構成員、暴力団関係企業、総会屋等、社会運動等標ぼうゴロ、特殊知能暴力集団等その他これらに準ずる者（以下「反社会的勢力等」といいます）に該当しないことを表明し、保証します。</li>
+    <li>当社および利用者は、自らまたは第三者を利用して、暴力的な要求行為、法的責任を超えた不当な要求行為、脅迫的言動、風説の流布・偽計・威力を用いた信用毀損または業務妨害行為、その他これらに準ずる行為を行わないことを確約します。</li>
+    <li>当社は、利用者が前2項に違反した場合、何らの催告を要することなく直ちに利用契約を解除することができます。この場合、利用者に生じた損害について当社は責任を負わず、利用料金の返金も行いません。</li>
+  </ol>
+
+  <h2 class="sec" id="a21">第21条（権利義務の譲渡禁止）</h2>
+  <ol class="clause">
+    <li>利用者は、当社の書面による事前の承諾なく、本規約上の地位または本規約に基づく権利義務を、第三者に譲渡し、承継させ、または担保に供することはできません。</li>
+    <li>当社が本サービスにかかる事業を第三者に譲渡した場合、当社は当該譲渡に伴い、本規約上の地位、権利義務および登録事項その他の情報を当該譲渡の譲受人に承継させることができるものとし、利用者はあらかじめこれに同意するものとします。</li>
+  </ol>
+
+  <h2 class="sec" id="a22">第22条（分離可能性）</h2>
+  <p>本規約のいずれかの条項またはその一部が、法令等により無効または執行不能と判断された場合であっても、当該部分以外の残りの規定は、引き続き完全に効力を有するものとします。</p>
+
+  <h2 class="sec" id="a23">第23条（本規約の変更）</h2>
+  <ol class="clause">
+    <li>当社は、次のいずれかに該当する場合、民法第548条の4の定めに従い、利用者の個別の同意を得ることなく本規約を変更することができます。
+      <ol class="kanji">
+        <li>本規約の変更が、利用者の一般の利益に適合するとき</li>
+        <li>本規約の変更が、契約をした目的に反せず、かつ変更の必要性、変更後の内容の相当性その他の事情に照らして合理的なものであるとき</li>
+      </ol>
+    </li>
+    <li>当社は、前項の変更を行う場合、変更後の内容および効力発生時期を、効力発生日の相当期間前までに、本サービス上への掲示または電子メールにより周知します。</li>
+    <li>変更後の本規約の効力発生日以降に利用者が本サービスを利用した場合、変更後の本規約に同意したものとみなします。</li>
+  </ol>
+
+  <h2 class="sec" id="a24">第24条（準拠法および管轄裁判所）</h2>
+  <ol class="clause">
+    <li>本規約の解釈および適用にあたっては、<strong>日本法</strong>を準拠法とします。</li>
+    <li>本サービスまたは本規約に関して当社と利用者との間に紛争が生じた場合には、<strong><span class="ph">{{管轄裁判所}}</span></strong>を第一審の専属的合意管轄裁判所とします。</li>
+  </ol>
+
+  <h2 class="sec" id="a25">第25条（協議事項・お問い合わせ）</h2>
+  <p>本規約に定めのない事項、または本規約の解釈に疑義が生じた場合には、当社と利用者が誠実に協議のうえ、円満に解決を図るものとします。</p>
+  <div class="tbl-wrap">
+    <table class="dl">
+      <tbody>
+        <tr><th scope="row">運営者</th><td><span class="ph">{{事業者名}}</span>（代表者：<span class="ph">{{代表者名}}</span>）</td></tr>
+        <tr><th scope="row">所在地</th><td><span class="ph">{{所在地}}</span></td></tr>
+        <tr><th scope="row">お問い合わせ</th><td><span class="ph">{{メールアドレス}}</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>以上</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <ul class="footer-nav">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/legal/terms" aria-current="page">利用規約</a></li>
+      <li><a href="/legal/privacy">プライバシーポリシー</a></li>
+      <li><a href="/legal/tokushoho">特定商取引法に基づく表記</a></li>
+    </ul>
+    <p class="copyright">© <span class="ph">{{事業者名}}</span> クチコミ番頭</p>
+  </div>
+</footer>
+
+</body>
+</html>

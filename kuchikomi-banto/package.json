@@ -1,0 +1,25 @@
+{
+  "name": "kuchikomi-banto",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "クチコミ番頭 — Googleクチコミ返信AI",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "db:migrate:local": "wrangler d1 migrations apply kuchikomi-banto --local",
+    "db:migrate:prod": "wrangler d1 migrations apply kuchikomi-banto --remote",
+    "db:console:local": "wrangler d1 execute kuchikomi-banto --local --command",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
+    "hono": "^4.13.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260811.1",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.40.0"
+  }
+}

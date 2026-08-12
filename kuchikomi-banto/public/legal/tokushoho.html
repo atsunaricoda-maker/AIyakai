@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow">
+<title>特定商取引法に基づく表記 | クチコミ番頭</title>
+<meta name="description" content="クチコミ番頭の特定商取引法（通信販売）に基づく表記です。販売価格、支払方法、役務の提供時期、解約についてご案内します。">
+<style>
+/* ===== Design tokens (light) ===== */
+:root{
+  --bg:#f7f4ee;              /* 生成り */
+  --surface:#fffdf9;
+  --surface-2:#f1ece2;
+  --text:#22201c;            /* 墨 */
+  --text-muted:#5a544a;
+  --border:#e0d8c9;
+  --border-strong:#cdc2ad;
+  --accent:#1d4a72;          /* 藍 */
+  --accent-weak:#e7eef5;
+  --shu:#a83d28;             /* 朱 */
+  --shu-weak:#fbeee9;
+  --notice-bg:#fdf3e6;
+  --notice-border:#e0b070;
+  --notice-text:#6d4410;
+  --focus:#1d4a72;
+  --shadow:0 1px 2px rgba(34,32,28,.05), 0 8px 24px rgba(34,32,28,.05);
+  --radius:10px;
+  --maxw:720px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17181a;
+    --surface:#1f2124;
+    --surface-2:#282b2f;
+    --text:#eceae5;
+    --text-muted:#a8a49c;
+    --border:#33363a;
+    --border-strong:#4a4e54;
+    --accent:#8ab4dd;
+    --accent-weak:#1e2a35;
+    --shu:#e2907c;
+    --shu-weak:#312320;
+    --notice-bg:#2e2517;
+    --notice-border:#8a6a33;
+    --notice-text:#f0d9ae;
+    --focus:#8ab4dd;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17181a;
+  --surface:#1f2124;
+  --surface-2:#282b2f;
+  --text:#eceae5;
+  --text-muted:#a8a49c;
+  --border:#33363a;
+  --border-strong:#4a4e54;
+  --accent:#8ab4dd;
+  --accent-weak:#1e2a35;
+  --shu:#e2907c;
+  --shu-weak:#312320;
+  --notice-bg:#2e2517;
+  --notice-border:#8a6a33;
+  --notice-text:#f0d9ae;
+  --focus:#8ab4dd;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+}
+
+/* ===== Base ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  font-size:16px;
+  line-height:1.85;
+  font-feature-settings:"palt" 1;
+  text-rendering:optimizeLegibility;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-break:strict;
+}
+a{color:var(--accent);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+
+/* ===== Header ===== */
+.site-header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:20;
+}
+.header-inner{
+  max-width:var(--maxw);margin:0 auto;padding:.75rem 1.25rem;
+  display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;
+}
+.brand{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:.02em}
+.brand:hover{color:var(--accent)}
+.brand svg{flex:none;display:block}
+.brand .brand-name{font-size:1.02rem}
+.back-link{
+  font-size:.86rem;color:var(--text-muted);text-decoration:none;
+  border:1px solid var(--border-strong);border-radius:999px;padding:.28rem .8rem;
+  white-space:nowrap;background:var(--bg);
+}
+.back-link:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ===== Layout ===== */
+main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.25rem 3rem}
+.page-title{font-size:1.6rem;line-height:1.5;margin:.4rem 0 .3rem;letter-spacing:.01em}
+.page-lead{color:var(--text-muted);font-size:.95rem;margin:0 0 1.5rem}
+.meta{font-size:.85rem;color:var(--text-muted);margin:0 0 1.75rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.meta span{display:inline-block;margin-right:1.2rem}
+
+/* ===== Admin notice ===== */
+.admin-notice{
+  background:var(--notice-bg);
+  border:1px solid var(--notice-border);
+  border-left:5px solid var(--notice-border);
+  color:var(--notice-text);
+  border-radius:var(--radius);
+  padding:1.1rem 1.15rem;
+  margin:0 0 2rem;
+  font-size:.9rem;
+  line-height:1.8;
+}
+.admin-notice h2{
+  margin:0 0 .5rem;font-size:.95rem;letter-spacing:.02em;
+  display:flex;align-items:center;gap:.45rem;color:inherit;border:0;padding:0;
+}
+.admin-notice ul{margin:.5rem 0 0;padding-left:1.25rem}
+.admin-notice li{margin-bottom:.35rem}
+.admin-notice code{
+  background:rgba(128,100,40,.16);padding:.08em .35em;border-radius:4px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;
+}
+
+/* ===== Headings ===== */
+h2.sec{
+  font-size:1.08rem;margin:2.4rem 0 .9rem;padding-bottom:.45rem;
+  border-bottom:2px solid var(--border-strong);letter-spacing:.02em;
+}
+h3.sub{font-size:.98rem;margin:1.6rem 0 .5rem;color:var(--text)}
+p{margin:0 0 1rem}
+
+/* ===== Definition table ===== */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 1.25rem}
+table.dl{
+  width:100%;border-collapse:collapse;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  font-size:.94rem;
+}
+table.dl th,table.dl td{text-align:left;vertical-align:top;padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+table.dl tr:last-child th,table.dl tr:last-child td{border-bottom:0}
+table.dl th{
+  width:34%;min-width:11em;font-weight:600;background:var(--surface-2);
+  color:var(--text);border-right:1px solid var(--border);
+}
+table.dl td{color:var(--text)}
+table.dl td p{margin:0 0 .5rem}
+table.dl td p:last-child{margin-bottom:0}
+table.dl ul{margin:.2rem 0 0;padding-left:1.2rem}
+table.dl li{margin-bottom:.3rem}
+@media (max-width:560px){
+  table.dl,table.dl tbody,table.dl tr,table.dl th,table.dl td{display:block;width:100%}
+  table.dl th{border-right:0;border-bottom:1px solid var(--border);padding:.55rem 1rem;font-size:.86rem;color:var(--text-muted)}
+  table.dl td{padding-top:.7rem}
+}
+
+/* ===== Placeholder chip ===== */
+.ph{
+  display:inline-block;
+  background:var(--shu-weak);color:var(--shu);
+  border:1px dashed var(--shu);border-radius:5px;
+  padding:.05em .45em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.9em;font-weight:600;white-space:nowrap;
+}
+
+/* ===== Price table ===== */
+table.price{
+  width:100%;border-collapse:collapse;font-size:.93rem;
+  background:var(--surface);border:1px solid var(--border);
+}
+table.price th,table.price td{padding:.7rem .8rem;border:1px solid var(--border);text-align:left;vertical-align:top}
+table.price thead th{background:var(--surface-2);font-weight:600;white-space:nowrap}
+
+/* ===== Notes ===== */
+.note{
+  background:var(--accent-weak);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:var(--radius);padding:.9rem 1rem;font-size:.9rem;margin:1.25rem 0;color:var(--text);
+}
+.note strong{color:var(--accent)}
+ul.plain{padding-left:1.25rem;margin:0 0 1rem}
+ul.plain li{margin-bottom:.4rem}
+
+/* ===== Footer ===== */
+.site-footer{
+  border-top:1px solid var(--border);background:var(--surface);margin-top:2rem;
+}
+.footer-inner{max-width:var(--maxw);margin:0 auto;padding:1.75rem 1.25rem 2.25rem;font-size:.86rem;color:var(--text-muted)}
+.footer-nav{display:flex;flex-wrap:wrap;gap:.6rem 1.25rem;margin:0 0 1rem;padding:0;list-style:none}
+.footer-nav a{color:var(--text-muted);text-decoration:none}
+.footer-nav a:hover,.footer-nav a[aria-current="page"]{color:var(--accent);text-decoration:underline}
+.footer-nav a[aria-current="page"]{font-weight:600}
+.copyright{margin:0;font-size:.82rem}
+@media print{
+  .site-header,.back-link,.site-footer{position:static}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="3.5" width="19" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M8 17.5 7 21l4.2-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M7 8.5h10M7 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">クチコミ番頭</span>
+    </a>
+    <a class="back-link" href="/">← トップページへ戻る</a>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">特定商取引法に基づく表記</h1>
+  <p class="page-lead">特定商取引に関する法律第11条（通信販売についての広告）に基づき、以下のとおり表示します。</p>
+  <p class="meta"><span>制定日：<span class="ph">{{制定日}}</span></span><span>最終改定日：<span class="ph">{{最終改定日}}</span></span></p>
+
+  <section class="admin-notice" role="note" aria-labelledby="admin-notice-title">
+    <h2 id="admin-notice-title">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3 1.7 21h20.6L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M12 9.5v5M12 17.6v.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      管理者向けの注意（公開前に必ず対応し、このボックスは削除してください）
+    </h2>
+    <ul>
+      <li>本ページには <code>{{事業者名}}</code> のような<strong>プレースホルダ</strong>が残っています。公開前に必ず実際の情報へ置き換えてください。</li>
+      <li>特定商取引法上、通信販売では事業者の氏名（名称）・住所・電話番号などの表示が義務付けられています。<strong>未記載や虚偽の記載は法令違反</strong>となり、行政処分や罰則の対象となり得ます。</li>
+      <li>個人事業主の場合も、氏名・住所・電話番号の表示が原則として必要です（プラットフォーム経由の販売などで例外的な取扱いが認められる場合を除きます）。</li>
+      <li>価格・プラン内容・解約条件の記載は、サービスの実装および Stripe 上の設定と<strong>完全に一致</strong>させてください。</li>
+      <li>本ページは一般的な雛形です。<strong>公開前に弁護士等の専門家の確認を受けることを推奨します。</strong>本ページの記載は法的助言ではありません。</li>
+      <li>置き換え対象：<code>{{事業者名}}</code> <code>{{代表者名}}</code> <code>{{郵便番号}}</code> <code>{{所在地}}</code> <code>{{電話番号}}</code> <code>{{受付時間}}</code> <code>{{メールアドレス}}</code> <code>{{サービスURL}}</code> <code>{{制定日}}</code> <code>{{最終改定日}}</code></li>
+    </ul>
+  </section>
+
+  <h2 class="sec">1. 事業者に関する事項</h2>
+  <div class="tbl-wrap">
+    <table class="dl">
+      <tbody>
+        <tr>
+          <th scope="row">販売事業者名</th>
+          <td><span class="ph">{{事業者名}}</span></td>
+        </tr>
+        <tr>
+          <th scope="row">運営統括責任者</th>
+          <td><span class="ph">{{代表者名}}</span></td>
+        </tr>
+        <tr>
+          <th scope="row">所在地</th>
+          <td>〒<span class="ph">{{郵便番号}}</span><br><span class="ph">{{所在地}}</span></td>
+        </tr>
+        <tr>
+          <th scope="row">電話番号</th>
+          <td>
+            <p><span class="ph">{{電話番号}}</span></p>
+            <p>受付時間：<span class="ph">{{受付時間}}</span>（土日祝・年末年始を除く）</p>
+            <p>お問い合わせは、記録が残るメールでの受付を推奨しております。</p>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">メールアドレス</th>
+          <td><span class="ph">{{メールアドレス}}</span></td>
+        </tr>
+        <tr>
+          <th scope="row">ホームページURL</th>
+          <td><span class="ph">{{サービスURL}}</span></td>
+        </tr>
+        <tr>
+          <th scope="row">販売するサービス</th>
+          <td>クチコミ返信文の作成を支援するクラウドサービス「クチコミ番頭」（月額課金のオンラインサービス）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">2. 販売価格</h2>
+  <p>各プランの月額利用料は以下のとおりです。表示価格はすべて消費税込みです。</p>
+  <div class="tbl-wrap">
+    <table class="price">
+      <thead>
+        <tr><th scope="col">プラン</th><th scope="col">月額（税込）</th><th scope="col">主な内容</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>無料お試し</td>
+          <td>0円</td>
+          <td>登録不要、返信文の生成 3件まで</td>
+        </tr>
+        <tr>
+          <td>ライト</td>
+          <td>2,980円</td>
+          <td>月100件までの返信文生成／1店舗</td>
+        </tr>
+        <tr>
+          <td>スタンダード</td>
+          <td>5,980円</td>
+          <td>月500件までの返信文生成／5店舗</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>有料プランはいずれも14日間の無料トライアル付きです。最新の価格・提供内容は、お申込み画面に表示される内容が優先されます。</p>
+
+  <h2 class="sec">3. 商品代金以外に必要な料金</h2>
+  <ul class="plain">
+    <li>本サービスの利用に必要なインターネット接続料金、通信料金、および端末等の費用はお客様のご負担となります。</li>
+    <li>クレジットカード決済に関する当社所定の手数料は発生しません（カード会社との契約により、分割払い等の手数料がお客様に発生する場合があります）。</li>
+    <li>外貨建てカードをご利用の場合、カード会社所定の為替手数料等が発生することがあります。</li>
+  </ul>
+
+  <h2 class="sec">4. 支払方法</h2>
+  <p>クレジットカードによるお支払い（決済代行事業者：Stripe, Inc. および同社の日本法人が提供する Stripe Checkout を利用）。</p>
+  <p>ご利用いただける主なブランドは Visa／Mastercard／American Express／JCB／Diners Club／Discover です（カード発行会社の判断により利用できない場合があります）。当社がクレジットカード番号を保持することはありません。</p>
+
+  <h2 class="sec">5. 代金の支払時期</h2>
+  <ul class="plain">
+    <li><strong>無料トライアル期間中：</strong>お申込み時にカード情報を登録いただきますが、トライアル期間中は課金されません。</li>
+    <li><strong>初回課金：</strong>14日間の無料トライアル終了日の翌日に、選択したプランの月額料金が課金されます。</li>
+    <li><strong>2回目以降：</strong>初回課金日を起算日として、毎月同日に自動的に課金（自動更新）されます。該当日が存在しない月は、その月の末日に課金されます。</li>
+    <li>決済が失敗した場合、Stripe の設定に基づき所定の回数・間隔で再試行され、それでも決済できない場合はサービスの提供を停止することがあります。</li>
+  </ul>
+
+  <h2 class="sec">6. 役務の提供時期</h2>
+  <p>お申込み手続き（アカウント登録および決済情報の登録）の完了後、直ちにご利用いただけます。無料トライアルはお申込み完了時から開始します。無料お試し（3件まで）は、登録不要でお申込み直後からご利用いただけます。</p>
+
+  <h2 class="sec">7. 返品・キャンセル・解約について</h2>
+  <h3 class="sub">7-1. 返品（役務提供後のキャンセル）</h3>
+  <p>本サービスはデジタルコンテンツの提供を伴う役務であり、提供開始後の返品・返金はお受けできません。なお、本サービスは通信販売にあたるため、特定商取引法上のクーリング・オフ制度の適用はありません。</p>
+  <h3 class="sub">7-2. 解約</h3>
+  <ul class="plain">
+    <li>解約はいつでも可能です。管理画面の「プラン管理」からお手続きいただけます。</li>
+    <li>解約のお手続き後も、<strong>すでにお支払いいただいた期間の末日まで</strong>は有料プランをご利用いただけます。期間満了後は自動更新されません。</li>
+    <li><strong>日割りでの返金は行いません。</strong>月の途中で解約された場合も、当該月の利用料は返金されません。</li>
+    <li>無料トライアル期間中に解約された場合、料金は一切発生しません。</li>
+  </ul>
+  <h3 class="sub">7-3. 例外的な返金</h3>
+  <p>当社の責めに帰すべき事由により長時間にわたりサービスを提供できなかった場合など、当社が特に必要と判断した場合には、個別に返金等の対応を行うことがあります。</p>
+
+  <div class="note">
+    <p><strong>ご注意：</strong>返信文の生成結果は、必ずお客様ご自身で内容をご確認のうえご利用ください。生成結果の内容や、それをGoogleビジネスプロフィール等に投稿した結果について、当社は責任を負いかねます。詳しくは<a href="/legal/terms">利用規約</a>をご確認ください。</p>
+  </div>
+
+  <h2 class="sec">8. サービスの動作環境</h2>
+  <ul class="plain">
+    <li>インターネットに接続できる環境（ブロードバンド回線を推奨）</li>
+    <li><strong>パソコン：</strong>Google Chrome、Microsoft Edge、Mozilla Firefox、Safari の各最新版</li>
+    <li><strong>スマートフォン・タブレット：</strong>iOS 16 以降の Safari、Android 10 以降の Google Chrome</li>
+    <li>JavaScript および Cookie が有効であること</li>
+    <li>上記以外の環境でも動作する場合がありますが、動作保証の対象外です。</li>
+  </ul>
+
+  <h2 class="sec">9. その他の事項</h2>
+  <div class="tbl-wrap">
+    <table class="dl">
+      <tbody>
+        <tr>
+          <th scope="row">申込みの有効期限</th>
+          <td>お申込み画面での手続き完了をもって契約成立となるため、有効期限の定めはありません。</td>
+        </tr>
+        <tr>
+          <th scope="row">販売数量の制限等</th>
+          <td>各プランには月間の生成件数および登録可能な店舗数の上限があります（上記「販売価格」欄をご参照ください）。上限を超えた場合は、翌月の更新までご利用いただけません。</td>
+        </tr>
+        <tr>
+          <th scope="row">サービス提供地域</th>
+          <td>日本国内</td>
+        </tr>
+        <tr>
+          <th scope="row">個人情報の取扱い</th>
+          <td><a href="/legal/privacy">プライバシーポリシー</a>に定めるとおり取り扱います。</td>
+        </tr>
+        <tr>
+          <th scope="row">利用条件</th>
+          <td><a href="/legal/terms">利用規約</a>に定めるとおりです。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">10. お問い合わせ</h2>
+  <p>本サービスおよび本表記に関するお問い合わせは、<span class="ph">{{メールアドレス}}</span> までご連絡ください。<span class="ph">{{受付時間}}</span> に順次対応いたします。</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <ul class="footer-nav">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/legal/terms">利用規約</a></li>
+      <li><a href="/legal/privacy">プライバシーポリシー</a></li>
+      <li><a href="/legal/tokushoho" aria-current="page">特定商取引法に基づく表記</a></li>
+    </ul>
+    <p class="copyright">© <span class="ph">{{事業者名}}</span> クチコミ番頭</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クチコミ番頭 — Googleクチコミへの返信文を、AIが10秒で3案</title>
+<meta name="description" content="貼って、選んで、コピーするだけ。Googleクチコミへの返信文を丁寧・親しみ・簡潔の3案でつくります。Google連携・API認証は不要。登録不要で3件まで無料でお試しいただけます。">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="クチコミ番頭 — Googleクチコミへの返信文を、AIが10秒で3案">
+<meta property="og:description" content="低評価の返信に手が止まる店長のための、返信文づくりの道具です。登録不要で3件まで無料。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f3f66'/%3E%3Cpath d='M16 20h32v20H32l-10 8v-8h-6z' fill='%23faf7f1'/%3E%3C/svg%3E">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('kb-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<style>
+/* ===== カラートークン（ライト＝既定） ===== */
+:root {
+  --bg: #faf7f1;            /* 生成り */
+  --bg-elev: #ffffff;
+  --bg-sunken: #f2ece1;
+  --ink: #1b1a17;           /* 墨 */
+  --ink-2: #4a463f;
+  --ink-3: #6b6659;
+  --line: #e2dacb;
+  --line-strong: #cfc4b0;
+  --ai: #1f3f66;            /* 藍 */
+  --ai-soft: #e9eff6;
+  --shu: #b8402f;           /* 朱 */
+  --shu-soft: #fbecea;
+  --ok: #2f6b4f;
+  --ok-soft: #e9f2ec;
+  --warn-soft: #fbf1de;
+  --warn-line: #d8b878;
+  --btn-bg: #1f3f66;
+  --btn-fg: #ffffff;
+  --shadow: 0 1px 2px rgba(27, 26, 23, .05), 0 8px 24px rgba(27, 26, 23, .06);
+  --shadow-sm: 0 1px 2px rgba(27, 26, 23, .06);
+  --radius: 14px;
+  --maxw: 1080px;
+}
+/* システム設定がダークのとき（ユーザーが light を明示していない場合のみ） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141310;
+    --bg-elev: #1e1c17;
+    --bg-sunken: #100f0c;
+    --ink: #f1ede4;
+    --ink-2: #c6c0b3;
+    --ink-3: #9d9689;
+    --line: #33302a;
+    --line-strong: #4a463d;
+    --ai: #9dc0e4;
+    --ai-soft: #1b2632;
+    --shu: #ec8377;
+    --shu-soft: #2d1b18;
+    --ok: #86c9a4;
+    --ok-soft: #16241d;
+    --warn-soft: #2a2312;
+    --warn-line: #6b5a2f;
+    --btn-bg: #9dc0e4;
+    --btn-fg: #101820;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  }
+}
+/* 明示的なダーク指定 */
+:root[data-theme="dark"] {
+  --bg: #141310;
+  --bg-elev: #1e1c17;
+  --bg-sunken: #100f0c;
+  --ink: #f1ede4;
+  --ink-2: #c6c0b3;
+  --ink-3: #9d9689;
+  --line: #33302a;
+  --line-strong: #4a463d;
+  --ai: #9dc0e4;
+  --ai-soft: #1b2632;
+  --shu: #ec8377;
+  --shu-soft: #2d1b18;
+  --ok: #86c9a4;
+  --ok-soft: #16241d;
+  --warn-soft: #2a2312;
+  --warn-line: #6b5a2f;
+  --btn-bg: #9dc0e4;
+  --btn-fg: #101820;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+}
+
+/* ===== ベース ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  font-feature-settings: "palt" 1;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+img, svg { max-width: 100%; }
+h1, h2, h3, h4 { line-height: 1.45; margin: 0 0 .6em; font-weight: 700; letter-spacing: .01em; }
+p { margin: 0 0 1em; }
+a { color: var(--ai); text-underline-offset: .2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible {
+  outline: 3px solid var(--ai);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: 20px; }
+.section { padding: 64px 0; }
+.section--tint { background: var(--bg-sunken); }
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--ai);
+  background: var(--ai-soft);
+  border-radius: 999px;
+  padding: 4px 14px;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.section h2 { font-size: clamp(22px, 5vw, 30px); margin-bottom: .4em; }
+.section .lede { color: var(--ink-2); max-width: 46em; margin-bottom: 2em; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ===== ボタン ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  font: inherit; font-weight: 700; line-height: 1.4;
+  padding: 14px 24px; border-radius: 10px; border: 1px solid transparent;
+  cursor: pointer; text-decoration: none; text-align: center;
+  transition: transform .12s ease, background-color .12s ease, border-color .12s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn--primary { background: var(--btn-bg); color: var(--btn-fg); box-shadow: var(--shadow-sm); }
+.btn--primary:hover { filter: brightness(1.08); }
+.btn--ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn--ghost:hover { background: var(--bg-elev); border-color: var(--ink-3); }
+.btn--sm { padding: 8px 14px; font-size: 14px; border-radius: 8px; }
+.btn[disabled] { opacity: .6; cursor: not-allowed; transform: none; }
+.btn--block { width: 100%; }
+
+/* ===== ヘッダー ===== */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.site-header .wrap {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 60px;
+}
+.brand { display: flex; align-items: center; gap: 9px; font-weight: 700; color: var(--ink); text-decoration: none; font-size: 17px; }
+.brand svg { flex: none; }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav-link { display: none; color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 600; padding: 6px 10px; border-radius: 8px; }
+.nav-link:hover { background: var(--bg-sunken); color: var(--ink); }
+@media (min-width: 760px) { .nav-link { display: inline-block; } }
+.theme-toggle {
+  width: 40px; height: 40px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--ink-2);
+  border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
+}
+.theme-toggle:hover { background: var(--bg-sunken); color: var(--ink); }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: block; }
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: none; }
+}
+
+/* ===== ヒーロー ===== */
+.hero { padding: 44px 0 56px; position: relative; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(70% 60% at 82% 0%, var(--ai-soft) 0%, transparent 62%),
+    radial-gradient(50% 50% at 8% 12%, var(--shu-soft) 0%, transparent 60%);
+  opacity: .85; pointer-events: none;
+}
+.hero .wrap { position: relative; }
+.hero-grid { display: grid; gap: 32px; align-items: center; }
+@media (min-width: 900px) { .hero-grid { grid-template-columns: 1.08fr .92fr; gap: 44px; } }
+.hero h1 {
+  font-size: clamp(27px, 6.6vw, 44px);
+  line-height: 1.35; letter-spacing: .005em; margin-bottom: .5em;
+}
+.hero h1 .mark {
+  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--shu) 26%, transparent) 62%);
+  padding-inline: 2px;
+}
+.hero .sub { font-size: clamp(15px, 3.6vw, 17.5px); color: var(--ink-2); max-width: 34em; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 26px 0 14px; }
+.hero-cta .btn { flex: 1 1 220px; }
+.hero-notes { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: var(--ink-3); margin: 0; list-style: none; padding: 0; }
+.hero-notes li { display: flex; align-items: center; gap: 6px; }
+.hero-notes svg { flex: none; color: var(--ok); }
+
+/* ヒーローのモック */
+.mock {
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: 16px; box-shadow: var(--shadow); overflow: hidden;
+}
+.mock-bar { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg-sunken); }
+.mock-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+.mock-body { padding: 16px; }
+.mock-label { font-size: 12px; font-weight: 700; color: var(--ink-3); letter-spacing: .08em; margin-bottom: 6px; }
+.mock-review {
+  background: var(--bg-sunken); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; font-size: 14px; color: var(--ink-2); line-height: 1.75;
+}
+.mock-stars { color: var(--shu); letter-spacing: .12em; font-size: 14px; }
+.mock-stars .dim { color: var(--line-strong); }
+.mock-arrow { display: flex; justify-content: center; padding: 10px 0; color: var(--ink-3); }
+.mock-replies { display: grid; gap: 8px; }
+.mock-reply {
+  border: 1px solid var(--line); border-left: 3px solid var(--ai);
+  border-radius: 8px; padding: 10px 12px; font-size: 13.5px; color: var(--ink-2); line-height: 1.7;
+  background: var(--bg-elev);
+}
+.mock-reply b { display: block; font-size: 11.5px; color: var(--ai); letter-spacing: .06em; margin-bottom: 2px; }
+
+/* ===== デモ ===== */
+.demo-card {
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: 18px; box-shadow: var(--shadow); padding: clamp(18px, 4vw, 30px);
+}
+.field { margin-bottom: 18px; }
+.field > label, .field > .label {
+  display: block; font-weight: 700; font-size: 14.5px; margin-bottom: 7px; color: var(--ink);
+}
+.field .hint { font-size: 13px; color: var(--ink-3); font-weight: 400; margin-left: .5em; }
+textarea, select {
+  width: 100%; font: inherit; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line-strong);
+  border-radius: 10px; padding: 12px 14px; line-height: 1.8;
+}
+textarea { min-height: 148px; resize: vertical; }
+select { appearance: none; padding-right: 42px; background-image: none; cursor: pointer; }
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: ""; position: absolute; right: 16px; top: 50%; width: 9px; height: 9px;
+  border-right: 2px solid var(--ink-3); border-bottom: 2px solid var(--ink-3);
+  transform: translateY(-70%) rotate(45deg); pointer-events: none;
+}
+textarea:focus-visible, select:focus-visible { outline: 3px solid var(--ai); outline-offset: 1px; border-color: var(--ai); }
+.field-row { display: grid; gap: 18px; }
+@media (min-width: 640px) { .field-row { grid-template-columns: 1fr 1fr; } }
+.demo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 6px; }
+.demo-actions .btn { flex: 1 1 260px; font-size: 17px; padding: 16px 24px; }
+.demo-meta { font-size: 13px; color: var(--ink-3); }
+.sample-btn {
+  background: none; border: 0; font: inherit; font-size: 13px; color: var(--ai);
+  text-decoration: underline; text-underline-offset: .2em; cursor: pointer; padding: 2px 4px;
+}
+.spinner {
+  width: 17px; height: 17px; border-radius: 50%; flex: none;
+  border: 2.5px solid color-mix(in srgb, var(--btn-fg) 35%, transparent);
+  border-top-color: var(--btn-fg);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+[hidden] { display: none !important; }
+
+.msg { border-radius: 10px; padding: 14px 16px; margin-top: 20px; font-size: 14.5px; line-height: 1.75; }
+.msg h3 { font-size: 15px; margin: 0 0 .3em; }
+.msg p:last-child { margin-bottom: 0; }
+.msg--error { background: var(--shu-soft); border: 1px solid color-mix(in srgb, var(--shu) 40%, transparent); color: var(--ink); }
+.msg--limit { background: var(--warn-soft); border: 1px solid var(--warn-line); color: var(--ink); }
+.msg--risk { background: var(--warn-soft); border: 1px solid var(--warn-line); }
+.msg--risk.is-high { background: var(--shu-soft); border-color: color-mix(in srgb, var(--shu) 45%, transparent); }
+.msg--risk.is-low { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.msg .btn { margin-top: 6px; }
+
+.results { margin-top: 26px; }
+.results-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+.results-head h3 { margin: 0; font-size: 17px; }
+.results-head .remaining { font-size: 13px; color: var(--ink-3); margin-left: auto; }
+.draft-grid { display: grid; gap: 14px; }
+@media (min-width: 860px) { .draft-grid { grid-template-columns: repeat(3, 1fr); } }
+.draft {
+  display: flex; flex-direction: column;
+  background: var(--bg); border: 1px solid var(--line); border-top: 3px solid var(--ai);
+  border-radius: 12px; padding: 16px;
+}
+.draft h4 { font-size: 14px; color: var(--ai); margin: 0 0 10px; letter-spacing: .04em; }
+.draft-text {
+  font-size: 14.5px; line-height: 1.85; color: var(--ink); white-space: pre-wrap;
+  word-break: break-word; flex: 1; margin: 0 0 14px;
+}
+.copy-btn { align-self: flex-start; }
+.copy-btn.is-done { border-color: var(--ok); color: var(--ok); }
+
+/* ===== 共感 ===== */
+.pain-grid { display: grid; gap: 14px; }
+@media (min-width: 700px) { .pain-grid { grid-template-columns: 1fr 1fr; } }
+.pain {
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+}
+.pain .quote {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--shu-soft); color: var(--shu);
+  display: grid; place-items: center; font-weight: 700; font-size: 17px;
+}
+.pain p { margin: 0; font-size: 15px; color: var(--ink-2); }
+.pain strong { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 2px; }
+.pain-after { margin-top: 24px; font-size: 15.5px; color: var(--ink); border-left: 3px solid var(--ai); padding-left: 16px; }
+
+/* ===== ステップ ===== */
+.steps { display: grid; gap: 18px; counter-reset: step; }
+@media (min-width: 800px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+.step {
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 22px 20px 24px; text-align: center;
+}
+.step-fig { display: grid; place-items: center; margin-bottom: 14px; }
+.step-fig svg { width: 100%; height: auto; max-width: 190px; }
+.step-no {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--ai); color: var(--bg-elev); font-size: 14px; font-weight: 700; margin-bottom: 8px;
+}
+:root[data-theme="dark"] .step-no { color: #101820; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .step-no { color: #101820; } }
+.step h3 { font-size: 17px; margin-bottom: .3em; }
+.step p { font-size: 14.5px; color: var(--ink-2); margin: 0; }
+
+/* ===== 機能 ===== */
+.feature-grid { display: grid; gap: 16px; }
+@media (min-width: 700px) { .feature-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .feature-grid { grid-template-columns: repeat(3, 1fr); } }
+.feature {
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 22px 20px;
+}
+.feature-icon {
+  width: 40px; height: 40px; border-radius: 10px; background: var(--ai-soft); color: var(--ai);
+  display: grid; place-items: center; margin-bottom: 12px;
+}
+.feature h3 { font-size: 16.5px; margin-bottom: .35em; }
+.feature p { font-size: 14.5px; color: var(--ink-2); margin: 0; }
+
+/* ===== 業種別の例 ===== */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tab {
+  font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
+  background: var(--bg-elev); color: var(--ink-2);
+  border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 18px;
+}
+.tab[aria-selected="true"] { background: var(--ai); color: var(--btn-fg); border-color: var(--ai); }
+:root[data-theme="dark"] .tab[aria-selected="true"] { color: #101820; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tab[aria-selected="true"] { color: #101820; } }
+.case { display: grid; gap: 16px; }
+@media (min-width: 840px) { .case { grid-template-columns: 1fr 1fr; align-items: stretch; } }
+.case-box {
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px;
+}
+.case-box.before { border-left: 3px solid var(--shu); }
+.case-box.after { border-left: 3px solid var(--ai); }
+.case-box .tag { font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--ink-3); display: block; margin-bottom: 8px; }
+.case-box .stars { color: var(--shu); letter-spacing: .12em; margin-bottom: 6px; }
+.case-box .stars .dim { color: var(--line-strong); }
+.case-box p { font-size: 14.5px; line-height: 1.85; color: var(--ink-2); margin: 0; white-space: pre-line; }
+.case-box.after p { color: var(--ink); }
+.disclaimer { font-size: 12.5px; color: var(--ink-3); margin-top: 16px; line-height: 1.7; }
+
+/* ===== 料金 ===== */
+.plans { display: grid; gap: 18px; align-items: start; }
+@media (min-width: 900px) { .plans { grid-template-columns: repeat(3, 1fr); } }
+.plan {
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: 16px; padding: 24px 22px; display: flex; flex-direction: column; height: 100%;
+}
+.plan.is-featured { border: 2px solid var(--ai); box-shadow: var(--shadow); position: relative; }
+.plan-badge {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--ai); color: var(--btn-fg); font-size: 12.5px; font-weight: 700;
+  padding: 3px 14px; border-radius: 999px; white-space: nowrap;
+}
+:root[data-theme="dark"] .plan-badge { color: #101820; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .plan-badge { color: #101820; } }
+.plan h3 { font-size: 18px; margin-bottom: .2em; }
+.plan .plan-for { font-size: 13.5px; color: var(--ink-3); margin-bottom: 14px; }
+.price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.price .num { font-size: 34px; font-weight: 700; letter-spacing: -.01em; }
+.price .per { font-size: 14px; color: var(--ink-3); }
+.price-note { font-size: 12.5px; color: var(--ink-3); margin-bottom: 18px; }
+.plan ul { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 9px; }
+.plan li { display: flex; gap: 9px; font-size: 14.5px; color: var(--ink-2); line-height: 1.7; }
+.plan li svg { flex: none; margin-top: 6px; color: var(--ai); }
+.plan .btn { margin-top: auto; }
+.pricing-foot { font-size: 13.5px; color: var(--ink-3); margin-top: 22px; text-align: center; }
+
+/* ===== FAQ ===== */
+.faq { display: grid; gap: 10px; max-width: 800px; }
+details {
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: 12px;
+}
+details[open] { border-color: var(--line-strong); }
+summary {
+  cursor: pointer; list-style: none; padding: 16px 48px 16px 18px; position: relative;
+  font-weight: 700; font-size: 15.5px; line-height: 1.7; border-radius: 12px;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: ""; position: absolute; right: 20px; top: 24px; width: 9px; height: 9px;
+  border-right: 2px solid var(--ink-3); border-bottom: 2px solid var(--ink-3);
+  transform: rotate(45deg); transition: transform .18s ease;
+}
+details[open] summary::after { transform: rotate(-135deg); top: 27px; }
+summary:hover { background: var(--bg-sunken); }
+.faq-body { padding: 0 18px 18px; font-size: 14.5px; color: var(--ink-2); }
+.faq-body p:last-child { margin-bottom: 0; }
+
+/* ===== 最終CTA ===== */
+.final-cta {
+  background: var(--ai-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+.final-cta h2 { margin-bottom: .4em; }
+.final-cta p { color: var(--ink-2); max-width: 34em; margin-inline: auto; }
+.final-cta .btn { margin-top: 10px; }
+
+/* ===== フッター ===== */
+.site-footer { background: var(--bg-sunken); border-top: 1px solid var(--line); padding: 44px 0 32px; font-size: 14px; }
+.footer-grid { display: grid; gap: 26px; }
+@media (min-width: 760px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; } }
+.footer-grid h3 { font-size: 13px; letter-spacing: .1em; color: var(--ink-3); margin-bottom: .8em; }
+.footer-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.footer-grid a { color: var(--ink-2); text-decoration: none; }
+.footer-grid a:hover { color: var(--ink); text-decoration: underline; }
+.footer-about { color: var(--ink-2); font-size: 13.5px; max-width: 32em; }
+.footer-legal { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 12.5px; line-height: 1.8; }
+.footer-legal p { margin: 0 0 .4em; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px);
+  background: var(--ink); color: var(--bg); padding: 11px 20px; border-radius: 16px;
+  max-width: calc(100vw - 32px); text-align: center; line-height: 1.6;
+  font-size: 14px; font-weight: 700; box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 100;
+}
+.toast.is-shown { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="currentColor" opacity=".12"/>
+        <path d="M14 18h36v24H33l-11 9v-9h-8z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/>
+        <path d="M23 27h18M23 34h12" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+      </svg>
+      クチコミ番頭
+    </a>
+    <nav class="header-actions" aria-label="サイト内メニュー">
+      <a class="nav-link" href="#try">無料で試す</a>
+      <a class="nav-link" href="#features">選ばれる理由</a>
+      <a class="nav-link" href="#pricing">料金</a>
+      <a class="nav-link" href="#faq">よくある質問</a>
+      <a class="nav-link" href="/login">ログイン</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="表示テーマを切り替える" title="表示テーマを切り替える">
+        <svg class="icon-sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"/>
+          <path d="M12 2.6v2.2M12 19.2v2.2M4.3 4.3l1.6 1.6M18.1 18.1l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.3 19.7l1.6-1.6M18.1 5.9l1.6-1.6"/>
+        </svg>
+        <svg class="icon-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 1. ヒーロー -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Googleクチコミ 返信文づくり</span>
+          <h1>「星1がついた。<br><span class="mark">何と返せばいいのか分からない</span>」<br>その手が止まる時間を、10秒に。</h1>
+          <p class="sub">
+            クチコミ本文を貼って、星の数を選ぶだけ。<strong>丁寧・親しみ・簡潔の3案</strong>を同時につくります。
+            気に入った案をコピーして、Googleビジネスプロフィールに貼るだけ。<br>
+            Googleアカウントの連携もAPIの設定も要りません。
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn--primary" href="#try">無料で3件試す</a>
+            <a class="btn btn--ghost" href="#pricing">料金を見る</a>
+          </div>
+          <ul class="hero-notes">
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>
+              クレジットカード登録不要
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>
+              会員登録なしで3件まで
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>
+              Google連携・API設定なし
+            </li>
+          </ul>
+        </div>
+
+        <div class="mock" aria-hidden="true">
+          <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span></div>
+          <div class="mock-body">
+            <div class="mock-label">いただいたクチコミ</div>
+            <div class="mock-review">
+              <div class="mock-stars">★<span class="dim">★★★★</span></div>
+              予約していたのに30分近く待たされました。料理は美味しかったけれど、対応の説明が何もなかったのが残念です。
+            </div>
+            <div class="mock-arrow">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M6 13.5l6 6 6-6"/></svg>
+            </div>
+            <div class="mock-replies">
+              <div class="mock-reply"><b>丁寧</b>この度はご予約のお時間にご案内できず、ご不快な思いをおかけいたしました。当日の状況説明も不足しており…</div>
+              <div class="mock-reply"><b>親しみ</b>お待たせしてしまい、本当に申し訳ありませんでした。お料理をお褒めいただけたことが救いです…</div>
+              <div class="mock-reply"><b>簡潔</b>お待たせした上にご説明が足らず失礼いたしました。予約時間の管理を見直してまいります。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. その場で試せるデモ -->
+  <section class="section section--tint" id="try">
+    <div class="wrap">
+      <span class="eyebrow">その場でお試し</span>
+      <h2>実際のクチコミを貼って、返信文をつくってみてください</h2>
+      <p class="lede">登録もカード情報も要りません。この画面のまま3件までお試しいただけます。実際に届いたクチコミをそのまま貼るのが、いちばん違いが分かります。</p>
+
+      <div class="demo-card">
+        <form id="demoForm" novalidate>
+          <div class="field">
+            <label for="review">クチコミ本文
+              <span class="hint">お客様が書いた文章をそのまま貼り付けてください</span>
+            </label>
+            <textarea id="review" name="review" maxlength="2000"
+              placeholder="例）予約していたのに30分近く待たされました。料理は美味しかったけれど、対応の説明が何もなかったのが残念です。"
+              aria-describedby="reviewHelp"></textarea>
+            <p id="reviewHelp" class="demo-meta" style="margin:6px 0 0;">
+              <span id="charCount">0</span> / 2,000文字
+              <button type="button" class="sample-btn" id="sampleBtn">サンプルを入れる</button>
+            </p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="rating">星評価</label>
+              <div class="select-wrap">
+                <select id="rating" name="rating">
+                  <option value="5">★★★★★（5）とても満足</option>
+                  <option value="4">★★★★☆（4）満足</option>
+                  <option value="3">★★★☆☆（3）ふつう</option>
+                  <option value="2">★★☆☆☆（2）不満</option>
+                  <option value="1" selected>★☆☆☆☆（1）強い不満</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="industry">業種</label>
+              <div class="select-wrap">
+                <select id="industry" name="industry">
+                  <option value="restaurant" selected>飲食店（レストラン・居酒屋）</option>
+                  <option value="cafe">カフェ・喫茶店・ベーカリー</option>
+                  <option value="beauty">美容室・理容室</option>
+                  <option value="nail_eyelash">ネイル・まつげエクステ</option>
+                  <option value="relaxation">整体・接骨院・リラクゼーション</option>
+                  <option value="clinic_dental">歯科医院</option>
+                  <option value="clinic_medical">クリニック・医院（医科）</option>
+                  <option value="construction">工務店・リフォーム</option>
+                  <option value="cram_school">学習塾・スクール・習い事</option>
+                  <option value="real_estate">不動産</option>
+                  <option value="auto">自動車整備・車検</option>
+                  <option value="hotel">ホテル・旅館</option>
+                  <option value="retail">小売店・専門店</option>
+                  <option value="gym">ジム・フィットネス</option>
+                  <option value="professional">士業・専門サービス</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-actions">
+            <button class="btn btn--primary" type="submit" id="generateBtn">
+              <span class="spinner" id="spinner" hidden></span>
+              <span id="generateLabel">返信文を作る</span>
+            </button>
+            <span class="demo-meta">10秒ほどで3案が出ます</span>
+          </div>
+        </form>
+
+        <div class="msg msg--error" id="errorBox" role="alert" hidden></div>
+
+        <div class="msg msg--limit" id="limitBox" role="alert" hidden>
+          <h3 id="limitTitle">無料でお試しいただける3件を使い切りました</h3>
+          <p id="limitText">続けてお使いいただくには、プランのお申し込み・変更が必要です。ライトプランは月100件・14日間の無料トライアル付きで、いつでも解約いただけます。</p>
+          <a class="btn btn--primary btn--sm" href="#pricing">料金プランを見る</a>
+        </div>
+
+        <div class="msg msg--risk" id="riskBox" role="status" hidden></div>
+
+        <div class="results" id="results" hidden>
+          <div class="results-head">
+            <h3>返信文の3案</h3>
+            <span class="remaining" id="remainingText"></span>
+          </div>
+          <div class="draft-grid" id="draftGrid"></div>
+          <p class="disclaimer">生成された文章は下書きです。事実関係（日時・担当者・経緯）をご確認のうえ、店舗の実情に合わせて手直ししてからご投稿ください。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 共感 -->
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">こんなことありませんか</span>
+      <h2>返信が止まる理由は、たいてい「文章」ではなく「気持ち」です</h2>
+      <p class="lede">忙しいからではなく、書き出しが決まらないから後回しになる。多くの店長さんが同じところでつまずいています。</p>
+      <div class="pain-grid">
+        <div class="pain">
+          <span class="quote" aria-hidden="true">”</span>
+          <p><strong>星1の返信が、いちばん時間を食う</strong>謝りすぎると非を全部認めたように見える。淡々と書くと冷たく見える。書いては消してを30分。</p>
+        </div>
+        <div class="pain">
+          <span class="quote" aria-hidden="true">”</span>
+          <p><strong>気づけば未返信が20件たまっている</strong>「あとでまとめて」がずっと来ない。古いクチコミに今さら返信していいのかも分からない。</p>
+        </div>
+        <div class="pain">
+          <span class="quote" aria-hidden="true">”</span>
+          <p><strong>毎回「この度はご来店いただき」から始まる</strong>同じ文面のコピペが並ぶと、見ている人にも伝わってしまう気がする。</p>
+        </div>
+        <div class="pain">
+          <span class="quote" aria-hidden="true">”</span>
+          <p><strong>返信が検索やAIの評価に効くと聞いたが</strong>大事なのは分かる。ただ、営業しながら文章を練る時間がどうしても取れない。</p>
+        </div>
+      </div>
+      <p class="pain-after">クチコミ番頭は、文章を「ゼロから考える」工程だけを引き受けます。判断と最終確認は、お店のあなたが行うつくりです。</p>
+    </div>
+  </section>
+
+  <!-- 4. 使い方3ステップ -->
+  <section class="section section--tint">
+    <div class="wrap">
+      <span class="eyebrow">使い方</span>
+      <h2>やることは3つ。貼る、選ぶ、コピーする</h2>
+      <p class="lede">パソコンが得意でなくても大丈夫です。設定画面もインストールもありません。</p>
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-fig">
+            <svg viewBox="0 0 200 120" role="img" aria-label="クチコミの文章をコピーして貼り付ける様子">
+              <rect x="14" y="16" width="104" height="80" rx="8" fill="var(--bg-sunken)" stroke="var(--line-strong)" stroke-width="2"/>
+              <path d="M30 36h68M30 50h72M30 64h48" stroke="var(--ink-3)" stroke-width="4" stroke-linecap="round"/>
+              <rect x="98" y="44" width="82" height="60" rx="8" fill="var(--bg-elev)" stroke="var(--ai)" stroke-width="2.5"/>
+              <path d="M112 62h54M112 74h44M112 86h30" stroke="var(--ai)" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+              <path d="M76 26l22 14-22 14" fill="none" stroke="var(--shu)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+            </svg>
+          </div>
+          <span class="step-no">1</span>
+          <h3>貼る</h3>
+          <p>Googleに届いたクチコミの文章を、そのままコピーして貼り付けます。</p>
+        </div>
+
+        <div class="step">
+          <div class="step-fig">
+            <svg viewBox="0 0 200 120" role="img" aria-label="星評価と業種を選ぶ様子">
+              <g fill="var(--line-strong)">
+                <path id="s" d="M30 32l5.3 10.8 11.9 1.7-8.6 8.4 2 11.8L30 59.1l-10.6 5.6 2-11.8-8.6-8.4 11.9-1.7z"/>
+                <use href="#s" x="34"/><use href="#s" x="68"/><use href="#s" x="102"/><use href="#s" x="136"/>
+              </g>
+              <use href="#s" fill="var(--shu)"/>
+              <rect x="16" y="82" width="168" height="26" rx="7" fill="var(--bg-elev)" stroke="var(--ai)" stroke-width="2.5"/>
+              <path d="M30 95h74" stroke="var(--ink-3)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M158 91l6 6 6-6" fill="none" stroke="var(--ai)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="step-no">2</span>
+          <h3>選ぶ</h3>
+          <p>星の数と業種を選んで、ボタンを押します。10秒ほどで3案が並びます。</p>
+        </div>
+
+        <div class="step">
+          <div class="step-fig">
+            <svg viewBox="0 0 200 120" role="img" aria-label="生成された返信文をコピーする様子">
+              <rect x="20" y="14" width="118" height="34" rx="7" fill="var(--bg-elev)" stroke="var(--line-strong)" stroke-width="2"/>
+              <path d="M34 26h76M34 36h50" stroke="var(--ink-3)" stroke-width="3.5" stroke-linecap="round"/>
+              <rect x="20" y="56" width="118" height="34" rx="7" fill="var(--bg-elev)" stroke="var(--ai)" stroke-width="2.5"/>
+              <path d="M34 68h76M34 78h50" stroke="var(--ai)" stroke-width="3.5" stroke-linecap="round" opacity=".7"/>
+              <rect x="140" y="60" width="42" height="26" rx="7" fill="var(--ai)"/>
+              <path d="M150 73l5.5 5.5L172 68" fill="none" stroke="var(--bg-elev)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="20" y="98" width="118" height="14" rx="6" fill="var(--bg-sunken)" stroke="var(--line-strong)" stroke-width="2"/>
+            </svg>
+          </div>
+          <span class="step-no">3</span>
+          <h3>コピーする</h3>
+          <p>いちばん近い案をワンクリックでコピーし、Googleビジネスプロフィールに貼れば完了です。</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 選ばれる理由 -->
+  <section class="section" id="features">
+    <div class="wrap">
+      <span class="eyebrow">選ばれる理由</span>
+      <h2>「それっぽい文章」ではなく、お店の言葉になるように</h2>
+      <p class="lede">汎用の文章生成ツールとの違いは、店舗返信という仕事に必要な作法をあらかじめ組み込んである点です。</p>
+      <div class="feature-grid">
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-6h6v6"/></svg>
+          </div>
+          <h3>店舗プロフィールが毎回反映される</h3>
+          <p>業種・こだわり・使ってほしくないNGワード・署名を一度登録すれば、以降のすべての返信に自動で反映されます。毎回の指示は不要です。</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3.2v5.1c0 4.4-3 8.3-7.5 9.7-4.5-1.4-7.5-5.3-7.5-9.7V6.2z"/><path d="M9.2 12.2l2 2 3.6-3.9"/></svg>
+          </div>
+          <h3>低評価は「型」で崩れない</h3>
+          <p>謝罪 → 事実確認 → 改善の姿勢 → オフラインでの連絡誘導。感情的にも過剰にもならない順序を守った文面を組み立てます。</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 4.2a2 2 0 0 1 3.4 0l7.4 12.9a2 2 0 0 1-1.7 3H4.6a2 2 0 0 1-1.7-3z"/><path d="M12 9.5v4.2M12 17.2h.01"/></svg>
+          </div>
+          <h3>誹謗中傷・事実無根を検知</h3>
+          <p>返信すべきでない内容だと判断した場合は、無理に文章をつくらず「返信せず削除申請を検討してください」と助言します。火に油を注がないための機能です。</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16M4 12h10M4 19h13"/><circle cx="19" cy="12" r="2"/></svg>
+          </div>
+          <h3>丁寧・親しみ・簡潔の3案</h3>
+          <p>同じ内容でも、店の空気に合う言い回しは違います。3つ並べて比べられるので、選ぶだけで自分の店の声に近づきます。</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.4 2"/></svg>
+          </div>
+          <h3>作った返信は履歴に残る</h3>
+          <p>いつ・どのクチコミに・どんな文章を返したかを残せます。同じ話題が続いたときの言い回しの重複も避けやすくなります。</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V8.5L9 5v16"/><path d="M9 21V9.5L15 6v15"/><path d="M15 21V11l6-3.5V21"/><path d="M2 21h20"/></svg>
+          </div>
+          <h3>複数店舗をまとめて管理</h3>
+          <p>スタンダードプランなら5店舗まで登録可能。店舗ごとにプロフィールと署名を分けられるので、多店舗運営でも文面が混ざりません。</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 業種別の例 -->
+  <section class="section section--tint" id="examples">
+    <div class="wrap">
+      <span class="eyebrow">業種別の例</span>
+      <h2>どんな返信になるのか、先に見ておいてください</h2>
+      <p class="lede">実際の生成結果に近いイメージです。業種を切り替えてご覧いただけます。</p>
+
+      <div class="tabs" role="tablist" aria-label="業種を選ぶ">
+        <button class="tab" role="tab" id="tab-food" aria-controls="panel-food" aria-selected="true" type="button">飲食店</button>
+        <button class="tab" role="tab" id="tab-salon" aria-controls="panel-salon" aria-selected="false" type="button">美容室</button>
+        <button class="tab" role="tab" id="tab-seitai" aria-controls="panel-seitai" aria-selected="false" type="button">整体・接骨院</button>
+        <button class="tab" role="tab" id="tab-dental" aria-controls="panel-dental" aria-selected="false" type="button">歯科</button>
+      </div>
+
+      <div class="case" role="tabpanel" tabindex="0" id="panel-food" aria-labelledby="tab-food">
+        <div class="case-box before">
+          <span class="tag">いただいたクチコミ（作例）</span>
+          <div class="stars" role="img" aria-label="星2">★★<span class="dim">★★★</span></div>
+          <p>ランチで利用。注文から料理が出てくるまで40分以上かかりました。混んでいたのは分かりますが、途中で一声かけてもらえたら印象は違ったと思います。味は悪くなかったです。</p>
+        </div>
+        <div class="case-box after">
+          <span class="tag">生成される返信文の例（丁寧）</span>
+          <p>この度はご来店いただきながら、お料理のご提供に長らくお時間をいただき、誠に申し訳ございませんでした。
+混雑時こそ、お待たせしている状況を随時お伝えすべきところ、お声がけが行き届かずご不安な思いをおかけいたしました。
+現在、ランチ時間帯の調理体制と、提供が遅れる際のご案内手順を見直しております。お味についてお言葉をいただけましたことは、スタッフの励みになりました。
+差し支えなければ、当日の詳しい状況をお聞かせいただけますと幸いです。改めてお迎えできる日を心よりお待ちしております。</p>
+        </div>
+      </div>
+
+      <div class="case" role="tabpanel" tabindex="0" id="panel-salon" aria-labelledby="tab-salon" hidden>
+        <div class="case-box before">
+          <span class="tag">いただいたクチコミ（作例）</span>
+          <div class="stars" role="img" aria-label="星3">★★★<span class="dim">★★</span></div>
+          <p>カットは丁寧で満足しています。ただ、仕上がりのイメージについて事前の相談があまりできず、思っていたより短くなってしまいました。次回は写真を持っていこうと思います。</p>
+        </div>
+        <div class="case-box after">
+          <span class="tag">生成される返信文の例（親しみ）</span>
+          <p>ご来店ありがとうございました。そして、仕上がりのご希望を十分に伺えないまま進めてしまい、申し訳ありませんでした。
+長さの感覚は言葉だけだと擦れ違いやすい部分ですので、カウンセリングの際にこちらから写真やイメージの確認をお願いするよう改めます。
+カットについてお褒めの言葉をいただけて、担当者ともども嬉しく思っております。次回は仕上がりのご希望を遠慮なくお聞かせください。お待ちしております。</p>
+        </div>
+      </div>
+
+      <div class="case" role="tabpanel" tabindex="0" id="panel-seitai" aria-labelledby="tab-seitai" hidden>
+        <div class="case-box before">
+          <span class="tag">いただいたクチコミ（作例）</span>
+          <div class="stars" role="img" aria-label="星1">★<span class="dim">★★★★</span></div>
+          <p>予約時間に行ったのに20分待たされました。施術自体は良かったのですが、待ち時間について何の説明もなく、次の予定に間に合わなくなり困りました。</p>
+        </div>
+        <div class="case-box after">
+          <span class="tag">生成される返信文の例（丁寧）</span>
+          <p>ご予約のお時間にお越しいただいたにもかかわらず、お待たせしてしまい、ご予定にも支障をきたしましたこと、深くお詫び申し上げます。
+お待ちいただく際は、見込みのお時間を必ずお伝えするのが当院の決まりですが、それが徹底できておりませんでした。予約枠の間隔と受付での案内について、院内で共有し改善いたします。
+施術についてお言葉をいただけたことに甘えず、お迎えするところから見直してまいります。ご不明な点がございましたら、お手数ですがお電話にてお聞かせいただけますと幸いです。</p>
+        </div>
+      </div>
+
+      <div class="case" role="tabpanel" tabindex="0" id="panel-dental" aria-labelledby="tab-dental" hidden>
+        <div class="case-box before">
+          <span class="tag">いただいたクチコミ（作例）</span>
+          <div class="stars" role="img" aria-label="星5">★★★★★</div>
+          <p>子どもの治療でお世話になりました。怖がる娘に何をするか一つずつ説明してくださり、泣かずに終えられました。会計の説明も分かりやすかったです。</p>
+        </div>
+        <div class="case-box after">
+          <span class="tag">生成される返信文の例（簡潔）</span>
+          <p>お嬢様の治療にお付き添いいただき、ありがとうございました。
+説明を一つずつお聞きいただけたおかげで、落ち着いて処置を進めることができました。次回もご不安なことがあれば、どうぞ遠慮なくお声がけください。またお待ちしております。</p>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        ※ 上記のクチコミ・返信文はいずれも、機能を分かりやすくお伝えするために作成した<strong>架空の作例</strong>です。実在するお客様の投稿・実在する店舗の事例ではありません。利用者の声や導入実績としてご覧いただかないようお願いいたします。
+      </p>
+    </div>
+  </section>
+
+  <!-- 7. 料金 -->
+  <section class="section" id="pricing">
+    <div class="wrap">
+      <span class="eyebrow">料金</span>
+      <h2>まず無料で3件。合いそうなら、月額でどうぞ</h2>
+      <p class="lede">有料プランはどちらも14日間の無料トライアル付きです。期間中に解約すれば費用はかかりません。表示価格はすべて税込です。</p>
+
+      <div class="plans">
+
+        <div class="plan">
+          <h3>無料お試し</h3>
+          <p class="plan-for">まず使い心地を確かめたい方に</p>
+          <div class="price"><span class="num">¥0</span></div>
+          <p class="price-note">登録不要・カード情報不要</p>
+          <ul>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>返信文の生成 3件まで</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>丁寧・親しみ・簡潔の3案</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>誹謗中傷の検知と助言</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>店舗プロフィール登録・履歴保存は含みません</li>
+          </ul>
+          <a class="btn btn--ghost btn--block" href="#try">このページで試す</a>
+        </div>
+
+        <div class="plan is-featured">
+          <span class="plan-badge">1店舗ならこちら</span>
+          <h3>ライト</h3>
+          <p class="plan-for">1店舗を運営されている方に</p>
+          <div class="price"><span class="num">¥2,980</span><span class="per">/ 月（税込）</span></div>
+          <p class="price-note">14日間無料トライアル・いつでも解約可</p>
+          <ul>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>月100件まで生成</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>1店舗まで登録</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>店舗プロフィール（こだわり・NGワード・署名）の自動反映</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>低評価向けの返信フロー</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>生成履歴の保存</li>
+          </ul>
+          <a class="btn btn--primary btn--block" href="/signup?plan=light">ライトを14日間無料で試す</a>
+        </div>
+
+        <div class="plan">
+          <h3>スタンダード</h3>
+          <p class="plan-for">複数店舗・件数が多い方に</p>
+          <div class="price"><span class="num">¥5,980</span><span class="per">/ 月（税込）</span></div>
+          <p class="price-note">14日間無料トライアル・いつでも解約可</p>
+          <ul>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>月500件まで生成</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>5店舗まで登録</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>店舗ごとのプロフィール・署名の切り替え</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>ライトの機能をすべて含む</li>
+          </ul>
+          <a class="btn btn--ghost btn--block" href="/signup?plan=standard">スタンダードを14日間無料で試す</a>
+        </div>
+
+      </div>
+      <p class="pricing-foot">お支払いはクレジットカード（Stripeによる決済）です。解約はいつでも管理画面から行えます。</p>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section section--tint" id="faq">
+    <div class="wrap">
+      <span class="eyebrow">よくある質問</span>
+      <h2>お申し込み前に、よく届くご質問</h2>
+
+      <div class="faq">
+        <details>
+          <summary>Googleアカウントの連携は必要ですか？</summary>
+          <div class="faq-body">
+            <p>不要です。クチコミの文章をコピーして貼り付けていただく方式のため、Googleビジネスプロフィールとの連携やAPIの設定は一切ありません。ID・パスワードをお預かりすることもありませんので、その日のうちにお使いいただけます。</p>
+            <p>返信の投稿は、これまで通りGoogleビジネスプロフィールの画面で行っていただきます。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>生成された文章は、そのまま投稿してよいですか？</summary>
+          <div class="faq-body">
+            <p>必ず内容をご確認のうえ、投稿してください。生成される文章はあくまで下書きです。日時・担当者・経緯といった事実関係はAIには分かりませんので、実際と異なる記述がないかを確認し、必要に応じて手直しをお願いしています。</p>
+            <p>とくに低評価への返信は、事実確認前に非を全面的に認める表現になっていないかをご覧ください。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>AIが書いた文章だと、読む人に分かってしまいませんか？</summary>
+          <div class="faq-body">
+            <p>「AIらしさ」が出るのは、多くの場合、当たり障りのない一般論だけで構成された文章です。クチコミ番頭では、いただいた投稿の具体的な内容に触れ、店舗プロフィールに登録されたこだわりや言い回しを反映することで、そうした薄さが出にくいようにしています。</p>
+            <p>そのうえで、最後にご自身の言葉を一文足していただくのがおすすめです。3案から選ぶ形にしているのも、お店の声に近い言い回しを選んでいただくためです。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>低評価（星1・星2）のクチコミにも使えますか？</summary>
+          <div class="faq-body">
+            <p>むしろ、そこが中心の用途です。低評価には「謝罪 → 事実確認の姿勢 → 改善策 → オフラインでのご連絡のお願い」という順序で文面を組み立てます。言い訳がましくならず、かといって過剰に平謝りもしない書き方を守ります。</p>
+            <p>また、事実無根の内容や誹謗中傷にあたると判断した場合は、返信を勧めず、Googleへの削除申請を検討するようご案内します。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>解約はどうすればよいですか？</summary>
+          <div class="faq-body">
+            <p>管理画面からいつでも手続きいただけます。電話や書面でのお手続きは必要ありません。14日間の無料トライアル期間中に解約された場合、料金は発生しません。</p>
+            <p>解約後は次回請求が停止し、契約期間の満了日までは引き続きご利用いただけます。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>貼り付けたクチコミの情報はどう扱われますか？</summary>
+          <div class="faq-body">
+            <p>入力いただいた文章は、返信文を生成する目的で利用します。生成履歴はご自身のアカウントに紐づいて保存され、管理画面から削除いただけます。</p>
+            <p>お客様の氏名や連絡先など、返信文の作成に不要な個人情報は入力なさらないようお願いいたします。取り扱いの詳細はプライバシーポリシーをご確認ください。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>複数の店舗で使えますか？</summary>
+          <div class="faq-body">
+            <p>スタンダードプランで5店舗まで登録いただけます。店舗ごとに業種・こだわり・NGワード・署名を分けて登録できるため、店舗が変われば文面の雰囲気も変わります。ライトプランは1店舗までです。</p>
+            <p>6店舗以上でのご利用をご検討の場合は、<a href="/legal/tokushoho">特定商取引法に基づく表記</a>に記載のお問い合わせ先までご連絡ください。</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>領収書（インボイス）は発行できますか？</summary>
+          <div class="faq-body">
+            <p>お支払いのたびに決済代行のStripeから領収書（レシート）が発行され、管理画面の「お支払い方法の変更・解約」からお支払い履歴と併せてご確認いただけます。適格請求書（インボイス）の登録番号の記載可否については、<a href="/legal/tokushoho">特定商取引法に基づく表記</a>に記載のお問い合わせ先までご確認ください。</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 最終CTA -->
+  <section class="section final-cta">
+    <div class="wrap">
+      <h2>まずは、いま止まっているクチコミを1件。</h2>
+      <p>登録もカード情報も要りません。手元のクチコミを貼るところから、お試しください。</p>
+      <a class="btn btn--primary" href="#try">無料で3件試す</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="#top" style="margin-bottom:10px;">
+          <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true">
+            <rect width="64" height="64" rx="14" fill="currentColor" opacity=".12"/>
+            <path d="M14 18h36v24H33l-11 9v-9h-8z" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"/>
+            <path d="M23 27h18M23 34h12" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+          </svg>
+          クチコミ番頭
+        </a>
+        <p class="footer-about">Googleクチコミへの返信文づくりを支える、店舗向けのWebサービスです。文章を考える工程だけを引き受け、判断と最終確認はお店の方が行えるつくりにしています。</p>
+      </div>
+      <div>
+        <h3>サービス</h3>
+        <ul>
+          <li><a href="#try">無料で試す</a></li>
+          <li><a href="#features">選ばれる理由</a></li>
+          <li><a href="#examples">業種別の例</a></li>
+          <li><a href="#pricing">料金プラン</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>各種ご案内</h3>
+        <ul>
+          <li><a href="/legal/tokushoho">特定商取引法に基づく表記</a></li>
+          <li><a href="/legal/privacy">プライバシーポリシー</a></li>
+          <li><a href="/legal/terms">利用規約</a></li>
+          <li><a href="/legal/tokushoho">お問い合わせ先</a></li>
+          <li><a href="/login">ログイン</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <p>Google および Googleビジネスプロフィールは Google LLC の商標です。本サービスは Google 社とは関係がありません。</p>
+      <p>返信文は生成AIによる下書きです。投稿内容の最終的な責任は、投稿されるご本人・店舗に帰属します。掲載順位や集客効果を保証するものではありません。</p>
+      <p>運営者情報および連絡先は<a href="/legal/tokushoho">特定商取引法に基づく表記</a>をご確認ください。</p>
+      <p style="margin-top:.8em;">&copy; 2026 クチコミ番頭</p>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- テーマ切替 ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById('themeToggle');
+
+  function currentTheme() {
+    var set = root.getAttribute('data-theme');
+    if (set === 'light' || set === 'dark') return set;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('kb-theme', next); } catch (e) {}
+      toggle.setAttribute('aria-label', next === 'dark' ? 'ライトモードに切り替える' : 'ダークモードに切り替える');
+    });
+  }
+
+  /* ---------- トースト ---------- */
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(text) {
+    if (!toastEl) return;
+    toastEl.textContent = text;
+    toastEl.classList.add('is-shown');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('is-shown'); }, 2200);
+  }
+
+  /* ---------- 業種別タブ ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab[role="tab"]'));
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { selectTab(i); });
+    tab.addEventListener('keydown', function (e) {
+      var next = null;
+      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+      if (next !== null) { e.preventDefault(); selectTab(next); tabs[next].focus(); }
+    });
+  });
+  function selectTab(index) {
+    tabs.forEach(function (tab, i) {
+      var on = i === index;
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      var panel = document.getElementById(tab.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !on;
+    });
+  }
+
+  /* ---------- デモ ---------- */
+  var form = document.getElementById('demoForm');
+  var reviewEl = document.getElementById('review');
+  var ratingEl = document.getElementById('rating');
+  var industryEl = document.getElementById('industry');
+  var btn = document.getElementById('generateBtn');
+  var btnLabel = document.getElementById('generateLabel');
+  var spinner = document.getElementById('spinner');
+  var errorBox = document.getElementById('errorBox');
+  var limitBox = document.getElementById('limitBox');
+  var riskBox = document.getElementById('riskBox');
+  var results = document.getElementById('results');
+  var draftGrid = document.getElementById('draftGrid');
+  var remainingText = document.getElementById('remainingText');
+  var charCount = document.getElementById('charCount');
+  var sampleBtn = document.getElementById('sampleBtn');
+  var limitTitle = document.getElementById('limitTitle');
+  var LIMIT_TITLE_DEFAULT = limitTitle ? limitTitle.textContent : '';
+
+  var SAMPLE = '予約していたのに30分近く待たされました。料理は美味しかったけれど、対応の説明が何もなかったのが残念です。次はもう少しスムーズだと嬉しいです。';
+
+  if (reviewEl && charCount) {
+    var updateCount = function () { charCount.textContent = String(reviewEl.value.length); };
+    reviewEl.addEventListener('input', updateCount);
+    updateCount();
+  }
+  if (sampleBtn && reviewEl) {
+    sampleBtn.addEventListener('click', function () {
+      reviewEl.value = SAMPLE;
+      if (charCount) charCount.textContent = String(reviewEl.value.length);
+      if (ratingEl) ratingEl.value = '2';
+      reviewEl.focus();
+    });
+  }
+
+  function hideAll() {
+    errorBox.hidden = true;
+    limitBox.hidden = true;
+    riskBox.hidden = true;
+  }
+  function showError(text) {
+    errorBox.textContent = text;
+    errorBox.hidden = false;
+    errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  /* 上限に達したとき（無料枠の使い切り／プラン上限／トライアル終了） */
+  function showLimit(data) {
+    var msg = data && typeof data.error === 'string' && data.error ? data.error : '';
+    if (limitTitle) limitTitle.textContent = msg || LIMIT_TITLE_DEFAULT;
+    results.hidden = true;
+    limitBox.hidden = false;
+    limitBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function setLoading(on) {
+    btn.disabled = on;
+    spinner.hidden = !on;
+    btnLabel.textContent = on ? '作成しています…' : '返信文を作る';
+  }
+
+  var STYLE_LABELS = { polite: '丁寧', friendly: '親しみ', concise: '簡潔' };
+
+  function renderDrafts(drafts) {
+    draftGrid.textContent = '';
+    drafts.forEach(function (d, i) {
+      if (!d) return;
+      var text = typeof d.text === 'string' ? d.text : '';
+      var label = d.label || STYLE_LABELS[d.style] || ('案' + (i + 1));
+
+      var card = document.createElement('div');
+      card.className = 'draft';
+
+      var h = document.createElement('h4');
+      h.textContent = label;
+      card.appendChild(h);
+
+      var p = document.createElement('p');
+      p.className = 'draft-text';
+      p.textContent = text;
+      card.appendChild(p);
+
+      var copy = document.createElement('button');
+      copy.type = 'button';
+      copy.className = 'btn btn--ghost btn--sm copy-btn';
+      copy.textContent = 'この案をコピー';
+      copy.addEventListener('click', function () {
+        copyText(text, copy);
+      });
+      card.appendChild(copy);
+
+      draftGrid.appendChild(card);
+    });
+    results.hidden = drafts.length === 0;
+  }
+
+  function copyText(text, buttonEl) {
+    var done = function () {
+      buttonEl.textContent = 'コピーしました';
+      buttonEl.classList.add('is-done');
+      showToast('返信文をコピーしました');
+      setTimeout(function () {
+        buttonEl.textContent = 'この案をコピー';
+        buttonEl.classList.remove('is-done');
+      }, 2200);
+    };
+    var fallback = function () {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      } catch (e) {
+        showToast('コピーできませんでした。文章を選択してコピーしてください');
+      }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  /* サーバーの RiskLevel: 'none' | 'caution' | 'report_recommended' */
+  function renderRisk(risk) {
+    riskBox.hidden = true;
+    if (!risk || typeof risk !== 'object') return;
+    var level = String(risk.level || '').toLowerCase();
+    var note = typeof risk.note === 'string' ? risk.note.trim() : '';
+    if ((level === 'none' || level === '') && !note) return;
+
+    riskBox.className = 'msg msg--risk';
+    var heading = '返信の前にご確認ください';
+    if (level === 'report_recommended') {
+      riskBox.classList.add('is-high');
+      heading = '返信せず、Googleへの削除申請のご検討をおすすめします';
+    } else if (level === 'none') {
+      riskBox.classList.add('is-low');
+      heading = '内容のご確認';
+    }
+    riskBox.textContent = '';
+    var h = document.createElement('h3');
+    h.textContent = heading;
+    riskBox.appendChild(h);
+    if (note) {
+      var p = document.createElement('p');
+      p.textContent = note;
+      riskBox.appendChild(p);
+    }
+    riskBox.hidden = false;
+  }
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      hideAll();
+
+      var review = (reviewEl.value || '').trim();
+      if (review.length < 5) {
+        showError('クチコミ本文を貼り付けてください（5文字以上）。');
+        reviewEl.focus();
+        return;
+      }
+
+      var payload = {
+        review: review,
+        rating: Number(ratingEl.value),
+        industry: industryEl.value
+      };
+
+      setLoading(true);
+      send(payload);
+    });
+  }
+
+  function send(payload) {
+    var req;
+    try {
+      req = fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      setLoading(false);
+      showError('通信を開始できませんでした。時間をおいて、もう一度お試しください。');
+      return;
+    }
+
+    req.then(function (res) {
+      return res.text().then(function (raw) {
+        var data = null;
+        try { data = raw ? JSON.parse(raw) : null; } catch (e) { data = null; }
+        return { status: res.status, ok: res.ok, data: data };
+      });
+    }).then(function (r) {
+      setLoading(false);
+
+      /* 429: 無料枠の使い切り／月間上限　402: トライアル終了・契約終了 */
+      if (r.status === 429 || r.status === 402 || (r.data && r.data.needUpgrade === true)) {
+        showLimit(r.data);
+        return;
+      }
+
+      if (!r.data) {
+        showError('サーバーからの応答を読み取れませんでした。時間をおいて、もう一度お試しください。');
+        return;
+      }
+
+      if (r.data.ok !== true) {
+        showError(typeof r.data.error === 'string' && r.data.error
+          ? r.data.error
+          : '返信文を作成できませんでした。時間をおいて、もう一度お試しください。');
+        return;
+      }
+
+      var drafts = Array.isArray(r.data.drafts) ? r.data.drafts : [];
+      if (drafts.length === 0) {
+        showError('返信文を作成できませんでした。クチコミ本文を確認して、もう一度お試しください。');
+        return;
+      }
+
+      renderDrafts(drafts);
+      renderRisk(r.data.risk);
+
+      if (typeof r.data.remaining === 'number') {
+        if (r.data.isFreeTrial === true) {
+          remainingText.textContent = r.data.remaining > 0
+            ? '無料でお試しいただける残り ' + r.data.remaining + ' 件'
+            : '無料のお試し枠はこれで最後です';
+        } else {
+          remainingText.textContent = '今月の残り ' + r.data.remaining + ' 件';
+        }
+      } else {
+        remainingText.textContent = '';
+      }
+
+      results.hidden = false;
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }).catch(function (err) {
+      setLoading(false);
+      showError('通信に失敗しました。ネットワークの状態をご確認のうえ、もう一度お試しください。');
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

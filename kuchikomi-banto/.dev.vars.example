@@ -1,0 +1,25 @@
+# ローカル開発用シークレット。このファイルを `.dev.vars` にコピーして値を入れる。
+# `.dev.vars` は .gitignore 済み。絶対にコミットしないこと。
+#
+# 本番へは wrangler secret put <NAME> で設定する（GO-LIVE.md 参照）。
+
+# --- Claude API (必須) ---
+# https://platform.claude.com/ で発行
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxx
+
+# --- Stripe (課金を有効にする場合は必須) ---
+# https://dashboard.stripe.com/test/apikeys
+STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
+# Webhook エンドポイント登録時に発行される署名シークレット
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxx
+# Stripe ダッシュボードで作成した価格 ID
+STRIPE_PRICE_LIGHT=price_xxxxxxxxxxxxxxxxxxxx
+STRIPE_PRICE_STANDARD=price_xxxxxxxxxxxxxxxxxxxx
+
+# --- メール送信 (任意。未設定ならログインコードは画面表示のみ) ---
+# https://resend.com/api-keys
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+MAIL_FROM=クチコミ番頭 <noreply@example.com>
+
+# --- 管理API用トークン (任意。ランダムな長い文字列を自分で決める) ---
+ADMIN_TOKEN=

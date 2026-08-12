@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow">
+<title>プライバシーポリシー | クチコミ番頭</title>
+<meta name="description" content="クチコミ番頭における個人情報の取得・利用・管理についての方針です。取得する情報、利用目的、外部サービスへの委託、開示請求の方法をご案内します。">
+<style>
+/* ===== Design tokens (light) ===== */
+:root{
+  --bg:#f7f4ee;              /* 生成り */
+  --surface:#fffdf9;
+  --surface-2:#f1ece2;
+  --text:#22201c;            /* 墨 */
+  --text-muted:#5a544a;
+  --border:#e0d8c9;
+  --border-strong:#cdc2ad;
+  --accent:#1d4a72;          /* 藍 */
+  --accent-weak:#e7eef5;
+  --shu:#a83d28;             /* 朱 */
+  --shu-weak:#fbeee9;
+  --notice-bg:#fdf3e6;
+  --notice-border:#e0b070;
+  --notice-text:#6d4410;
+  --focus:#1d4a72;
+  --shadow:0 1px 2px rgba(34,32,28,.05), 0 8px 24px rgba(34,32,28,.05);
+  --radius:10px;
+  --maxw:720px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17181a;
+    --surface:#1f2124;
+    --surface-2:#282b2f;
+    --text:#eceae5;
+    --text-muted:#a8a49c;
+    --border:#33363a;
+    --border-strong:#4a4e54;
+    --accent:#8ab4dd;
+    --accent-weak:#1e2a35;
+    --shu:#e2907c;
+    --shu-weak:#312320;
+    --notice-bg:#2e2517;
+    --notice-border:#8a6a33;
+    --notice-text:#f0d9ae;
+    --focus:#8ab4dd;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17181a;
+  --surface:#1f2124;
+  --surface-2:#282b2f;
+  --text:#eceae5;
+  --text-muted:#a8a49c;
+  --border:#33363a;
+  --border-strong:#4a4e54;
+  --accent:#8ab4dd;
+  --accent-weak:#1e2a35;
+  --shu:#e2907c;
+  --shu-weak:#312320;
+  --notice-bg:#2e2517;
+  --notice-border:#8a6a33;
+  --notice-text:#f0d9ae;
+  --focus:#8ab4dd;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+}
+
+/* ===== Base ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  font-size:16px;
+  line-height:1.85;
+  font-feature-settings:"palt" 1;
+  text-rendering:optimizeLegibility;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-break:strict;
+}
+a{color:var(--accent);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+
+/* ===== Header ===== */
+.site-header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:20;
+}
+.header-inner{
+  max-width:var(--maxw);margin:0 auto;padding:.75rem 1.25rem;
+  display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;
+}
+.brand{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:.02em}
+.brand:hover{color:var(--accent)}
+.brand svg{flex:none;display:block}
+.brand .brand-name{font-size:1.02rem}
+.back-link{
+  font-size:.86rem;color:var(--text-muted);text-decoration:none;
+  border:1px solid var(--border-strong);border-radius:999px;padding:.28rem .8rem;
+  white-space:nowrap;background:var(--bg);
+}
+.back-link:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ===== Layout ===== */
+main{max-width:var(--maxw);margin:0 auto;padding:2rem 1.25rem 3rem}
+.page-title{font-size:1.6rem;line-height:1.5;margin:.4rem 0 .3rem;letter-spacing:.01em}
+.page-lead{color:var(--text-muted);font-size:.95rem;margin:0 0 1.5rem}
+.meta{font-size:.85rem;color:var(--text-muted);margin:0 0 1.75rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.meta span{display:inline-block;margin-right:1.2rem}
+
+/* ===== Admin notice ===== */
+.admin-notice{
+  background:var(--notice-bg);
+  border:1px solid var(--notice-border);
+  border-left:5px solid var(--notice-border);
+  color:var(--notice-text);
+  border-radius:var(--radius);
+  padding:1.1rem 1.15rem;
+  margin:0 0 2rem;
+  font-size:.9rem;
+  line-height:1.8;
+}
+.admin-notice h2{
+  margin:0 0 .5rem;font-size:.95rem;letter-spacing:.02em;
+  display:flex;align-items:center;gap:.45rem;color:inherit;border:0;padding:0;
+}
+.admin-notice ul{margin:.5rem 0 0;padding-left:1.25rem}
+.admin-notice li{margin-bottom:.35rem}
+.admin-notice code{
+  background:rgba(128,100,40,.16);padding:.08em .35em;border-radius:4px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;
+}
+
+/* ===== Headings ===== */
+h2.sec{
+  font-size:1.08rem;margin:2.4rem 0 .9rem;padding-bottom:.45rem;
+  border-bottom:2px solid var(--border-strong);letter-spacing:.02em;
+}
+h3.sub{font-size:.98rem;margin:1.6rem 0 .5rem;color:var(--text)}
+p{margin:0 0 1rem}
+
+/* ===== Article numbering ===== */
+ol.clause{counter-reset:item;list-style:none;padding-left:0;margin:0 0 1rem}
+ol.clause > li{
+  counter-increment:item;position:relative;padding-left:2.2em;margin-bottom:.55rem;
+}
+ol.clause > li::before{
+  content:"(" counter(item) ")";position:absolute;left:0;top:0;
+  color:var(--text-muted);font-variant-numeric:tabular-nums;font-size:.92em;
+}
+ol.roman{counter-reset:r;list-style:none;padding-left:0;margin:.4rem 0 .4rem}
+ol.roman > li{counter-increment:r;position:relative;padding-left:2.4em;margin-bottom:.4rem}
+ol.roman > li::before{
+  content:counter(r) ".";position:absolute;left:.4em;top:0;color:var(--text-muted);font-variant-numeric:tabular-nums;
+}
+ul.plain{padding-left:1.25rem;margin:0 0 1rem}
+ul.plain li{margin-bottom:.4rem}
+
+/* ===== Definition table ===== */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 1.25rem}
+table.dl{
+  width:100%;border-collapse:collapse;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  font-size:.94rem;
+}
+table.dl th,table.dl td{text-align:left;vertical-align:top;padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+table.dl tr:last-child th,table.dl tr:last-child td{border-bottom:0}
+table.dl th{
+  width:34%;min-width:11em;font-weight:600;background:var(--surface-2);
+  color:var(--text);border-right:1px solid var(--border);
+}
+table.dl td p{margin:0 0 .5rem}
+table.dl td p:last-child{margin-bottom:0}
+table.dl ul{margin:.2rem 0 0;padding-left:1.2rem}
+table.dl li{margin-bottom:.3rem}
+@media (max-width:560px){
+  table.dl,table.dl tbody,table.dl tr,table.dl th,table.dl td{display:block;width:100%}
+  table.dl th{border-right:0;border-bottom:1px solid var(--border);padding:.55rem 1rem;font-size:.86rem;color:var(--text-muted)}
+  table.dl td{padding-top:.7rem}
+}
+
+/* ===== Placeholder chip ===== */
+.ph{
+  display:inline-block;
+  background:var(--shu-weak);color:var(--shu);
+  border:1px dashed var(--shu);border-radius:5px;
+  padding:.05em .45em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.9em;font-weight:600;white-space:nowrap;
+}
+
+/* ===== Note ===== */
+.note{
+  background:var(--accent-weak);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:var(--radius);padding:.9rem 1rem;font-size:.9rem;margin:1.25rem 0;color:var(--text);
+}
+.note strong{color:var(--accent)}
+
+/* ===== TOC ===== */
+.toc{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.15rem;margin:0 0 2rem;font-size:.9rem;box-shadow:var(--shadow);
+}
+.toc h2{font-size:.9rem;margin:0 0 .6rem;color:var(--text-muted);letter-spacing:.06em;border:0;padding:0}
+.toc ol{margin:0;padding-left:1.4em;columns:2;column-gap:1.5rem}
+.toc li{margin-bottom:.25rem;break-inside:avoid}
+.toc a{color:var(--text);text-decoration:none}
+.toc a:hover{color:var(--accent);text-decoration:underline}
+@media (max-width:560px){.toc ol{columns:1}}
+
+/* ===== Footer ===== */
+.site-footer{border-top:1px solid var(--border);background:var(--surface);margin-top:2rem}
+.footer-inner{max-width:var(--maxw);margin:0 auto;padding:1.75rem 1.25rem 2.25rem;font-size:.86rem;color:var(--text-muted)}
+.footer-nav{display:flex;flex-wrap:wrap;gap:.6rem 1.25rem;margin:0 0 1rem;padding:0;list-style:none}
+.footer-nav a{color:var(--text-muted);text-decoration:none}
+.footer-nav a:hover,.footer-nav a[aria-current="page"]{color:var(--accent);text-decoration:underline}
+.footer-nav a[aria-current="page"]{font-weight:600}
+.copyright{margin:0;font-size:.82rem}
+@media print{
+  .site-header,.back-link,.site-footer{position:static}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="2.5" y="3.5" width="19" height="14" rx="3" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M8 17.5 7 21l4.2-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M7 8.5h10M7 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">クチコミ番頭</span>
+    </a>
+    <a class="back-link" href="/">← トップページへ戻る</a>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">プライバシーポリシー</h1>
+  <p class="page-lead"><span class="ph">{{事業者名}}</span>（以下「当社」といいます）は、クチコミ返信文作成支援サービス「クチコミ番頭」（以下「本サービス」といいます）における個人情報の取扱いについて、個人情報の保護に関する法律（個人情報保護法）その他の関係法令を遵守し、以下のとおり定めます。</p>
+  <p class="meta"><span>制定日：<span class="ph">{{制定日}}</span></span><span>最終改定日：<span class="ph">{{最終改定日}}</span></span></p>
+
+  <section class="admin-notice" role="note" aria-labelledby="admin-notice-title">
+    <h2 id="admin-notice-title">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3 1.7 21h20.6L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M12 9.5v5M12 17.6v.1" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      管理者向けの注意（公開前に必ず対応し、このボックスは削除してください）
+    </h2>
+    <ul>
+      <li>本ページには <code>{{事業者名}}</code> のような<strong>プレースホルダ</strong>が残っています。公開前に必ず実際の情報へ置き換えてください。未記載や虚偽の記載は法令違反となり得ます。</li>
+      <li>記載している取得項目・保存期間・委託先は、<strong>実際の実装と一致しているか必ず確認</strong>してください。実態と異なる記載はそれ自体が問題となります。</li>
+      <li>外部サービス（Cloudflare / Stripe / Anthropic）の提供条件やデータの取扱い方針は変更されることがあります。<strong>公開前および定期的に各社の最新の規約・プライバシーポリシーをご確認</strong>ください。</li>
+      <li>越境移転（米国等）に関する記載は、移転先国の制度に関する情報提供義務との関係で、必要に応じて詳細な情報を追記してください。</li>
+      <li>本ページは一般的な雛形です。<strong>公開前に弁護士等の専門家の確認を受けることを推奨します。</strong>本ページの記載は法的助言ではありません。</li>
+      <li>置き換え対象：<code>{{事業者名}}</code> <code>{{代表者名}}</code> <code>{{郵便番号}}</code> <code>{{所在地}}</code> <code>{{個人情報保護管理者}}</code> <code>{{メールアドレス}}</code> <code>{{電話番号}}</code> <code>{{制定日}}</code> <code>{{最終改定日}}</code></li>
+    </ul>
+  </section>
+
+  <nav class="toc" aria-label="目次">
+    <h2>目次</h2>
+    <ol>
+      <li><a href="#a1">事業者の名称等</a></li>
+      <li><a href="#a2">取得する情報</a></li>
+      <li><a href="#a3">利用目的</a></li>
+      <li><a href="#a4">クチコミ本文および生成結果の取扱い</a></li>
+      <li><a href="#a5">第三者提供</a></li>
+      <li><a href="#a6">業務の委託・外部サービスの利用</a></li>
+      <li><a href="#a7">外国にある第三者への提供（越境移転）</a></li>
+      <li><a href="#a8">Cookie等の利用</a></li>
+      <li><a href="#a9">保存期間</a></li>
+      <li><a href="#a10">安全管理措置</a></li>
+      <li><a href="#a11">開示・訂正・削除等の請求</a></li>
+      <li><a href="#a12">未成年者の利用</a></li>
+      <li><a href="#a13">本ポリシーの改定</a></li>
+      <li><a href="#a14">お問い合わせ窓口</a></li>
+    </ol>
+  </nav>
+
+  <h2 class="sec" id="a1">第1条（事業者の名称等）</h2>
+  <div class="tbl-wrap">
+    <table class="dl">
+      <tbody>
+        <tr><th scope="row">個人情報取扱事業者</th><td><span class="ph">{{事業者名}}</span></td></tr>
+        <tr><th scope="row">代表者</th><td><span class="ph">{{代表者名}}</span></td></tr>
+        <tr><th scope="row">所在地</th><td>〒<span class="ph">{{郵便番号}}</span> <span class="ph">{{所在地}}</span></td></tr>
+        <tr><th scope="row">個人情報保護管理者</th><td><span class="ph">{{個人情報保護管理者}}</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="sec" id="a2">第2条（取得する情報）</h2>
+  <p>当社は、本サービスの提供にあたり、以下の情報を取得します。</p>
+  <ol class="clause">
+    <li><strong>アカウント情報</strong>：メールアドレス、パスワード（当社は復元できない形式に変換して保存します）、ご登録者のお名前（任意でご入力いただいた場合）。</li>
+    <li><strong>店舗プロフィール</strong>：店舗名、業種、店舗の特徴やこだわり、使用を避けたい表現（NGワード）、返信文の署名など、お客様が任意にご登録いただく情報。</li>
+    <li><strong>入力されたクチコミ本文および生成結果</strong>：返信文の作成のためにお客様が貼り付けたクチコミの本文、星評価、および本サービスが生成した返信文案。</li>
+    <li><strong>利用状況に関する情報</strong>：返信文の生成回数、生成日時、ご契約プラン、機能の利用履歴。</li>
+    <li><strong>決済に関する情報</strong>：ご契約プラン、課金状況、決済の成否および決済識別子。<strong>クレジットカード番号、有効期限、セキュリティコードは決済代行事業者である Stripe が取得・保持し、当社はこれらを保持しません。</strong></li>
+    <li><strong>アクセスログ等</strong>：IPアドレス、ユーザーエージェント（ブラウザ・OSの種類）、アクセス日時、参照元URL、閲覧ページ、エラー情報。</li>
+    <li><strong>Cookieおよび類似技術により取得される情報</strong>：ログイン状態の保持等に用いる識別子（詳細は第8条）。</li>
+    <li><strong>お問い合わせ内容</strong>：お問い合わせの際にご記入いただいたメールアドレス、お名前、お問い合わせ本文。</li>
+  </ol>
+  <div class="note">
+    <p><strong>お願い：</strong>クチコミ本文の入力欄には、返信の作成に必要のない情報（お客様ご自身や第三者の氏名・連絡先・病歴・信用情報など）を入力しないでください。やむを得ず第三者の情報が含まれる場合は、必要最小限にとどめてください。</p>
+  </div>
+
+  <h2 class="sec" id="a3">第3条（利用目的）</h2>
+  <p>当社は、取得した情報を以下の目的で利用します。</p>
+  <ol class="clause">
+    <li>本サービスの提供、返信文案の生成、および店舗プロフィールの反映のため</li>
+    <li>ご本人の認証、アカウントの管理、および不正利用の防止のため</li>
+    <li>利用料金の請求、決済処理、および課金状況の管理のため</li>
+    <li>お問い合わせ、お申出への対応および本人確認のため</li>
+    <li>本サービスの保守、障害対応、不具合の原因調査および再発防止のため</li>
+    <li>利用規約に違反する行為への対応のため</li>
+    <li>本サービスの利用状況の分析、品質および生成精度の改善、新機能の開発のため（この目的で用いる場合、個人を識別できない形に加工した統計情報として取り扱います）</li>
+    <li>本サービスに関する重要なお知らせ（規約変更、料金改定、メンテナンス等）の通知のため</li>
+    <li>当社サービスに関する案内やご提案の送付のため（受信は配信停止の手続きによりいつでも停止できます）</li>
+  </ol>
+  <p>当社は、あらかじめご本人の同意を得ることなく、上記の利用目的の達成に必要な範囲を超えて個人情報を取り扱うことはありません。</p>
+
+  <h2 class="sec" id="a4">第4条（クチコミ本文および生成結果の取扱い）</h2>
+  <ol class="clause">
+    <li>お客様が入力したクチコミ本文および店舗プロフィールは、<strong>返信文案を生成する目的でのみ</strong>、Anthropic, PBC が提供する Claude API に送信されます。</li>
+    <li>Anthropic 社が公表する商用利用向けの規約および方針では、<strong>API を通じて送信された入力および出力は、同社の生成モデルの学習には利用されない</strong>とされています。当社もお客様の入力内容を当社独自のモデルの学習に利用することはありません。</li>
+    <li>入力したクチコミ本文および生成結果は、お客様が過去の履歴を確認できるようにするため、当社のデータベースに保存されます。お客様は管理画面から個別に削除できます。</li>
+    <li>当社の従業者が入力内容を閲覧するのは、お客様からのお問い合わせ対応、障害調査、または法令に基づく必要がある場合に限られ、必要最小限の範囲にとどめます。</li>
+  </ol>
+
+  <h2 class="sec" id="a5">第5条（第三者提供）</h2>
+  <p>当社は、以下のいずれかに該当する場合を除き、あらかじめご本人の同意を得ることなく、個人データを第三者に提供しません。</p>
+  <ol class="clause">
+    <li>法令に基づく場合</li>
+    <li>人の生命、身体または財産の保護のために必要がある場合であって、ご本人の同意を得ることが困難であるとき</li>
+    <li>公衆衛生の向上または児童の健全な育成の推進のために特に必要がある場合であって、ご本人の同意を得ることが困難であるとき</li>
+    <li>国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合であって、ご本人の同意を得ることにより当該事務の遂行に支障を及ぼすおそれがあるとき</li>
+    <li>合併その他の事由による事業の承継に伴って個人データが提供される場合（この場合、承継後も本ポリシーと同等の取扱いを求めます）</li>
+  </ol>
+  <p>なお、次条に定める委託先への提供は、法令上「第三者提供」には該当しません。</p>
+
+  <h2 class="sec" id="a6">第6条（業務の委託・外部サービスの利用）</h2>
+  <p>当社は、利用目的の達成に必要な範囲内で、個人データの取扱いの全部または一部を外部に委託しています。委託先に対しては、法令に基づき必要かつ適切な監督を行います。現在利用している主な外部サービスは以下のとおりです。</p>
+  <div class="tbl-wrap">
+    <table class="dl">
+      <tbody>
+        <tr>
+          <th scope="row">Cloudflare, Inc.</th>
+          <td>
+            <p>本サービスのアプリケーション実行基盤、データベース、CDN および通信の保護。</p>
+            <p>アカウント情報、店舗プロフィール、クチコミ本文、生成結果、アクセスログを同社の基盤上で保管・処理します。</p>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Stripe, Inc.<br>（および同社グループ）</th>
+          <td>
+            <p>クレジットカード決済およびサブスクリプション管理。</p>
+            <p>メールアドレス、決済に必要なカード情報、課金履歴が同社に提供されます。<strong>カード番号等は同社が直接取得し、当社は保持しません。</strong></p>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Anthropic, PBC</th>
+          <td>
+            <p>返信文案の生成（Claude API）。</p>
+            <p>お客様が入力したクチコミ本文、星評価および店舗プロフィールが、返信文の生成のために同社の API へ送信されます。同社が公表する方針では、API 経由で送信されたデータは同社の生成モデルの学習には利用されないとされています。</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>上記のほか、メール配信やアクセス解析等のために外部サービスを利用する場合があります。委託先を変更した場合は、本ポリシーの改定によりお知らせします。各社における具体的な取扱いは、各社が公表するプライバシーポリシーもあわせてご確認ください。</p>
+
+  <h2 class="sec" id="a7">第7条（外国にある第三者への提供／越境移転）</h2>
+  <ol class="clause">
+    <li>前条に記載の Cloudflare, Inc.、Stripe, Inc. および Anthropic, PBC は、いずれも<strong>アメリカ合衆国</strong>に本拠を置く事業者であり、これらのサービスの利用に伴い、お客様の個人データが日本国外（主に米国。各社のインフラ構成により、その他の国のデータセンターを経由する場合があります）で保管または処理されることがあります。</li>
+    <li>移転先の国においては、日本の個人情報保護法と同一の水準の制度が整備されているとは限らず、政府機関による情報開示要求など、日本国内とは異なる制度が適用される可能性があります。</li>
+    <li>当社は、移転先の事業者との間で、個人データの適正な取扱いを確保するための契約上の措置（データ処理に関する条項の締結等）を講じています。</li>
+    <li>移転先の国の個人情報保護制度に関する情報について、詳細をお知りになりたい場合は、第14条の窓口までお問い合わせください。</li>
+  </ol>
+
+  <h2 class="sec" id="a8">第8条（Cookie等の利用）</h2>
+  <ol class="clause">
+    <li>本サービスは、ログイン状態の保持、セキュリティの確保（不正アクセス防止）、および入力内容の一時保持のために Cookie および類似技術（ローカルストレージ等）を利用します。これらは本サービスの動作に必要なものです。</li>
+    <li>本サービスの改善のため、アクセス状況の統計的な把握を目的とした解析用の Cookie を利用する場合があります。これらの情報は、個人を直接識別しない形で利用します。</li>
+    <li>お客様はブラウザの設定により Cookie の受け入れを拒否できますが、その場合ログインができないなど、本サービスの一部または全部をご利用いただけなくなることがあります。</li>
+    <li>当社は、広告配信を目的とした第三者による行動追跡型の Cookie を、本サービス内で利用していません（将来利用する場合は、本ポリシーを改定してお知らせします）。</li>
+  </ol>
+
+  <h2 class="sec" id="a9">第9条（保存期間）</h2>
+  <ol class="clause">
+    <li><strong>アカウント情報・店舗プロフィール：</strong>ご契約期間中および退会後<strong>90日間</strong>保存し、その後合理的な期間内に削除します（誤操作による退会からの復旧、および不正利用対策のため）。</li>
+    <li><strong>クチコミ本文および生成結果：</strong>お客様が管理画面から削除するまで、またはアカウント削除後<strong>90日間</strong>保存します。</li>
+    <li><strong>アクセスログ：</strong>取得から<strong>12か月</strong>を目安に削除します（障害調査および不正アクセス調査のため）。</li>
+    <li><strong>取引・決済に関する記録：</strong>法令（法人税法、消費税法等）の定めに従い、必要な期間（原則として<strong>7年間</strong>）保存します。</li>
+    <li><strong>お問い合わせ内容：</strong>対応完了から<strong>3年間</strong>を目安に保存します。</li>
+    <li>無料お試し（登録不要）でご利用いただいた場合の入力内容は、不正利用防止に必要な最小限の記録を除き、生成処理の完了後に速やかに削除します。</li>
+  </ol>
+
+  <h2 class="sec" id="a10">第10条（安全管理措置）</h2>
+  <p>当社は、個人データの漏えい、滅失または毀損の防止その他の安全管理のため、次の措置を講じています。</p>
+  <ul class="plain">
+    <li><strong>組織的措置：</strong>個人情報の取扱いに関する責任者の設置、取扱状況の記録および点検。</li>
+    <li><strong>人的措置：</strong>従業者に対する教育、および秘密保持義務の設定。</li>
+    <li><strong>物理的・技術的措置：</strong>通信の暗号化（TLS）、パスワードの不可逆変換による保存、アクセス権限の必要最小限化、認証基盤による管理画面の保護、および外部からの不正アクセス対策。</li>
+    <li><strong>委託先の監督：</strong>委託先の選定基準の策定、契約による安全管理義務の設定。</li>
+  </ul>
+  <p>万一、個人データの漏えい等が発生し、ご本人の権利利益を害するおそれが大きい場合には、法令に基づき個人情報保護委員会への報告およびご本人への通知を行います。</p>
+
+  <h2 class="sec" id="a11">第11条（開示・訂正・削除等の請求）</h2>
+  <ol class="clause">
+    <li>ご本人は、当社に対し、当社が保有する保有個人データについて、利用目的の通知、開示、内容の訂正・追加・削除、利用の停止・消去、第三者への提供の停止、および第三者提供記録の開示を請求することができます。</li>
+    <li>請求は、第14条のお問い合わせ窓口宛にメールでご連絡ください。当社所定の書式にてお手続きをご案内します。</li>
+    <li>不正な請求を防ぐため、ご登録のメールアドレスからのご連絡であることの確認、または本人確認書類のご提示をお願いする場合があります。代理人による請求の場合は、代理権を証する書面が必要です。</li>
+    <li>請求内容を確認のうえ、法令に定める場合を除き、合理的な期間内（原則として2週間以内）に対応し、その結果をご連絡します。法令上開示等の義務を負わない場合には、その旨と理由をご説明します。</li>
+    <li>開示の請求については、実費相当の手数料を申し受ける場合があります。手数料が必要な場合は、事前に金額をお知らせします。</li>
+    <li>なお、アカウント情報および店舗プロフィール、生成履歴の多くは、管理画面からお客様ご自身で確認・修正・削除いただけます。</li>
+  </ol>
+
+  <h2 class="sec" id="a12">第12条（未成年者の利用）</h2>
+  <p>本サービスは事業者向けのサービスです。未成年者が本サービスを利用する場合は、親権者等の法定代理人の同意を得たうえでご利用ください。</p>
+
+  <h2 class="sec" id="a13">第13条（本ポリシーの改定）</h2>
+  <ol class="clause">
+    <li>当社は、法令の改正、本サービスの内容の変更、または委託先の変更等に応じ、本ポリシーを改定することがあります。</li>
+    <li>改定後の内容は、本ページに掲載した時点から効力を生じます。</li>
+    <li>利用目的の変更その他ご本人の権利利益に重要な影響を及ぼす変更を行う場合には、本サービス上での通知、または登録されたメールアドレス宛の通知により、改定日の相当期間前にお知らせします。法令上ご本人の同意が必要な場合は、別途同意を取得します。</li>
+  </ol>
+
+  <h2 class="sec" id="a14">第14条（お問い合わせ窓口）</h2>
+  <p>本ポリシーに関するご質問、開示等の請求、その他個人情報の取扱いに関するお問い合わせは、以下の窓口までご連絡ください。</p>
+  <div class="tbl-wrap">
+    <table class="dl">
+      <tbody>
+        <tr><th scope="row">窓口</th><td><span class="ph">{{事業者名}}</span> 個人情報お問い合わせ窓口</td></tr>
+        <tr><th scope="row">メール</th><td><span class="ph">{{メールアドレス}}</span></td></tr>
+        <tr><th scope="row">電話</th><td><span class="ph">{{電話番号}}</span></td></tr>
+        <tr><th scope="row">所在地</th><td>〒<span class="ph">{{郵便番号}}</span> <span class="ph">{{所在地}}</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>以上</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <ul class="footer-nav">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/legal/terms">利用規約</a></li>
+      <li><a href="/legal/privacy" aria-current="page">プライバシーポリシー</a></li>
+      <li><a href="/legal/tokushoho">特定商取引法に基づく表記</a></li>
+    </ul>
+    <p class="copyright">© <span class="ph">{{事業者名}}</span> クチコミ番頭</p>
+  </div>
+</footer>
+
+</body>
+</html>

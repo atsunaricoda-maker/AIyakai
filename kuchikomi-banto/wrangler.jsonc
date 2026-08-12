@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kuchikomi-banto",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // 静的アセット（LP・アプリ画面・法務ページ）
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // Worker のルートを先に評価し、未マッチのみアセットへ
+    "run_worker_first": ["/api/*", "/app", "/signup", "/login", "/logout", "/welcome", "/billing/*"]
+  },
+
+  // D1: `wrangler d1 create kuchikomi-banto` で作成し database_id を差し替える
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kuchikomi-banto",
+      // ↓ `wrangler d1 create kuchikomi-banto` の出力に差し替える（ローカル開発では未使用）
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
+
+  "vars": {
+    // 公開しても問題ない設定のみ。秘密情報は `wrangler secret put` を使う。
+    "APP_BASE_URL": "https://kuchikomi-banto.example.com",
+    "ANTHROPIC_MODEL": "claude-opus-5",
+    "FREE_TRIAL_LIMIT": "3",
+    "SUPPORT_EMAIL": "support@example.com"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
