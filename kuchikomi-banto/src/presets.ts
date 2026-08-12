@@ -14,10 +14,10 @@ export interface IndustryPreset {
   label: string;
   customerNoun: string;
   visitVerb: string;
-  praisePoints: string[];
-  complaintPoints: string[];
+  praisePoints: readonly string[];
+  complaintPoints: readonly string[];
   guidance: string;
-  cautions: string[];
+  cautions: readonly string[];
 }
 
 /** 全業種に共通して守らせる注意（各業種の cautions 末尾に自動で連結する） */
@@ -25,10 +25,12 @@ const COMMON_CAUTIONS: readonly string[] = [
   '氏名・連絡先・来訪日時・具体的な利用内容など、個人が特定されうる情報を返信文に書かない（投稿者本人が書いていても繰り返さない）。',
   '返金・値引き・無料提供・特典を公開の返信の中で約束しない。補償に関わる話は個別のご連絡へ誘導する。',
   '投稿者の人格や記憶を疑う表現、反論・言い訳の羅列をしない。公開の場で応酬しない。',
+  'クチコミの削除・星評価の変更・書き直し・再投稿を、返信文の中で依頼しない。特典や割引と引き換えに評価を求める書き方もしない（Googleのポリシーおよびステルスマーケティング規制の観点）。',
+  '当店の受賞歴・実績・件数・資格・順位など、クチコミ本文や店舗情報から確認できない事実を返信文で創作しない。',
 ];
 
 /** cautions を組み立てる（業種固有 → 共通 の順） */
-function withCommon(specific: string[]): string[] {
+function withCommon(specific: readonly string[]): readonly string[] {
   return [...specific, ...COMMON_CAUTIONS];
 }
 
@@ -232,7 +234,7 @@ export const INDUSTRY_PRESETS: Record<IndustryKey, IndustryPreset> = {
       '駐車場や院内設備、混雑時の環境',
     ],
     guidance:
-      '「患者様」「ご来院」「診療」の語彙で、感情を抑えた敬体を保つこと。投稿者の受診事実や症状には一切触れず、「ご指摘のような事があったのであれば」という一般論として受け止め、院内の運用改善（待ち時間の案内方法、受付での説明の仕方など）に絞って書く。詳しい事情は電話や受付で伺いたい旨を添えて結ぶ。',
+      '「患者様」「ご来院」「診療」の語彙で、感情を抑えた敬体を保つこと。投稿者の受診事実や症状には一切触れず、「ご指摘のようなことがあったのであれば」という一般論として受け止め、院内の運用改善（待ち時間の案内方法、受付での説明の仕方など）に絞って書く。詳しい事情は電話や受付で伺いたい旨を添えて結ぶ。',
     cautions: withCommon([
       '医療広告ガイドラインの考え方に沿い、治療効果・治癒を保証する表現、「必ず」「安全です」といった断定を使わない。',
       '「日本一」「地域最高」「最新の医療」など優良誤認を招く比較・最上級表現、ビフォーアフターや体験談を想起させる記述をしない。',
@@ -278,7 +280,7 @@ export const INDUSTRY_PRESETS: Record<IndustryKey, IndustryPreset> = {
     key: 'cram_school',
     label: '学習塾・スクール・習い事',
     customerNoun: '生徒さん・保護者様',
-    visitVerb: 'ご通塾',
+    visitVerb: 'ご通塾（スクール・習い事の場合は「ご通学」「ご来校」）',
     praisePoints: [
       '講師の教え方の分かりやすさ、質問のしやすさ',
       '一人ひとりの理解度に合わせた進め方、面談やフィードバック',
@@ -515,25 +517,38 @@ export const INDUSTRY_PRESETS: Record<IndustryKey, IndustryPreset> = {
   },
 };
 
+/** UIのセレクトの表示順。業種を増やしたらここにも必ず追加する。 */
+const INDUSTRY_ORDER = [
+  'restaurant',
+  'cafe',
+  'beauty',
+  'nail_eyelash',
+  'relaxation',
+  'clinic_dental',
+  'clinic_medical',
+  'construction',
+  'cram_school',
+  'real_estate',
+  'auto',
+  'hotel',
+  'retail',
+  'gym',
+  'professional',
+  'other',
+] as const satisfies readonly IndustryKey[];
+
+/**
+ * 表示順に載せ忘れたキーがあるとコンパイルエラーになる。
+ * （セレクトから業種が黙って消えるのを防ぐ）
+ */
+type UnlistedIndustry = Exclude<IndustryKey, (typeof INDUSTRY_ORDER)[number]>;
+const _allIndustriesListed: [UnlistedIndustry] extends [never] ? true : never = true;
+void _allIndustriesListed;
+
 /** UIのセレクト用。表示順は導入が多い業種から。 */
-export const INDUSTRY_LIST: IndustryPreset[] = [
-  INDUSTRY_PRESETS.restaurant,
-  INDUSTRY_PRESETS.cafe,
-  INDUSTRY_PRESETS.beauty,
-  INDUSTRY_PRESETS.nail_eyelash,
-  INDUSTRY_PRESETS.relaxation,
-  INDUSTRY_PRESETS.clinic_dental,
-  INDUSTRY_PRESETS.clinic_medical,
-  INDUSTRY_PRESETS.construction,
-  INDUSTRY_PRESETS.cram_school,
-  INDUSTRY_PRESETS.real_estate,
-  INDUSTRY_PRESETS.auto,
-  INDUSTRY_PRESETS.hotel,
-  INDUSTRY_PRESETS.retail,
-  INDUSTRY_PRESETS.gym,
-  INDUSTRY_PRESETS.professional,
-  INDUSTRY_PRESETS.other,
-];
+export const INDUSTRY_LIST: readonly IndustryPreset[] = INDUSTRY_ORDER.map(
+  (key) => INDUSTRY_PRESETS[key],
+);
 
 function isIndustryKey(value: string): value is IndustryKey {
   return Object.prototype.hasOwnProperty.call(INDUSTRY_PRESETS, value);

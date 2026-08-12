@@ -90,7 +90,7 @@ npx wrangler whoami
 npx wrangler d1 create kuchikomi-banto
 ```
 
-- [ ] 出力された `database_id` をコピーし、`wrangler.jsonc` の `REPLACE_WITH_YOUR_D1_DATABASE_ID` を置き換える
+- [ ] 出力された `database_id` をコピーし、`wrangler.jsonc` の仮の値 `00000000-0000-0000-0000-000000000000` を置き換える
 
 ```jsonc
 "d1_databases": [
@@ -280,8 +280,9 @@ Stripeダッシュボード > 開発者 > Webhook > 「エンドポイントを�
 - [ ] エンドポイントURL: `https://（あなたのドメイン）/api/stripe/webhook`
   - まだ独自ドメインがなければ `https://kuchikomi-banto.<あなたのサブドメイン>.workers.dev/api/stripe/webhook`
 - [ ] 説明: `クチコミ番頭 本番`
-- [ ] 送信するイベントを **以下の4つだけ** 選択する
+- [ ] 送信するイベントを **以下の5つだけ** 選択する（`src/index.ts` のWebhookハンドラが処理するのはこの5種類。他は受け取っても無視される）
   - [ ] `checkout.session.completed`
+  - [ ] `customer.subscription.created`
   - [ ] `customer.subscription.updated`
   - [ ] `customer.subscription.deleted`
   - [ ] `invoice.payment_failed`
@@ -314,12 +315,22 @@ npx wrangler deploy
 ```
 
 - [ ] 出力された `https://kuchikomi-banto.<サブドメイン>.workers.dev` を開く
-- [ ] `/api/health` が `{"ok":true,"hasStripe":true,"hasMail":true}` を返す
+- [ ] `/api/health` が `{"ok":true,"model":"claude-opus-5","hasAnthropicKey":true,"hasStripe":true,"hasMail":true}` を返す
+  - `hasAnthropicKey` が `false` なら生成が動かない。手順3のシークレット登録に戻る
 
 ### 6-1. 無料お試しの確認
 
 - [ ] 未ログイン状態でクチコミを貼り付け → 3案が生成される
 - [ ] 3回使い切ると4回目で上限メッセージが出る（HTTP 429）
+
+> ⚠️ **無料お試しにはIP単位の上限もある**
+> `src/index.ts` の `FREE_TRIAL_IP_LIMIT = 10` により、**同一IPアドレスからの無料生成は通算10件まで**です（Cookie単位の3件とは別の制限。時間が経ってもリセットされません）。
+> イベント会場のWi-Fiは参加者全員が同じグローバルIPになるため、**4人目くらいから「上限に達しました」が出て、その場で触ってもらう導線が止まります**（携帯回線もキャリアによっては共有IPになります）。
+> イベント前に必ずどちらかを済ませておくこと：
+> - [ ] `FREE_TRIAL_IP_LIMIT` を会場の人数に見合う値（例: 200）に引き上げて再デプロイする
+> - [ ] または、その場では無料お試しではなく**登録＋14日間トライアル**に案内する運用にする
+>
+> 引き上げた場合は、悪用対策が弱くなる点を理解しておく（イベント後に元へ戻すのが無難）。
 - [ ] 星1のクチコミを貼ると「謝罪→事実確認→改善→オフライン誘導」の型になっている
 - [ ] 明らかな誹謗中傷（例: 事実無根の中傷文）を貼ると、削除申請の助言が表示される
 
@@ -357,7 +368,7 @@ npx wrangler d1 execute kuchikomi-banto --remote \
 - [ ] `4000 0000 0000 0341` のカードで契約 → 請求失敗時に `invoice.payment_failed` が届き `status` が `past_due` になる
 - [ ] `past_due` のアカウントで生成しようとしたときの画面表示が親切か確認する
 - [ ] プラン上限（ライト100件）を超えたときに 429 と「プラン変更のご案内」が出るか確認
-  - テスト用に一時的に `PLANS.light.monthlyLimit` を 2 にして確認 → **確認後は必ず元に戻す**
+  - テスト用に一時的に `src/types.ts` の `PLANS.light.monthlyLimit` を 2 にして確認 → **確認後は必ず元に戻して再デプロイする**
 
 ---
 
@@ -370,7 +381,7 @@ npx wrangler d1 execute kuchikomi-banto --remote \
 - [ ] 本番モードで **商品と価格を作り直す**（テストモードの `price_...` は本番では使えない）
   - ライト ¥2,980 / スタンダード ¥5,980、通貨JPY、月次
 - [ ] 本番モードで **Customer Portal を設定し直す**（設定はモード別）
-- [ ] 本番モードで **Webhookエンドポイントを登録し直す**（イベントは同じ4つ）
+- [ ] 本番モードで **Webhookエンドポイントを登録し直す**（イベントは同じ5つ）
 - [ ] 本番の値でシークレットを上書き
 
 ```bash
@@ -423,10 +434,12 @@ npx wrangler deploy
 
 ### 9-1. 法務・表記（ここが一番事故りやすい）
 
+> このチェックリストは実務上の目安であって、法的助言ではありません。事業形態によって必要な記載は変わるので、最終的には所轄の窓口か専門家に確認してください。
+
 - [ ] `public/legal/tokushoho.html` のプレースホルダをすべて実在の情報に置換した
   - [ ] 販売事業者名（法人名 or 個人事業主の氏名）
-  - [ ] 所在地（**「請求があったら遅滞なく開示」は不可。原則そのまま記載が必要**）
-  - [ ] 電話番号（つながる番号。**「メールで対応」は不可**）
+  - [ ] 所在地（**原則そのまま記載する。**「請求があったら遅滞なく開示」とする省略の運用も条件付きで認められるが、遅滞なく開示できる体制が実際に必要で、Stripeの審査でも差し戻されやすい。素直に書けるようバーチャルオフィス等を先に用意しておくのが結局早い）
+  - [ ] 電話番号（つながる番号。**「メールのみで対応」は不可**）
   - [ ] メールアドレス（`SUPPORT_EMAIL` と一致させる）
   - [ ] 販売価格（税込 ¥2,980 / ¥5,980 と明記）
   - [ ] 追加手数料（「なし」または実費）
@@ -442,7 +455,7 @@ npx wrangler deploy
 - [ ] リンク切れがない（下記コマンドで全リンクを一覧して手で開く）
 
 ```bash
-grep -ohE 'href="[^"]+"' public/index.html public/legal/*.html | sort -u
+grep -ohE 'href="[^"]+"' public/index.html public/app.html public/legal/*.html | sort -u
 ```
 
 - [ ] フッターから 利用規約 / プライバシーポリシー / 特定商取引法 の3ページに到達できる
@@ -470,10 +483,10 @@ grep -ohE 'href="[^"]+"' public/index.html public/legal/*.html | sort -u
 ### 9-4. 運用の備え
 
 - [ ] `ADMIN_TOKEN` を手元の安全な場所に控えた
-- [ ] 管理APIが動く
+- [ ] 管理APIが動く（認証ヘッダは **`x-admin-token`**。`Authorization: Bearer` では 401 になる）
 
 ```bash
-curl -H "Authorization: Bearer $ADMIN_TOKEN" https://kuchikomi-banto.jp/api/admin/stats
+curl -H "x-admin-token: $ADMIN_TOKEN" https://kuchikomi-banto.jp/api/admin/stats
 ```
 
 - [ ] Cloudflare Workers の Observability（ログ）が有効（`wrangler.jsonc` で `observability.enabled: true` 済み）
@@ -490,7 +503,7 @@ curl -H "Authorization: Bearer $ADMIN_TOKEN" https://kuchikomi-banto.jp/api/admi
 管理APIで取れる数字：
 
 ```bash
-curl -s -H "Authorization: Bearer $ADMIN_TOKEN" \
+curl -s -H "x-admin-token: $ADMIN_TOKEN" \
   https://kuchikomi-banto.jp/api/admin/stats | python3 -m json.tool
 ```
 
